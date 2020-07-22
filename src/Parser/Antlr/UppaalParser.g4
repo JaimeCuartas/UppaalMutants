@@ -3,15 +3,24 @@ options { tokenVocab=UppaalLexer; }
 
 document    :   prolog? DTD? nta;
 
-prolog      :   XMLDeclOpen attribute* PROLOG_CLOSE ;
+prolog      :   PROLOG_OPEN attribute* PROLOG_CLOSE ;
 
-nta         :   NTA   declaration NTA_CLOSE ; //template+ system queries ;
+nta         :   NTA_OPEN declaration template* NTA_CLOSE ; //template+ system queries ;
 
-declaration :   DECLARATION ;
-/*
-content     :   chardata? chardata* ;
+declaration :   DECLARATION_OPEN decl_content? DECLARATION_CLOSE ;
 
-chardata    :   TEXT | SEA_WS ;
-*/
-attribute   :   NAME '=' STRING ;
+decl_content:   DECLARATION_TEXT /*| DECLARATION_WS*/ ;
+
+template    :   TEMPLATE_OPEN templ_content TEMPLATE_CLOSE ;
+
+templ_content:  name locations* transitions* ;
+
+name        :   '<' 'name' '>' IDENTIFIER '</' 'name' '>'
+            |   '<' 'name' 'x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"' '>' IDENTIFIER '</' 'name' '>' ;
+
+locations   :   LOCATION_OPEN ANYTHING LOCATION_CLOSE ;
+
+transitions :   TRANSITION_OPEN TRANSITION_CLOSE ;
+
+attribute   :   NAME_ATTRIBUTE EQUALS STRING ;
 

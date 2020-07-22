@@ -35,17 +35,41 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeclaration(UppaalParser.DeclarationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link UppaalParser#content}.
+	 * Visit a parse tree produced by {@link UppaalParser#decl_content}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitContent(UppaalParser.ContentContext ctx);
+	T visitDecl_content(UppaalParser.Decl_contentContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link UppaalParser#chardata}.
+	 * Visit a parse tree produced by {@link UppaalParser#template}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitChardata(UppaalParser.ChardataContext ctx);
+	T visitTemplate(UppaalParser.TemplateContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#templ_content}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTempl_content(UppaalParser.Templ_contentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#name}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitName(UppaalParser.NameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#locations}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLocations(UppaalParser.LocationsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#transitions}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTransitions(UppaalParser.TransitionsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link UppaalParser#attribute}.
 	 * @param ctx the parse tree

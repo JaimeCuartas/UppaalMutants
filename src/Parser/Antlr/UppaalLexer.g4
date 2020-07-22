@@ -6,17 +6,17 @@ DTD         :   '<!' .*? '>';
 
 SEA_WS      :   [ \t\r\n]+              -> skip ;
 
-OPEN                : '<' ;
-SLASH               : '/' ;
-NTA                 : '<' [ \t\r\n]* 'nta' [ \t\r\n]* '>';
-NTA_CLOSE           : '</' [ \t\r\n]* 'nta' [ \t\r\n]* '>';
-DECLARATION         : '<' [ \t\r\n]* 'declaration' [ \t\r\n]* '>' ;
-TEMPLATE            : 'template' ;
+
+//OPEN                : '<' ;
+//SLASH               : '/' ;
+//NTA_CLOSE           : '</' [ \t\r\n]* 'nta' [ \t\r\n]* '>';
 
 
-CLOSE               : '>' ;
+//CLOSE               : '>' ;
 
-XMLDeclOpen :   '<?xml' PROLOG_WS       -> pushMode (PROLOG);
+PROLOG_OPEN              : '<?xml' PROLOG_WS       -> pushMode (PROLOG);
+NTA_OPEN                 : '<' [ \t\r\n]* 'nta' [ \t\r\n]* '>'           ->pushMode (NTA);
+//DECLARATION_OPEN         : '<' [ \t\r\n]* 'declaration' [ \t\r\n]* '>' ;
 
 //TEXT        :   ~[<&]+ ;        // match any 16 bit char other than < and &
 
@@ -25,7 +25,7 @@ mode PROLOG;
 
 PROLOG_CLOSE        :  '?>'                     -> popMode ; // close <?xml...?>
 
-NAME                :   NameStartChar NameChar* ;
+NAME_ATTRIBUTE      :   NameStartChar NameChar* ;
 
 EQUALS              :   '=' ;
 
@@ -56,5 +56,77 @@ NameStartChar
             |   '\uFDF0'..'\uFFFD'
             ;
 
+// ----------------- Everything inside NTA ---------------------
+
+mode NTA;
+
+NTA_CLOSE           : '</' [ \t\r\n]* 'nta' [ \t\r\n]* '>'          -> popMode ; //close NTA
+
+DECLARATION_OPEN    : '<' [ \t\r\n]* 'declaration' [ \t\r\n]* '>'   -> pushMode (DECLARATION) ;
+TEMPLATE_OPEN       : '<' [ \t\r\n]* 'template' [ \t\r\n]* '>'      -> pushMode (TEMPLATE) ;
+
+WS_NTA :   [ \t\r\n]+  -> skip;
+
+// ----------------- Everything inside DECLARATION ---------------------
+
+mode DECLARATION;
+
+DECLARATION_CLOSE   : '</' [ \t\r\n]* 'declaration' [ \t\r\n]* '>'  -> popMode ;
 
 
+//DECLARATION_WS      :   (' '|'\t'|'\r'? '\n') ;
+//DECLARATION_TEXT    :   ~[<&]+ ;
+
+DECLARATION_TEXT    :   ~[<]+ ;
+
+
+// ----------------- Everything inside TEMPLATE ---------------------
+
+mode TEMPLATE;
+
+TEMPLATE_CLOSE      :   '</' [ \t\r\n]* 'template' [ \t\r\n]* '>'     -> popMode ;
+
+
+
+
+X                   :   'x' ;
+
+Y                   :   'y' ;
+
+EQUALS_TEMPLATE     :   '=' ;
+
+NUMBER              :   [-]?[0-9]+ ;
+
+QUOTES              :   '"' ;
+
+/*
+NAME_OPEN           :   '<' [ \t\r\n]* 'name ' [ \t\r\n]* '>'
+                    |   '<' [ \t\r\n]* 'name ' [ \t\r\n]* X [ \t\r\n]* Y [ \t\r\n]* '>'
+                    ;
+*/
+
+
+OPEN                : '<' ;
+
+NAME                :   'name' ;
+
+OPEN_SLASH          : '</' ;
+
+CLOSE               : '>' ;
+
+IDENTIFIER          :   [a-zA-Z_] [a-zA-Z0-9_]* ;
+
+//NAME_CLOSE          :   '</' 'name' '>' ;
+
+LOCATION_OPEN       :   '<' 'location' '>' ;
+
+LOCATION_CLOSE      :   '</' 'location' '>' ;
+
+TRANSITION_OPEN     :   '<' 'transition' '>' ;
+
+TRANSITION_CLOSE    :   '</' 'transition' '>' ;
+
+WS_TEMPLATE         :   [ \t\r\n]+  -> skip;
+
+
+//ANYTHING            :   ~[<>]+ ;
