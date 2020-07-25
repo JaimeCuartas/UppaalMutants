@@ -106,18 +106,30 @@ NAME_OPEN           :   '<' [ \t\r\n]* 'name ' [ \t\r\n]* '>'
 */
 
 
-OPEN                : '<' ;
+OPEN                :   '<' ;
 
 NAME                :   'name' ;
 
-OPEN_SLASH          : '</' ;
+LOCATION            :   'location' ;
 
-CLOSE               : '>' ;
+ID                  :   'id' ;
+
+TRANSITION          :   'transition' ;
+
+INIT                :   'init' ;
+
+REF                 :   'ref' ;
+
+OPEN_SLASH          :   '</' ;
+
+CLOSE               :   '>' ;
+
+SLASH_CLOSE         :   '/>' ;
 
 IDENTIFIER          :   [a-zA-Z_] [a-zA-Z0-9_]* ;
 
 //NAME_CLOSE          :   '</' 'name' '>' ;
-
+/*
 LOCATION_OPEN       :   '<' 'location' '>' ;
 
 LOCATION_CLOSE      :   '</' 'location' '>' ;
@@ -125,7 +137,7 @@ LOCATION_CLOSE      :   '</' 'location' '>' ;
 TRANSITION_OPEN     :   '<' 'transition' '>' ;
 
 TRANSITION_CLOSE    :   '</' 'transition' '>' ;
-
+*/
 WS_TEMPLATE         :   [ \t\r\n]+  -> skip;
 
 

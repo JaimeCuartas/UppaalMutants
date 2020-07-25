@@ -98,6 +98,16 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitLocations(UppaalParser.LocationsContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link UppaalParser#init_loc}.
+	 * @param ctx the parse tree
+	 */
+	void enterInit_loc(UppaalParser.Init_locContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#init_loc}.
+	 * @param ctx the parse tree
+	 */
+	void exitInit_loc(UppaalParser.Init_locContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link UppaalParser#transitions}.
 	 * @param ctx the parse tree
 	 */

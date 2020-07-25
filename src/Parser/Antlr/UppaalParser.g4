@@ -13,14 +13,16 @@ decl_content:   DECLARATION_TEXT /*| DECLARATION_WS*/ ;
 
 template    :   TEMPLATE_OPEN templ_content TEMPLATE_CLOSE ;
 
-templ_content:  name locations* transitions* ;
+templ_content:  name locations* init_loc transitions* ;
 
 name        :   '<' 'name' '>' IDENTIFIER '</' 'name' '>'
             |   '<' 'name' 'x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"' '>' IDENTIFIER '</' 'name' '>' ;
 
-locations   :   LOCATION_OPEN ANYTHING LOCATION_CLOSE ;
+locations   :   '<' 'location' 'id' EQUALS_TEMPLATE '"' IDENTIFIER '"' 'x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"' '>' name '</' 'location' '>' ;
 
-transitions :   TRANSITION_OPEN TRANSITION_CLOSE ;
+init_loc    :   '<' 'init' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>';
+
+transitions :   '<' 'transition' '>' '</' 'transition' '>' ;
 
 attribute   :   NAME_ATTRIBUTE EQUALS STRING ;
 
