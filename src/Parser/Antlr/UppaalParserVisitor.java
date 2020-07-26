@@ -71,6 +71,12 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInit_loc(UppaalParser.Init_locContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link UppaalParser#labels}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLabels(UppaalParser.LabelsContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link UppaalParser#transitions}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

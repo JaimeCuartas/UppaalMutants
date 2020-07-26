@@ -8,9 +8,11 @@
 
         broadcast chan deployAction, endDeployAction, retractAction, endRetractAction, openAction, endOpenAction, closeAction, endCloseAction; </declaration>
     <template>
-        <name> es el nombre
+        <name> nombre
         </name>
-
+        <location id="inicial" x="2" y="3">
+        </location>
+        <init ref = "inicial"/>
 
     </template>
 </nta>

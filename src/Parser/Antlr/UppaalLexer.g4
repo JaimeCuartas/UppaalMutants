@@ -99,13 +99,6 @@ NUMBER              :   [-]?[0-9]+ ;
 
 QUOTES              :   '"' ;
 
-/*
-NAME_OPEN           :   '<' [ \t\r\n]* 'name ' [ \t\r\n]* '>'
-                    |   '<' [ \t\r\n]* 'name ' [ \t\r\n]* X [ \t\r\n]* Y [ \t\r\n]* '>'
-                    ;
-*/
-
-
 OPEN                :   '<' ;
 
 NAME                :   'name' ;
@@ -138,7 +131,29 @@ TRANSITION_OPEN     :   '<' 'transition' '>' ;
 
 TRANSITION_CLOSE    :   '</' 'transition' '>' ;
 */
+
+fragment
+Label_kind          :   '"invariant"'
+                    |   '"exponentialrate"'
+                    |   '"comments"'
+                    ;
+
+//			<label kind="invariant" x="425" y="127">12</label>
+LABEL_OPEN          :   '<'[ \t\r\n]*'label'[ \t\r\n]+ 'kind'  [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* Label_kind
+                            ('x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"')?
+                            '>'                                             -> pushMode(LABEL);
+//'<' [ \t\r\n]* 'label' [ \t\r\n]* 'kind' [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* Label_kind [ \t\r\n]* 'x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"' '>' ;
+
+
 WS_TEMPLATE         :   [ \t\r\n]+  -> skip;
 
-
 //ANYTHING            :   ~[<>]+ ;
+
+
+// ----------------- Everything inside LABEL ---------------------
+mode LABEL;
+
+LABEL_CLOSE         :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'     -> popMode ;
+
+LABEL_TEXT          :   ~[<>]+ ;
+

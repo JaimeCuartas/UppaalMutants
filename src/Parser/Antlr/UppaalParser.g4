@@ -13,14 +13,19 @@ decl_content:   DECLARATION_TEXT /*| DECLARATION_WS*/ ;
 
 template    :   TEMPLATE_OPEN templ_content TEMPLATE_CLOSE ;
 
-templ_content:  name locations* init_loc transitions* ;
+templ_content:  name locations+ init_loc transitions* ;
 
-name        :   '<' 'name' '>' IDENTIFIER '</' 'name' '>'
-            |   '<' 'name' 'x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"' '>' IDENTIFIER '</' 'name' '>' ;
+name        :   '<' 'name'
+                    ('x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"')?
+                    '>' IDENTIFIER '</' 'name' '>' ;
 
-locations   :   '<' 'location' 'id' EQUALS_TEMPLATE '"' IDENTIFIER '"' 'x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"' '>' name '</' 'location' '>' ;
+locations   :   '<' 'location' 'id' EQUALS_TEMPLATE '"' IDENTIFIER '"'
+                    ('x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"')? '>'  labels* '</' 'location' '>' ;
 
 init_loc    :   '<' 'init' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>';
+
+labels      :   LABEL_OPEN LABEL_TEXT? LABEL_CLOSE;
+//(LABEL | LABEL_CODE) LABEL_TEXT LABEL_CLOSE;
 
 transitions :   '<' 'transition' '>' '</' 'transition' '>' ;
 

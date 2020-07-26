@@ -108,6 +108,16 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitInit_loc(UppaalParser.Init_locContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link UppaalParser#labels}.
+	 * @param ctx the parse tree
+	 */
+	void enterLabels(UppaalParser.LabelsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#labels}.
+	 * @param ctx the parse tree
+	 */
+	void exitLabels(UppaalParser.LabelsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link UppaalParser#transitions}.
 	 * @param ctx the parse tree
 	 */
