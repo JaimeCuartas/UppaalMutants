@@ -35,12 +35,6 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeclaration(UppaalParser.DeclarationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link UppaalParser#decl_content}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitDecl_content(UppaalParser.Decl_contentContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link UppaalParser#template}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

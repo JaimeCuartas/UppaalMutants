@@ -11,6 +11,7 @@
         <name> nombre
         </name>
         <location id="inicial" x="2" y="3">
+            <name>nombre_De_Loc</name>
         </location>
         <init ref = "inicial"/>
 

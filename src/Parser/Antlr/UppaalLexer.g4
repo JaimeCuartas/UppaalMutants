@@ -138,10 +138,21 @@ Label_kind          :   '"invariant"'
                     |   '"comments"'
                     ;
 
+fragment
+Label_code          :   '"testcodeEnter"'
+                    |   '"testcodeExit"'
+                    ;
+
 //			<label kind="invariant" x="425" y="127">12</label>
-LABEL_OPEN          :   '<'[ \t\r\n]*'label'[ \t\r\n]+ 'kind'  [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* Label_kind
-                            ('x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"')?
-                            '>'                                             -> pushMode(LABEL);
+LABEL_OPEN          :   '<'[ \t\r\n]*'label'[ \t\r\n]+ 'kind'  [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]*
+                            (
+                            Label_kind ( [ \t\r\n]* X [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* '"' NUMBER '"' [ \t\r\n]* Y [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* '"' NUMBER '"')?
+                            |
+                            Label_code
+                            )
+                            [ \t\r\n]* '>'                                             -> pushMode(LABEL);
+
+
 //'<' [ \t\r\n]* 'label' [ \t\r\n]* 'kind' [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* Label_kind [ \t\r\n]* 'x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"' '>' ;
 
 

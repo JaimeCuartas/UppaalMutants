@@ -6,10 +6,13 @@ document    :   prolog? DTD? nta;
 prolog      :   PROLOG_OPEN attribute* PROLOG_CLOSE ;
 
 nta         :   NTA_OPEN declaration template* NTA_CLOSE ; //template+ system queries ;
-
+/*
 declaration :   DECLARATION_OPEN decl_content? DECLARATION_CLOSE ;
 
-decl_content:   DECLARATION_TEXT /*| DECLARATION_WS*/ ;
+decl_content:   DECLARATION_TEXT  ;
+*/
+
+declaration :   DECLARATION_OPEN DECLARATION_TEXT? DECLARATION_CLOSE ;
 
 template    :   TEMPLATE_OPEN templ_content TEMPLATE_CLOSE ;
 
@@ -25,6 +28,10 @@ locations   :   '<' 'location' 'id' EQUALS_TEMPLATE '"' IDENTIFIER '"'
 init_loc    :   '<' 'init' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>';
 
 labels      :   LABEL_OPEN LABEL_TEXT? LABEL_CLOSE;
+
+
+/*LABEL_OPEN          :   '<'[ \t\r\n]*'label'[ \t\r\n]+ 'kind'  [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* Label_kind
+                              ('x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"')?*/
 //(LABEL | LABEL_CODE) LABEL_TEXT LABEL_CLOSE;
 
 transitions :   '<' 'transition' '>' '</' 'transition' '>' ;
