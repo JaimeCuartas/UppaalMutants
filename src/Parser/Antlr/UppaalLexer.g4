@@ -109,9 +109,17 @@ ID                  :   'id' ;
 
 TRANSITION          :   'transition' ;
 
+URGENT              :   'urgent' ;
+
+COMMITTED           :   'committed' ;
+
 INIT                :   'init' ;
 
 REF                 :   'ref' ;
+
+SOURCE              :   'source' ;
+
+TARGET              :   'target' ;
 
 OPEN_SLASH          :   '</' ;
 
@@ -132,16 +140,24 @@ TRANSITION_OPEN     :   '<' 'transition' '>' ;
 TRANSITION_CLOSE    :   '</' 'transition' '>' ;
 */
 
+/*
+Label_comments is done separately to Label_kind and Label_edge_kind due to this fragment
+has occurrences in tokens of transitions and locations
+*/
+fragment
+Label_comments      :   '"comments"'
+                    ;
+
 fragment
 Label_kind          :   '"invariant"'
                     |   '"exponentialrate"'
-                    |   '"comments"'
                     ;
 
 fragment
 Label_code          :   '"testcodeEnter"'
                     |   '"testcodeExit"'
                     ;
+
 
 //			<label kind="invariant" x="425" y="127">12</label>
 LABEL_OPEN          :   '<'[ \t\r\n]*'label'[ \t\r\n]+ 'kind'  [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]*
@@ -152,8 +168,44 @@ LABEL_OPEN          :   '<'[ \t\r\n]*'label'[ \t\r\n]+ 'kind'  [ \t\r\n]* EQUALS
                             )
                             [ \t\r\n]* '>'                                             -> pushMode(LABEL);
 
-
 //'<' [ \t\r\n]* 'label' [ \t\r\n]* 'kind' [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* Label_kind [ \t\r\n]* 'x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"' '>' ;
+
+
+fragment
+Label_edge_kind     :   '"select"'
+                    |   '"synchronisation"'
+                    |   '"assignment"'
+                    ;
+
+fragment
+Label_guard         :   '"guard"'
+                    ;
+
+fragment
+Label_edge_code     :   '"testcode"'
+                    ;
+
+LABEL_T_OPEN        :   '<'[ \t\r\n]*'label'[ \t\r\n]+ 'kind'  [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]*
+                            (
+                            Label_edge_kind ( [ \t\r\n]* X [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* '"' NUMBER '"' [ \t\r\n]* Y [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* '"' NUMBER '"')?
+                            |
+                            Label_edge_code
+                            )
+                            [ \t\r\n]* '>'                                             -> pushMode(LABEL);
+
+
+LABEL_COMMENTS_OPEN :   '<'[ \t\r\n]*'label'[ \t\r\n]+ 'kind'  [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]*
+
+                            Label_comments ( [ \t\r\n]* X [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* '"' NUMBER '"' [ \t\r\n]* Y [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* '"' NUMBER '"')?
+                            [ \t\r\n]* '>'                                             -> pushMode(LABEL);
+
+
+LABEL_G_OPEN        :   '<'[ \t\r\n]*'label'[ \t\r\n]+ 'kind'  [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]*
+
+                            Label_guard ( [ \t\r\n]* X [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* '"' NUMBER '"' [ \t\r\n]* Y [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* '"' NUMBER '"')?
+
+                            [ \t\r\n]* '>'                                             -> pushMode(LABEL);
+
 
 
 WS_TEMPLATE         :   [ \t\r\n]+  -> skip;

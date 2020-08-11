@@ -17,24 +17,44 @@ declaration :   DECLARATION_OPEN DECLARATION_TEXT? DECLARATION_CLOSE ;
 template    :   TEMPLATE_OPEN templ_content TEMPLATE_CLOSE ;
 
 templ_content:  name locations+ init_loc transitions* ;
-
+/*
 name        :   '<' 'name'
                     ('x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"')?
                     '>' IDENTIFIER '</' 'name' '>' ;
+*/
+
+name        :   '<' 'name'
+                    coordinate?
+                    '>' IDENTIFIER '</' 'name' '>' ;
 
 locations   :   '<' 'location' 'id' EQUALS_TEMPLATE '"' IDENTIFIER '"'
-                    ('x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"')? '>'  labels* '</' 'location' '>' ;
+                    coordinate?
+                    '>' name? labels* ('<' ('urgent' | 'committed') '/>')? '</' 'location' '>' ;
+
+coordinate  :   'x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"';
 
 init_loc    :   '<' 'init' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>';
 
-labels      :   LABEL_OPEN LABEL_TEXT? LABEL_CLOSE;
+labels      :   (LABEL_OPEN | LABEL_COMMENTS_OPEN) LABEL_TEXT? LABEL_CLOSE ;
 
 
 /*LABEL_OPEN          :   '<'[ \t\r\n]*'label'[ \t\r\n]+ 'kind'  [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* Label_kind
                               ('x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"')?*/
 //(LABEL | LABEL_CODE) LABEL_TEXT LABEL_CLOSE;
 
-transitions :   '<' 'transition' '>' '</' 'transition' '>' ;
+transitions :   '<' 'transition' '>'
+                    source
+                    target
+                    labels_t*
+                    '</' 'transition' '>' ;
+
+labels_t    :   (LABEL_T_OPEN | LABEL_COMMENTS_OPEN) LABEL_TEXT? LABEL_CLOSE ;
+
+label_guard :   LABEL_G_OPEN LABEL_CLOSE ;
+
+source      :   '<' 'source' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>' ;
+
+target      :   '<' 'target' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>' ;
 
 attribute   :   NAME_ATTRIBUTE EQUALS STRING ;
 
