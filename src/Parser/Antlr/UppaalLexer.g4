@@ -166,7 +166,7 @@ LABEL_OPEN          :   '<'[ \t\r\n]*'label'[ \t\r\n]+ 'kind'  [ \t\r\n]* EQUALS
                             |
                             Label_code
                             )
-                            [ \t\r\n]* '>'                                             -> pushMode(LABEL);
+                            [ \t\r\n]* '>'                                             -> pushMode (LABEL);
 
 //'<' [ \t\r\n]* 'label' [ \t\r\n]* 'kind' [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* Label_kind [ \t\r\n]* 'x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"' '>' ;
 
@@ -191,20 +191,20 @@ LABEL_T_OPEN        :   '<'[ \t\r\n]*'label'[ \t\r\n]+ 'kind'  [ \t\r\n]* EQUALS
                             |
                             Label_edge_code
                             )
-                            [ \t\r\n]* '>'                                             -> pushMode(LABEL);
+                            [ \t\r\n]* '>'                                             -> pushMode (LABEL);
 
 
 LABEL_COMMENTS_OPEN :   '<'[ \t\r\n]*'label'[ \t\r\n]+ 'kind'  [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]*
 
                             Label_comments ( [ \t\r\n]* X [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* '"' NUMBER '"' [ \t\r\n]* Y [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* '"' NUMBER '"')?
-                            [ \t\r\n]* '>'                                             -> pushMode(LABEL);
+                            [ \t\r\n]* '>'                                             -> pushMode (LABEL);
 
 
 LABEL_G_OPEN        :   '<'[ \t\r\n]*'label'[ \t\r\n]+ 'kind'  [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]*
 
                             Label_guard ( [ \t\r\n]* X [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* '"' NUMBER '"' [ \t\r\n]* Y [ \t\r\n]* EQUALS_TEMPLATE [ \t\r\n]* '"' NUMBER '"')?
 
-                            [ \t\r\n]* '>'                                             -> pushMode(LABEL);
+                            [ \t\r\n]* '>'                                             -> pushMode (GUARD);
 
 
 
@@ -220,3 +220,81 @@ LABEL_CLOSE         :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'     -> popMode ;
 
 LABEL_TEXT          :   ~[<>]+ ;
 
+
+// ----------------- Everything inside GUARD ---------------------
+mode GUARD;
+
+GUARD_CLOSE         :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'    -> popMode ;
+
+ID_GUARD            :   [a-zA-Z_] [a-zA-Z0-9_]* ;
+
+NAT_GUARD           :   [0-9]+ ;
+
+LEFT_PARENTHESIS    :   '(' ;
+
+RIGHT_PARENTHESIS   :   ')' ;
+
+INCREMENT           :   '++' ;
+
+DECREMENT           :   '--' ;
+
+ASSIGN              :   '=' ;
+
+ASSIGN_COLON        :   ':=' ;
+
+ASSIGN_ADD          :   '+=' ;
+
+ASSIGN_SUB          :   '-=' ;
+
+ASSIGN_MUL          :   '*=' ;
+
+ASSIGN_DIV          :   '/=' ;
+
+ASSIGN_PERCENT      :   '%=' ;
+
+ASSIGN_OR           :   '|=' ;
+
+ASSIGN_AND          :   '&=' ;
+
+ASSIGN_XOR          :   '^=' ;
+
+ASSIGN_LSHIFT       :   '<<=' ;
+
+ASSIGN_RSHIFT       :   '>>=' ;
+
+
+//Unary
+
+ADD                 :   '+' ; //binary too
+
+SUB                 :   '-' ; //binary too
+
+EXCLAMATION         :   '!' ;
+
+NOT                 :   'not' ;
+
+//Binary
+
+LESS                :   '<' ;
+LESSEQ              :   '<=' ;
+COMPARE             :   '==' ;
+DIFFERENT           :   '!=' ;
+GREATEREQ           :   '>=' ;
+GREAT               :   '>' ;
+MUL                 :   '*' ;
+DIV                 :   '/' ;
+PERCENT             :   '%' ;
+BITAND              :   '&' ;
+BITOR               :   '|' ;
+BITXOR              :   '^' ;
+LSHIFT              :   '<<' ;
+RSHIFT              :   '>>' ;
+AND_SYMBOL          :   '&&' ;
+OR_SYMBOL           :   '||' ;
+MINIMUM             :   '<?' ;
+MAXIMUM             :   '>?' ;
+OR                  :   'or' ;
+AND                 :   'and' ;
+IMPLY               :   'imply' ;
+
+WS_GUARD            :   [ \t\r\n]+  -> skip;

@@ -23,17 +23,17 @@ name        :   '<' 'name'
                     '>' IDENTIFIER '</' 'name' '>' ;
 */
 
-name        :   '<' 'name'
+name        :   OPEN 'name'
                     coordinate?
-                    '>' IDENTIFIER '</' 'name' '>' ;
+                    CLOSE IDENTIFIER '</' 'name' CLOSE ;
 
-locations   :   '<' 'location' 'id' EQUALS_TEMPLATE '"' IDENTIFIER '"'
+locations   :   OPEN 'location' 'id' EQUALS_TEMPLATE '"' IDENTIFIER '"'
                     coordinate?
-                    '>' name? labels* ('<' ('urgent' | 'committed') '/>')? '</' 'location' '>' ;
+                    CLOSE name? labels* (OPEN ('urgent' | 'committed') '/>')? '</' 'location' CLOSE ;
 
 coordinate  :   'x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"';
 
-init_loc    :   '<' 'init' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>';
+init_loc    :   OPEN 'init' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>';
 
 labels      :   (LABEL_OPEN | LABEL_COMMENTS_OPEN) LABEL_TEXT? LABEL_CLOSE ;
 
@@ -42,19 +42,37 @@ labels      :   (LABEL_OPEN | LABEL_COMMENTS_OPEN) LABEL_TEXT? LABEL_CLOSE ;
                               ('x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"')?*/
 //(LABEL | LABEL_CODE) LABEL_TEXT LABEL_CLOSE;
 
-transitions :   '<' 'transition' '>'
+transitions :   OPEN 'transition' CLOSE //OPEN is '<' in template channel, CLOSE is '>' in template channel
                     source
                     target
                     labels_t*
-                    '</' 'transition' '>' ;
+                    label_guard?
+                    labels_t*
+                    '</' 'transition' CLOSE ;
 
 labels_t    :   (LABEL_T_OPEN | LABEL_COMMENTS_OPEN) LABEL_TEXT? LABEL_CLOSE ;
 
-label_guard :   LABEL_G_OPEN LABEL_CLOSE ;
+label_guard :   LABEL_G_OPEN guard_expr GUARD_CLOSE ;
 
-source      :   '<' 'source' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>' ;
+guard_expr  :   ID_GUARD
+            |   NAT_GUARD
+            |   '(' guard_expr ')'
+            |   guard_expr '++' | '++' guard_expr
+            |   guard_expr '--' | '--' guard_expr
+            |   guard_expr
+                    assign=(ASSIGN | ':=' | '+=' | '-=' | '*=' | '/=' | '%=' | '|=' | '&=' | '^=' | '<<=' | '>>=')
+                        guard_expr //assign is '=' in guard channel
+            |   unary=('-' | '+' | '!' | 'not') guard_expr
+            |   guard_expr binary=( LESS | '<=' | '==' | '!=' | '>=' | GREATER //LESS is '<' in guard channel. Greater is '>' in guard channel
+                                               |  '+' | '-' | '*' | '/' | '%' | '&'
+                                               |  '|' | '^' | '<<' | '>>' | '&&' | '||'
+                                               |  '<?' | '>?' | 'or' | 'and' | 'imply') guard_expr
 
-target      :   '<' 'target' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>' ;
+            ;
+
+source      :   OPEN 'source' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>' ; //OPEN is '<' in template channel
+
+target      :   OPEN 'target' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>' ; //OPEN is '<' in template channel
 
 attribute   :   NAME_ATTRIBUTE EQUALS STRING ;
 
