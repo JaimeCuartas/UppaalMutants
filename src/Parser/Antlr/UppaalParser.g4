@@ -67,7 +67,6 @@ guard_expr  :   ID_GUARD
                                                |  '+' | '-' | '*' | '/' | '%' | '&'
                                                |  '|' | '^' | '<<' | '>>' | '&&' | '||'
                                                |  '<?' | '>?' | 'or' | 'and' | 'imply') guard_expr
-
             ;
 
 source      :   OPEN 'source' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>' ; //OPEN is '<' in template channel

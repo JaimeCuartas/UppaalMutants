@@ -280,7 +280,7 @@ LESSEQ              :   '<=' ;
 COMPARE             :   '==' ;
 DIFFERENT           :   '!=' ;
 GREATEREQ           :   '>=' ;
-GREAT               :   '>' ;
+GREATER             :   '>' ;
 MUL                 :   '*' ;
 DIV                 :   '/' ;
 PERCENT             :   '%' ;
