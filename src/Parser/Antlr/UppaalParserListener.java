@@ -158,6 +158,36 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitGuard_expr(UppaalParser.Guard_exprContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link UppaalParser#arguments}.
+	 * @param ctx the parse tree
+	 */
+	void enterArguments(UppaalParser.ArgumentsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#arguments}.
+	 * @param ctx the parse tree
+	 */
+	void exitArguments(UppaalParser.ArgumentsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void enterType(UppaalParser.TypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void exitType(UppaalParser.TypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeId(UppaalParser.TypeIdContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeId(UppaalParser.TypeIdContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link UppaalParser#source}.
 	 * @param ctx the parse tree
 	 */

@@ -226,13 +226,18 @@ mode GUARD;
 
 GUARD_CLOSE         :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'    -> popMode ;
 
-ID_GUARD            :   [a-zA-Z_] [a-zA-Z0-9_]* ;
 
 NAT_GUARD           :   [0-9]+ ;
 
 LEFT_PARENTHESIS    :   '(' ;
 
 RIGHT_PARENTHESIS   :   ')' ;
+
+LEFT_BRACKET        :   '[' ;
+
+RIGHT_BRACKET       :   ']' ;
+
+COMMA               :   ',' ;
 
 INCREMENT           :   '++' ;
 
@@ -254,13 +259,13 @@ ASSIGN_PERCENT      :   '%=' ;
 
 ASSIGN_OR           :   '|=' ;
 
-ASSIGN_AND          :   '&=' ;
+ASSIGN_AND          :   '&amp;=' ;
 
 ASSIGN_XOR          :   '^=' ;
 
-ASSIGN_LSHIFT       :   '<<=' ;
+ASSIGN_LSHIFT       :   '&lt;&lt;=' ;
 
-ASSIGN_RSHIFT       :   '>>=' ;
+ASSIGN_RSHIFT       :   '&gt;&gt;=' ;
 
 
 //Unary
@@ -275,26 +280,61 @@ NOT                 :   'not' ;
 
 //Binary
 
-LESS                :   '<' ;
-LESSEQ              :   '<=' ;
+LESS                :   '&lt;' ;
+LESSEQ              :   '&lt;=' ;
 COMPARE             :   '==' ;
 DIFFERENT           :   '!=' ;
-GREATEREQ           :   '>=' ;
-GREATER             :   '>' ;
+GREATEREQ           :   '&gt;=' ;
+GREATER             :   '&gt;' ;
 MUL                 :   '*' ;
 DIV                 :   '/' ;
 PERCENT             :   '%' ;
-BITAND              :   '&' ;
+BITAND              :   '&amp;' ;
 BITOR               :   '|' ;
 BITXOR              :   '^' ;
-LSHIFT              :   '<<' ;
-RSHIFT              :   '>>' ;
-AND_SYMBOL          :   '&&' ;
+LSHIFT              :   '&lt;&lt;' ;
+RSHIFT              :   '&gt;&gt;' ;
+AND_SYMBOL          :   '&amp;&amp;' ;
 OR_SYMBOL           :   '||' ;
-MINIMUM             :   '<?' ;
-MAXIMUM             :   '>?' ;
+MINIMUM             :   '&lt;?' ;
+MAXIMUM             :   '&gt;?' ;
 OR                  :   'or' ;
 AND                 :   'and' ;
 IMPLY               :   'imply' ;
+
+
+//IF THEN ELSE
+
+IF                  :   '?' ;
+ELSE                :   ':' ;
+
+//Infix lookup operator to access process or structure type scope
+
+LOOKUP_OP           :   '.' ;
+
+//Quantifiers
+
+FORALL              :   'forall' ;
+EXISTS              :   'exists' ;
+
+//SUMMATION
+
+SUM                 :   'sum' ;
+
+//---TYPES---
+
+//prefix
+META                :   'meta' ;
+CONST               :   'const' ;
+
+//typeId
+INT                 :   'int' ;
+SCALAR              :   'scalar' ;
+
+//Boolean
+TRUE                :   'true' ;
+FALSE               :   'false' ;
+
+ID_GUARD            :   [a-zA-Z_] [a-zA-Z0-9_]* ;
 
 WS_GUARD            :   [ \t\r\n]+  -> skip;

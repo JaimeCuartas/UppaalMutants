@@ -60,14 +60,29 @@ guard_expr  :   ID_GUARD
             |   guard_expr '++' | '++' guard_expr
             |   guard_expr '--' | '--' guard_expr
             |   guard_expr
-                    assign=(ASSIGN | ':=' | '+=' | '-=' | '*=' | '/=' | '%=' | '|=' | '&=' | '^=' | '<<=' | '>>=')
+                    assign=(ASSIGN | ':=' | '+=' | '-=' | '*=' | '/=' | '%=' | '|=' | '&amp;=' | '^=' | '&lt;&lt;=' | '&gt;&gt;=')
                         guard_expr //assign is '=' in guard channel
             |   unary=('-' | '+' | '!' | 'not') guard_expr
-            |   guard_expr binary=( LESS | '<=' | '==' | '!=' | '>=' | GREATER //LESS is '<' in guard channel. Greater is '>' in guard channel
-                                               |  '+' | '-' | '*' | '/' | '%' | '&'
-                                               |  '|' | '^' | '<<' | '>>' | '&&' | '||'
-                                               |  '<?' | '>?' | 'or' | 'and' | 'imply') guard_expr
+            |   guard_expr binary=( '&lt;' | '&lt;=' | '==' | '!=' | '&gt;=' | '&gt;' //LESS is '<' in guard channel. Greater is '>' in guard channel
+                                   ) guard_expr
+            |   guard_expr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
+                                    |  '|' | '^' | '&lt;&lt;' | '&gt;&gt;' | '&amp;&amp;' | '||'
+                                    |  '&lt;?' | '&gt;?' | 'or' | 'and' | 'imply') guard_expr
+            |   guard_expr '?' guard_expr ':' guard_expr
+            |   guard_expr '.' ID_GUARD
+            |   guard_expr '(' arguments ')'
+            |   'forall' '(' ID_GUARD ':' type ')' guard_expr
+            |   'exists' '(' ID_GUARD ':' type ')' guard_expr
+            |   'sum' '(' ID_GUARD ':' type ')' guard_expr
+            |   'true'
+            |   'false'
             ;
+
+arguments   :   (guard_expr  (',' guard_expr)*)? ;
+
+type        :   ('meta' | 'const')? typeId ;
+
+typeId      :   'int' | 'int' '[' guard_expr ',' guard_expr ']' | 'scalar' '[' guard_expr ']';
 
 source      :   OPEN 'source' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>' ; //OPEN is '<' in template channel
 
