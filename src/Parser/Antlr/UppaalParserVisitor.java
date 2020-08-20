@@ -53,6 +53,12 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitName(UppaalParser.NameContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link UppaalParser#parameter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParameter(UppaalParser.ParameterContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link UppaalParser#locations}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -130,6 +136,12 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitTarget(UppaalParser.TargetContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#nails}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNails(UppaalParser.NailsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link UppaalParser#attribute}.
 	 * @param ctx the parse tree

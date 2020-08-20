@@ -78,6 +78,16 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitName(UppaalParser.NameContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link UppaalParser#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameter(UppaalParser.ParameterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#parameter}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameter(UppaalParser.ParameterContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link UppaalParser#locations}.
 	 * @param ctx the parse tree
 	 */
@@ -207,6 +217,16 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitTarget(UppaalParser.TargetContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#nails}.
+	 * @param ctx the parse tree
+	 */
+	void enterNails(UppaalParser.NailsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#nails}.
+	 * @param ctx the parse tree
+	 */
+	void exitNails(UppaalParser.NailsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link UppaalParser#attribute}.
 	 * @param ctx the parse tree

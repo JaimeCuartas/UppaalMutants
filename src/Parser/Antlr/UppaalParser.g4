@@ -16,7 +16,7 @@ declaration :   DECLARATION_OPEN DECLARATION_TEXT? DECLARATION_CLOSE ;
 
 template    :   TEMPLATE_OPEN templ_content TEMPLATE_CLOSE ;
 
-templ_content:  name locations+ init_loc transitions* ;
+templ_content:  name parameter? declaration_template? locations+ init_loc transitions* ;
 /*
 name        :   '<' 'name'
                     ('x' EQUALS_TEMPLATE '"' NUMBER '"' 'y' EQUALS_TEMPLATE '"' NUMBER '"')?
@@ -26,6 +26,10 @@ name        :   '<' 'name'
 name        :   OPEN 'name'
                     coordinate?
                     CLOSE IDENTIFIER '</' 'name' CLOSE ;
+
+parameter   :   PARAMETER_OPEN PARAMETER_TEXT PARAMETER_CLOSE ;
+
+declaration_template    :   DECLARATION_TEMPLATE_OPEN DECLARATION_TEXT? DECLARATION_CLOSE ;
 
 locations   :   OPEN 'location' 'id' EQUALS_TEMPLATE '"' IDENTIFIER '"'
                     coordinate?
@@ -45,9 +49,11 @@ labels      :   (LABEL_OPEN | LABEL_COMMENTS_OPEN) LABEL_TEXT? LABEL_CLOSE ;
 transitions :   OPEN 'transition' CLOSE //OPEN is '<' in template channel, CLOSE is '>' in template channel
                     source
                     target
+
                     labels_t*
                     label_guard?
                     labels_t*
+                    nails*
                     '</' 'transition' CLOSE ;
 
 labels_t    :   (LABEL_T_OPEN | LABEL_COMMENTS_OPEN) LABEL_TEXT? LABEL_CLOSE ;
@@ -87,6 +93,8 @@ typeId      :   'int' | 'int' '[' guard_expr ',' guard_expr ']' | 'scalar' '[' g
 source      :   OPEN 'source' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>' ; //OPEN is '<' in template channel
 
 target      :   OPEN 'target' 'ref' EQUALS_TEMPLATE '"' IDENTIFIER '"' '/>' ; //OPEN is '<' in template channel
+
+nails       :   OPEN 'nail' coordinate '/>';
 
 attribute   :   NAME_ATTRIBUTE EQUALS STRING ;
 

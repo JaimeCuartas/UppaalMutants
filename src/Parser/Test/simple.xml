@@ -10,6 +10,10 @@
     <template>
         <name> nombre
         </name>
+
+        <parameter>const int timeToDeploy, const int timeToRetract</parameter>
+        <declaration>clock timesefvvgvg;</declaration>
+
         <location id="inicial" x="2" y="3">
             <name>nombre_De_Loc</name>
             <label kind="invariant" x="425" y="127">12</label>
@@ -17,6 +21,7 @@
             <label kind="testcodeEnter">entrada codigo prueba</label>
             <label kind="testcodeExit">salida codigo prueba</label>
             <label kind="comments" x="256" y="177">Es el comentario</label>
+
             <committed/>
         </location>
         <init ref = "inicial"/>
@@ -24,7 +29,7 @@
             <source ref="id0"/>
             <target ref="id1"/>
             <label kind="select" x="0" y="-170">seleccion prueba</label>
-            <label kind="guard" x="0" y="-153">guard prueba</label>
+            <label kind="guard" x="0" y="-153">guard </label>
             <label kind="synchronisation" x="0" y="-136">sync prueba</label>
             <label kind="assignment" x="0" y="-119">update prueba
                 con dos renglones</label>
@@ -33,6 +38,7 @@
             <label kind="comments" x="0" y="-94">estos son puros comentarios
                 jejej
                 de varios renglones</label>
+            <nail x="93" y="144"/>
         </transition>
     </template>
 </nta>

@@ -100,6 +100,18 @@ public class UppaalParserBaseListener implements UppaalParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterParameter(UppaalParser.ParameterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParameter(UppaalParser.ParameterContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterLocations(UppaalParser.LocationsContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -251,6 +263,18 @@ public class UppaalParserBaseListener implements UppaalParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitTarget(UppaalParser.TargetContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNails(UppaalParser.NailsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNails(UppaalParser.NailsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

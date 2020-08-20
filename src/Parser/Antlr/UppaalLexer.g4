@@ -87,6 +87,7 @@ mode TEMPLATE;
 TEMPLATE_CLOSE      :   '</' [ \t\r\n]* 'template' [ \t\r\n]* '>'     -> popMode ;
 
 
+DECLARATION_TEMPLATE_OPEN    : '<' [ \t\r\n]* 'declaration' [ \t\r\n]* '>'   -> pushMode (DECLARATION) ;
 
 
 X                   :   'x' ;
@@ -121,6 +122,8 @@ SOURCE              :   'source' ;
 
 TARGET              :   'target' ;
 
+NAIL                :   'nail' ;
+
 OPEN_SLASH          :   '</' ;
 
 CLOSE               :   '>' ;
@@ -128,6 +131,8 @@ CLOSE               :   '>' ;
 SLASH_CLOSE         :   '/>' ;
 
 IDENTIFIER          :   [a-zA-Z_] [a-zA-Z0-9_]* ;
+
+PARAMETER_OPEN       : '<' [ \t\r\n]* 'parameter' [ \t\r\n]* '>'      -> pushMode (PARAMETER) ;
 
 //NAME_CLOSE          :   '</' 'name' '>' ;
 /*
@@ -218,7 +223,14 @@ mode LABEL;
 
 LABEL_CLOSE         :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'     -> popMode ;
 
-LABEL_TEXT          :   ~[<>]+ ;
+LABEL_TEXT          :   ~[<]+ ;
+
+// ----------------- Everything inside PARAMETER ---------------------
+mode PARAMETER;
+
+PARAMETER_CLOSE         :   '</' [ \t\r\n]* 'parameter' [ \t\r\n]* '>'     -> popMode ;
+
+PARAMETER_TEXT          :   ~[<]+ ;
 
 
 // ----------------- Everything inside GUARD ---------------------
@@ -338,3 +350,19 @@ FALSE               :   'false' ;
 ID_GUARD            :   [a-zA-Z_] [a-zA-Z0-9_]* ;
 
 WS_GUARD            :   [ \t\r\n]+  -> skip;
+
+// ----------------- Everything inside SYSTEM ---------------------
+mode SYSTEM;
+
+SYSTEM_CLOSE         :   '</' [ \t\r\n]* 'system' [ \t\r\n]* '>'     -> popMode ;
+
+SYSTEM_TEXT          :   ~[<]+ ;
+
+// ----------------- Everything inside QUERIES ---------------------
+mode QUERIES;
+
+QUERIES_CLOSE         :   '</' [ \t\r\n]* 'queries' [ \t\r\n]* '>'     -> popMode ;
+
+QUERIES_TEXT          :   ~[<]+ ;
+
+
