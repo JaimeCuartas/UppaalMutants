@@ -1,6 +1,14 @@
 parser grammar UppaalParser;
 options { tokenVocab=UppaalLexer; }
 
+@parser::members { // add members to generated RowsParser
+    int col;
+    public RowsParser(TokenStream input, int col) { // custom constructor
+        this(input);
+        this.col = col;
+    }
+}
+
 document    :   prolog? DTD? nta;
 
 prolog      :   PROLOG_OPEN attribute* PROLOG_CLOSE ;
