@@ -52,36 +52,3 @@ attribute   :   Name '=' STRING ; // Our STRING is AttValue in spec
 chardata    :   TEXT | SEA_WS ;
 
 misc        :   COMMENT | PI | SEA_WS ;
-
-
-
-model       :   prolog? misc* nta misc* ;
-
-nta         :   '<' 'nta' '>' misc* declaration misc* template* misc* '<' '/' 'nta' '>' ;
-
-declaration :   '<' 'declaration' '>' anything '<' '/' 'declaration' '>' ;
-
-anything    :   chardata?
-                ((reference | CDATA | PI | COMMENT) chardata?)* ;
-
-template    :   '<' 'template' '>' misc* temp_content  '<' '/' 'template' '>' ;
-
-
-
-
-temp_content:   (name misc*)? (parameter misc*)? (locations misc*)+ (init_loc misc*);
-
-parameter   :   '<' 'parameter' '>' anything '<' '/' 'parameter' '>' ;
-
-coordinate  :   'x' '=' STRING 'y' '=' STRING ;
-
-init_loc    :   '<' 'init' 'ref' '=' STRING '/>' ;
-
-locations   :   '<' 'location' 'id' '=' STRING
-                    coordinate? '>' misc* (name misc*)?
-                    '<' '/' 'location' '>' ;
-
-name        :   '<' 'name'
-                    coordinate?
-                    '>' anything '<' '/' 'name' '>' ;
-

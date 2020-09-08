@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+    <declaration>/**
+        * Jaime Cuartas Granada*/
+
+        chan requestBridge, requestDoor;
+
+        broadcast chan deployAction, endDeployAction, retractAction, endRetractAction, openAction, endOpenAction, closeAction, endCloseAction; </declaration>
+    <template>
+
+
+        <location id="inicial" x="2" y="3">
+            <name>
+                nombre_De_Loc
+            </name>
+
+        </location>
+
+
+        <init ref =   "inicial"   />
+
+    </template>
+</nta>

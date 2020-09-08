@@ -23,6 +23,48 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitProlog(UppaalParser.PrologContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link UppaalParser#content}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitContent(UppaalParser.ContentContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#element}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElement(UppaalParser.ElementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#reference}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReference(UppaalParser.ReferenceContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#attribute}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAttribute(UppaalParser.AttributeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#chardata}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitChardata(UppaalParser.ChardataContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#misc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMisc(UppaalParser.MiscContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#model}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitModel(UppaalParser.ModelContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link UppaalParser#nta}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -35,17 +77,17 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeclaration(UppaalParser.DeclarationContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link UppaalParser#anything}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAnything(UppaalParser.AnythingContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link UppaalParser#template}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitTemplate(UppaalParser.TemplateContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link UppaalParser#templ_content}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTempl_content(UppaalParser.Templ_contentContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link UppaalParser#name}.
 	 * @param ctx the parse tree
@@ -59,93 +101,21 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParameter(UppaalParser.ParameterContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link UppaalParser#locations}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLocations(UppaalParser.LocationsContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link UppaalParser#coordinate}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitCoordinate(UppaalParser.CoordinateContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link UppaalParser#init_loc}.
+	 * Visit a parse tree produced by {@link UppaalParser#temp_content}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitInit_loc(UppaalParser.Init_locContext ctx);
+	T visitTemp_content(UppaalParser.Temp_contentContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link UppaalParser#labels}.
+	 * Visit a parse tree produced by {@link UppaalParser#locations}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitLabels(UppaalParser.LabelsContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link UppaalParser#transitions}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTransitions(UppaalParser.TransitionsContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link UppaalParser#labels_t}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLabels_t(UppaalParser.Labels_tContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link UppaalParser#label_guard}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLabel_guard(UppaalParser.Label_guardContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link UppaalParser#guard_expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitGuard_expr(UppaalParser.Guard_exprContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link UppaalParser#arguments}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitArguments(UppaalParser.ArgumentsContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link UppaalParser#type}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitType(UppaalParser.TypeContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link UppaalParser#typeId}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTypeId(UppaalParser.TypeIdContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link UppaalParser#source}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSource(UppaalParser.SourceContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link UppaalParser#target}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTarget(UppaalParser.TargetContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link UppaalParser#nails}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNails(UppaalParser.NailsContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link UppaalParser#attribute}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAttribute(UppaalParser.AttributeContext ctx);
+	T visitLocations(UppaalParser.LocationsContext ctx);
 }
