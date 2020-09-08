@@ -66,10 +66,7 @@ anything    :   chardata?
 
 template    :   '<' 'template' '>' misc* temp_content  '<' '/' 'template' '>' ;
 
-
-
-
-temp_content:   (name misc*)? (parameter misc*)? (locations misc*)+ (init_loc misc*);
+temp_content:   (name misc*)? (parameter misc*)? (declaration misc*)? (locations misc*)+ (init_loc misc*);
 
 parameter   :   '<' 'parameter' '>' anything '<' '/' 'parameter' '>' ;
 
@@ -79,6 +76,7 @@ init_loc    :   '<' 'init' 'ref' '=' STRING '/>' ;
 
 locations   :   '<' 'location' 'id' '=' STRING
                     coordinate? '>' misc* (name misc*)?
+                    ('<' 'urgent' 'commited' '/>')?
                     '<' '/' 'location' '>' ;
 
 name        :   '<' 'name'

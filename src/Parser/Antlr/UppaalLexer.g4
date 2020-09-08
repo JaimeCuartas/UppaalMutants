@@ -63,6 +63,9 @@ REF         :   'ref' ;
 ID          :   'id' ;
 X           :   'x' ;
 Y           :   'y' ;
+URGENT      :   'urgent' ;
+COMMITED    :   'commited' ;
+
 
 CLOSE       :   '>'                     -> popMode ;
 SPECIAL_CLOSE:  '?>'                    -> popMode ; // close <?xml...?>

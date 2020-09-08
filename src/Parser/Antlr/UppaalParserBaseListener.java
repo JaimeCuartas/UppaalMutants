@@ -172,13 +172,13 @@ public class UppaalParserBaseListener implements UppaalParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterName(UppaalParser.NameContext ctx) { }
+	@Override public void enterTemp_content(UppaalParser.Temp_contentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitName(UppaalParser.NameContext ctx) { }
+	@Override public void exitTemp_content(UppaalParser.Temp_contentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -208,13 +208,13 @@ public class UppaalParserBaseListener implements UppaalParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTemp_content(UppaalParser.Temp_contentContext ctx) { }
+	@Override public void enterInit_loc(UppaalParser.Init_locContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTemp_content(UppaalParser.Temp_contentContext ctx) { }
+	@Override public void exitInit_loc(UppaalParser.Init_locContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -227,6 +227,18 @@ public class UppaalParserBaseListener implements UppaalParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitLocations(UppaalParser.LocationsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterName(UppaalParser.NameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitName(UppaalParser.NameContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -8,6 +8,10 @@
 
         broadcast chan deployAction, endDeployAction, retractAction, endRetractAction, openAction, endOpenAction, closeAction, endCloseAction; </declaration>
     <template>
+        <name>
+            nombre_De_Template
+        </name>
+        < parameter > const int timeToDeploy, const int timeToRetract</parameter>
 
 
         <location id="inicial" x="2" y="3">

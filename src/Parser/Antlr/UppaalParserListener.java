@@ -138,15 +138,15 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitTemplate(UppaalParser.TemplateContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link UppaalParser#name}.
+	 * Enter a parse tree produced by {@link UppaalParser#temp_content}.
 	 * @param ctx the parse tree
 	 */
-	void enterName(UppaalParser.NameContext ctx);
+	void enterTemp_content(UppaalParser.Temp_contentContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link UppaalParser#name}.
+	 * Exit a parse tree produced by {@link UppaalParser#temp_content}.
 	 * @param ctx the parse tree
 	 */
-	void exitName(UppaalParser.NameContext ctx);
+	void exitTemp_content(UppaalParser.Temp_contentContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link UppaalParser#parameter}.
 	 * @param ctx the parse tree
@@ -168,15 +168,15 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitCoordinate(UppaalParser.CoordinateContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link UppaalParser#temp_content}.
+	 * Enter a parse tree produced by {@link UppaalParser#init_loc}.
 	 * @param ctx the parse tree
 	 */
-	void enterTemp_content(UppaalParser.Temp_contentContext ctx);
+	void enterInit_loc(UppaalParser.Init_locContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link UppaalParser#temp_content}.
+	 * Exit a parse tree produced by {@link UppaalParser#init_loc}.
 	 * @param ctx the parse tree
 	 */
-	void exitTemp_content(UppaalParser.Temp_contentContext ctx);
+	void exitInit_loc(UppaalParser.Init_locContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link UppaalParser#locations}.
 	 * @param ctx the parse tree
@@ -187,4 +187,14 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLocations(UppaalParser.LocationsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#name}.
+	 * @param ctx the parse tree
+	 */
+	void enterName(UppaalParser.NameContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#name}.
+	 * @param ctx the parse tree
+	 */
+	void exitName(UppaalParser.NameContext ctx);
 }

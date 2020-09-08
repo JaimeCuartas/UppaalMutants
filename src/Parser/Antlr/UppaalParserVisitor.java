@@ -89,11 +89,11 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTemplate(UppaalParser.TemplateContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link UppaalParser#name}.
+	 * Visit a parse tree produced by {@link UppaalParser#temp_content}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitName(UppaalParser.NameContext ctx);
+	T visitTemp_content(UppaalParser.Temp_contentContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link UppaalParser#parameter}.
 	 * @param ctx the parse tree
@@ -107,15 +107,21 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCoordinate(UppaalParser.CoordinateContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link UppaalParser#temp_content}.
+	 * Visit a parse tree produced by {@link UppaalParser#init_loc}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTemp_content(UppaalParser.Temp_contentContext ctx);
+	T visitInit_loc(UppaalParser.Init_locContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link UppaalParser#locations}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitLocations(UppaalParser.LocationsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#name}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitName(UppaalParser.NameContext ctx);
 }
