@@ -57,7 +57,12 @@ misc        :   COMMENT | PI | SEA_WS ;
 
 model       :   prolog? misc* nta misc* ;
 
-nta         :   '<' 'nta' '>' misc* declaration misc* template* misc* '<' '/' 'nta' '>' ;
+nta         :   '<' 'nta' '>' misc*
+                declaration misc*
+                (template misc*)+
+                system misc*
+                queries misc*
+                '<' '/' 'nta' '>' ;
 
 declaration :   '<' 'declaration' '>' anything '<' '/' 'declaration' '>' ;
 
@@ -66,7 +71,12 @@ anything    :   chardata?
 
 template    :   '<' 'template' '>' misc* temp_content  '<' '/' 'template' '>' ;
 
-temp_content:   (name misc*)? (parameter misc*)? (declaration misc*)? (locations misc*)+ (init_loc misc*);
+temp_content:   (name misc*)?
+                (parameter misc*)?
+                (declaration misc*)?
+                (location misc*)+
+                (init_loc misc*)
+                (transition misc*)*;
 
 parameter   :   '<' 'parameter' '>' anything '<' '/' 'parameter' '>' ;
 
@@ -74,12 +84,37 @@ coordinate  :   'x' '=' STRING 'y' '=' STRING ;
 
 init_loc    :   '<' 'init' 'ref' '=' STRING '/>' ;
 
-locations   :   '<' 'location' 'id' '=' STRING
+location    :   '<' 'location' 'id' '=' STRING
                     coordinate? '>' misc* (name misc*)?
-                    ('<' 'urgent' 'commited' '/>')?
+                    (label_loc misc*)*
+                    ('<' ('urgent' | 'committed') '/>' misc*)?
+
                     '<' '/' 'location' '>' ;
+
+label_loc   :   '<' 'label' 'kind' '=' STRING coordinate?  '>' anything '<''/' 'label' '>' ;
 
 name        :   '<' 'name'
                     coordinate?
                     '>' anything '<' '/' 'name' '>' ;
 
+transition  :   '<' 'transition' '>'
+                misc* (source misc*) (target misc*)
+                (label_trans misc*)*
+                (nail misc*)*
+                '<' '/' 'transition' '>' ;
+
+
+//Are equals to labels_loc but we can manipulate them differently
+label_trans:   '<' 'label' 'kind' '=' STRING coordinate?  '>' anything '<''/' 'label' '>' ;
+
+source      :   '<' 'source' 'ref' '=' STRING '/>' ;
+
+target      :   '<' 'target' 'ref' '=' STRING '/>' ;
+
+nail        :   '<' 'nail' coordinate? '/>' ;
+
+system      :   '<' 'system' '>' anything '<''/' 'system' '>' ;
+
+queries     :   '<' 'queries' '>' content '<''/' 'queries' '>' ;
+
+//query       :   '<' 'query' '>' content '<' 'query' '>' ;

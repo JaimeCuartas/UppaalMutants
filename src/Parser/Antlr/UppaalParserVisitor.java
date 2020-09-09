@@ -113,15 +113,63 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInit_loc(UppaalParser.Init_locContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link UppaalParser#locations}.
+	 * Visit a parse tree produced by {@link UppaalParser#location}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitLocations(UppaalParser.LocationsContext ctx);
+	T visitLocation(UppaalParser.LocationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#label_loc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLabel_loc(UppaalParser.Label_locContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link UppaalParser#name}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitName(UppaalParser.NameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#transition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTransition(UppaalParser.TransitionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#label_trans}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLabel_trans(UppaalParser.Label_transContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#source}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSource(UppaalParser.SourceContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#target}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTarget(UppaalParser.TargetContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#nail}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNail(UppaalParser.NailContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#system}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSystem(UppaalParser.SystemContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#queries}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitQueries(UppaalParser.QueriesContext ctx);
 }

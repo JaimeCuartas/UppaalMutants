@@ -64,7 +64,15 @@ ID          :   'id' ;
 X           :   'x' ;
 Y           :   'y' ;
 URGENT      :   'urgent' ;
-COMMITED    :   'commited' ;
+COMMITTED   :   'committed' ;
+LABEL       :   'label' ;
+KIND        :   'kind' ;
+TRANSITION  :   'transition' ;
+SOURCE      :   'source' ;
+TARGET      :   'target' ;
+NAIL        :   'nail' ;
+SYSTEM      :   'system' ;
+QUERIES     :   'queries' ;
 
 
 CLOSE       :   '>'                     -> popMode ;
