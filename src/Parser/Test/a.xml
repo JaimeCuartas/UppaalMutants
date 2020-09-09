@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+    <declaration>/**
+        * Jaime Cuartas Granada*/
+
+        chan requestBridge, requestDoor;
+
+        broadcast chan deployAction, endDeployAction, retractAction, endRetractAction, openAction, endOpenAction, closeAction, endCloseAction; </declaration>
+    <template>
+        <name>
+            nombre_De_Template
+        </name>
+        < parameter > const int timeToDeploy, const int timeToRetract</parameter>
+        <declaration>sefseeij{sedesedsedseddeeeeeeeeedesdsae
+            drr
+            hukhuk
+
+        </declaration>
+
+        <location id="inicial" x="2" y="3">
+            <name>nombre_De_Loc</name>
+            <label kind="invariant" x="425" y="127">12</label>
+            <label kind="exponentialrate" x="424" y="121">123</label>
+            <label kind="testcodeEnter">entrada codigo prueba</label>
+            <label kind="testcodeExit">salida codigo prueba</label>
+            <label kind="comments" x="256" y="177">Es el comentario</label>
+
+            <committed/>
+        </location>
+
+
+        <init ref =   "inicial"   />
+
+        <transition>
+            <source ref="id0"/>
+            <target ref="id1"/>
+            <label kind="select" x="0" y="-170">seleccion prueba</label>
+            <label kind="guard" x="0" y="-153">guard </label>
+            <label kind="synchronisation" x="0" y="-136">sync prueba</label>
+            <label kind="assignment" x="0" y="-119">update prueba
+                con dos renglones</label>
+            <label kind="testcode">probar codigo del edge
+                con dos renglones</label>
+            <label kind="comments" x="0" y="-94">estos son puros comentarios
+                jejej
+                de varios renglones</label>
+            <nail x="93" y="144"/>
+        </transition>
+    </template>
+</nta>

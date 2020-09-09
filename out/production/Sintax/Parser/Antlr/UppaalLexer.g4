@@ -46,34 +46,10 @@ OPEN        :   '<'                     -> pushMode(INSIDE) ;
 XMLDeclOpen :   '<?xml' S               -> pushMode(INSIDE) ;
 SPECIAL_OPEN:   '<?' Name               -> more, pushMode(PROC_INSTR) ;
 
-
 TEXT        :   ~[<&]+ ;        // match any 16 bit char other than < and &
 
 // ----------------- Everything INSIDE of a tag ---------------------
 mode INSIDE;
-
-NTA         :   'nta' ;
-DECLARATION :   'declaration' ;
-TEMPLATE    :   'template' ;
-LOCATION    :   'location' ;
-NAME        :   'name' ;
-PARAMETER   :   'parameter' ;
-INIT        :   'init' ;
-REF         :   'ref' ;
-ID          :   'id' ;
-X           :   'x' ;
-Y           :   'y' ;
-URGENT      :   'urgent' ;
-COMMITTED   :   'committed' ;
-LABEL       :   'label' ;
-KIND        :   'kind' ;
-TRANSITION  :   'transition' ;
-SOURCE      :   'source' ;
-TARGET      :   'target' ;
-NAIL        :   'nail' ;
-SYSTEM      :   'system' ;
-QUERIES     :   'queries' ;
-
 
 CLOSE       :   '>'                     -> popMode ;
 SPECIAL_CLOSE:  '?>'                    -> popMode ; // close <?xml...?>
