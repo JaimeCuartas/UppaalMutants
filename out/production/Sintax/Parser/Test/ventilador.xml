@@ -3,13 +3,12 @@
 <nta>
     <declaration>// Place global declarations here.
 
-        /**
+        /**sefsefse
         Tendremos dos inyectores, uno de aire y uno de oxigeno
         Cada inyector tiene un dato tipo bool que indica si está encendido o no: isOn
         Además un entero que indica el caudal que circulará
 
         **/
-
         typedef struct {
         bool isOn;
         int caudal;

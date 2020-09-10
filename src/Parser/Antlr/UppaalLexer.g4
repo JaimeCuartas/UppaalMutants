@@ -46,7 +46,7 @@ OPEN        :   '<'                     -> pushMode(INSIDE) ;
 XMLDeclOpen :   '<?xml' S               -> pushMode(INSIDE) ;
 SPECIAL_OPEN:   '<?' Name               -> more, pushMode(PROC_INSTR) ;
 
-
+//IDENTIFIER  :   [a-zA-Z_] [a-zA-Z0-9_]* ;
 TEXT        :   ~[<&]+ ;        // match any 16 bit char other than < and &
 
 // ----------------- Everything INSIDE of a tag ---------------------
@@ -73,6 +73,7 @@ TARGET      :   'target' ;
 NAIL        :   'nail' ;
 SYSTEM      :   'system' ;
 QUERIES     :   'queries' ;
+GUARD       :   '"guard"' ;
 
 
 CLOSE       :   '>'                     -> popMode ;

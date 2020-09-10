@@ -105,7 +105,9 @@ transition  :   '<' 'transition' '>'
 
 
 //Are equals to labels_loc but we can manipulate them differently
-label_trans:   '<' 'label' 'kind' '=' STRING coordinate?  '>' anything '<''/' 'label' '>' ;
+label_trans :   '<' 'label' 'kind' '=' '"guard"' coordinate? '>' anything '<' '/' 'label' '>'
+            |   '<' 'label' 'kind' '=' STRING coordinate?  '>' anything '<''/' 'label' '>' ;
+
 
 source      :   '<' 'source' 'ref' '=' STRING '/>' ;
 
@@ -118,3 +120,6 @@ system      :   '<' 'system' '>' anything '<''/' 'system' '>' ;
 queries     :   '<' 'queries' '>' content '<''/' 'queries' '>' ;
 
 //query       :   '<' 'query' '>' content '<' 'query' '>' ;
+
+
+//guard_expr  :   IDENTIFIER misc*;
