@@ -32,8 +32,17 @@ public class Mutation {
 
             UppaalParser parser = new UppaalParser(tokens); // pass column number!
             parser.setBuildParseTree(false); // don't waste time bulding a tree
-            parser.document(); // parse
-
+            parser.model(); // parse
+            /**CharStream input = CharStreams.fromStream(is);
+// create a lexer that feeds off of input CharStream
+            UppaalLexer lexer = new UppaalLexer(input);
+// create a buffer of tokens pulled from the lexer
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+// create a parser that feeds off the tokens buffer
+            UppaalParser parser = new UppaalParser(tokens);
+            ParseTree tree = parser.model(); // begin parsing at init rule
+            System.out.println(tree.toStringTree(parser)); // print LISP-style tree
+             */
         }catch (IOException e){
             e.printStackTrace();
         }
