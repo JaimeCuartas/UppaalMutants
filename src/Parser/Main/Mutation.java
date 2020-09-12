@@ -33,7 +33,7 @@ public class Mutation {
             UppaalParser parser = new UppaalParser(tokens); // pass column number!
             parser.setBuildParseTree(false); // don't waste time bulding a tree
             parser.model(); // parse
-            
+            System.out.println( parser.getNum() );
         }catch (IOException e){
             e.printStackTrace();
         }

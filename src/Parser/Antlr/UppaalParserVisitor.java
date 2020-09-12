@@ -11,11 +11,11 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link UppaalParser#document}.
+	 * Visit a parse tree produced by {@link UppaalParser#model}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitDocument(UppaalParser.DocumentContext ctx);
+	T visitModel(UppaalParser.ModelContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link UppaalParser#prolog}.
 	 * @param ctx the parse tree
@@ -58,12 +58,6 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitMisc(UppaalParser.MiscContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link UppaalParser#model}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitModel(UppaalParser.ModelContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link UppaalParser#nta}.
 	 * @param ctx the parse tree
@@ -143,11 +137,138 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLabel_trans(UppaalParser.Label_transContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link UppaalParser#guard_expr}.
+	 * Visit a parse tree produced by the {@code SumGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitGuard_expr(UppaalParser.Guard_exprContext ctx);
+	T visitSumGuard(UppaalParser.SumGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ParenthesisGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParenthesisGuard(UppaalParser.ParenthesisGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code FalseGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFalseGuard(UppaalParser.FalseGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code AssignGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAssignGuard(UppaalParser.AssignGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code DotGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDotGuard(UppaalParser.DotGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code DecrementGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDecrementGuard(UppaalParser.DecrementGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code UnaryGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnaryGuard(UppaalParser.UnaryGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ComparisonGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComparisonGuard(UppaalParser.ComparisonGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code IdentifierGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdentifierGuard(UppaalParser.IdentifierGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code BinaryGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBinaryGuard(UppaalParser.BinaryGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code NatGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNatGuard(UppaalParser.NatGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExistsGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExistsGuard(UppaalParser.ExistsGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ForallGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitForallGuard(UppaalParser.ForallGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code GuardDecrement}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGuardDecrement(UppaalParser.GuardDecrementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code TrueGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTrueGuard(UppaalParser.TrueGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code IfGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIfGuard(UppaalParser.IfGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code FuncGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncGuard(UppaalParser.FuncGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code IncrementGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIncrementGuard(UppaalParser.IncrementGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code GuardIncrement}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGuardIncrement(UppaalParser.GuardIncrementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link UppaalParser#arguments}.
 	 * @param ctx the parse tree

@@ -19,7 +19,7 @@
         <transition>
             <source ref="id0"/>
             <target ref="id1"/>
-            <label kind="guard" x="12" y="12"> e </label>
+            <label kind="guard" x="12" y="12"> e &lt; q ==3 </label>
             <label kind= "jeje" > </label>
 
         </transition>

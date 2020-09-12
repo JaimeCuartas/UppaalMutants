@@ -31,20 +31,20 @@ parser grammar UppaalParser;
 
 
 @parser::members { // add members to generated RowsParser
-    private int num;
-    /**
-    public UppaalParser(TokenStream input) { // custom constructor
-        this(input);
-        this.num = 0;
-    }*/
+    private int num=0;
 
     public int getNum(){
         return this.num;
     }
+    public void setNum(int num){
+        this.num = num;
+    }
 }
 options { tokenVocab=UppaalLexer; }
 
-document    :   prolog? misc* element misc*;
+//document    :   prolog? misc* element misc*;
+
+model       :   prolog? misc* nta misc* ;
 
 prolog      :   XMLDeclOpen attribute* SPECIAL_CLOSE ;
 
@@ -65,10 +65,6 @@ attribute   :   Name EQUALS STRING ; // Our STRING is AttValue in spec
 chardata    :   TEXT | SEA_WS ;
 
 misc        :   COMMENT | PI | SEA_WS ;
-
-
-
-model       :   prolog? misc* nta misc* ;
 
 nta         :   '<' 'nta' '>' misc*
                 declaration misc*
@@ -118,36 +114,43 @@ transition  :   '<' 'transition' '>'
 
 
 //Are equals to labels_loc but we can manipulate them differently
-label_trans :
-            (OPEN_GUARD guard_expr CLOSE_GUARD)
-            {
-            System.out.println ($guard_expr.text);
-            }
+label_trans :   OPEN_GUARD guard_expr CLOSE_GUARD
             |   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' ;
 
 
-guard_expr  :   IDENTIFIER
-            |   NAT_GUARD
-            |   '(' guard_expr ')'
-            |   guard_expr '++' | '++' guard_expr
-            |   guard_expr '--' | '--' guard_expr
+guard_expr  :   IDENTIFIER  # IdentifierGuard
+            |   NAT_GUARD   # NatGuard
+            |   '(' guard_expr ')'  # ParenthesisGuard
+            |   guard_expr '++'     # GuardIncrement
+            |   '++' guard_expr     # IncrementGuard
+            |   guard_expr '--'     # GuardDecrement
+            |   '--' guard_expr     # DecrementGuard
             |   guard_expr
+                    //assign is '=' in guard channel
                     assign=(ASSIGN | ':=' | '+=' | '-=' | '*=' | '/=' | '%=' | '|=' | '&amp;=' | '^=' | '&lt;&lt;=' | '&gt;&gt;=')
-                        guard_expr //assign is '=' in guard channel
-            |   unary=('-' | '+' | '!' | 'not') guard_expr
+                        guard_expr  # AssignGuard
+            |   unary=('-' | '+' | '!' | 'not') guard_expr  # UnaryGuard
             |   guard_expr binary=( '&lt;' | '&lt;=' | '==' | '!=' | '&gt;=' | '&gt;' //LESS is '<' in guard channel. Greater is '>' in guard channel
                                    ) guard_expr
+                {
+
+                this.num++;
+                System.out.println ($binary.text);
+                }
+                                   # ComparisonGuard
             |   guard_expr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
                                     |  '|' | '^' | '&lt;&lt;' | '&gt;&gt;' | '&amp;&amp;' | '||'
-                                    |  '&lt;?' | '&gt;?' | 'or' | 'and' | 'imply') guard_expr
+                                    |  '&lt;?' | '&gt;?' | 'or' | 'and' | 'imply')
+                                    guard_expr   #BinaryGuard
             |   guard_expr '?' guard_expr ':' guard_expr
-            |   guard_expr '.' IDENTIFIER
-            |   guard_expr '(' arguments ')'
-            |   'forall' '(' IDENTIFIER ':' type ')' guard_expr
-            |   'exists' '(' IDENTIFIER ':' type ')' guard_expr
-            |   'sum' '(' IDENTIFIER ':' type ')' guard_expr
-            |   'true'
-            |   'false'
+                                    # IfGuard
+            |   guard_expr '.' IDENTIFIER   # DotGuard
+            |   guard_expr '(' arguments ')'# FuncGuard
+            |   'forall' '(' IDENTIFIER ':' type ')' guard_expr     # ForallGuard
+            |   'exists' '(' IDENTIFIER ':' type ')' guard_expr     # ExistsGuard
+            |   'sum' '(' IDENTIFIER ':' type ')' guard_expr        # SumGuard
+            |   'true'  # TrueGuard
+            |   'false' # FalseGuard
             ;
 arguments   :   (guard_expr  (',' guard_expr)*)? ;
 
