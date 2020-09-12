@@ -42,6 +42,11 @@ CharRef     :   '&#' DIGIT+ ';'
             ;
 SEA_WS      :   (' '|'\t'|'\r'? '\n')+ ;
 
+OPEN_GUARD  :   '<' [ \t\r\n]*'label' [ \t\r\n]+ 'kind' [ \t\r\n]* '=' [ \t\r\n]*
+                '"guard"' ( [ \t\r\n]* 'x' [ \t\r\n]* '=' [ \t\r\n]* '"' ('-')? DIGIT+ '"' [ \t\r\n]* Y [ \t\r\n]* '=' [ \t\r\n]* '"' ('-')? DIGIT+ '"')?
+                [ \t\r\n]* '>'          -> pushMode(GUARD);
+
+
 OPEN        :   '<'                     -> pushMode(INSIDE) ;
 XMLDeclOpen :   '<?xml' S               -> pushMode(INSIDE) ;
 SPECIAL_OPEN:   '<?' Name               -> more, pushMode(PROC_INSTR) ;
@@ -51,6 +56,9 @@ TEXT        :   ~[<&]+ ;        // match any 16 bit char other than < and &
 
 // ----------------- Everything INSIDE of a tag ---------------------
 mode INSIDE;
+
+
+
 
 NTA         :   'nta' ;
 DECLARATION :   'declaration' ;
@@ -73,7 +81,11 @@ TARGET      :   'target' ;
 NAIL        :   'nail' ;
 SYSTEM      :   'system' ;
 QUERIES     :   'queries' ;
-GUARD       :   '"guard"' ;
+//GUARD       :   '"guard"' ;
+
+
+
+
 
 
 CLOSE       :   '>'                     -> popMode ;
@@ -116,3 +128,15 @@ mode PROC_INSTR;
 
 PI          :   '?>'                    -> popMode ; // close <?...?>
 IGNORE      :   .                       -> more ;
+
+
+// ----------------- Handle <? ... ?> ---------------------
+mode GUARD;
+
+CLOSE_GUARD :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'    -> popMode ;
+
+GUARD_S     :   [ \t\r\n]               -> skip ;
+
+IDENTIFIER  :   [a-zA-Z_]([a-zA-Z0-9_])*;
+
+

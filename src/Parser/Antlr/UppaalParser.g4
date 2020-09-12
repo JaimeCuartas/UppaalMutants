@@ -29,6 +29,19 @@
 /** XML parser derived from ANTLR v4 ref guide book example */
 parser grammar UppaalParser;
 
+
+@parser::members { // add members to generated RowsParser
+    private int num;
+    /**
+    public UppaalParser(TokenStream input) { // custom constructor
+        this(input);
+        this.num = 0;
+    }*/
+
+    public int getNum(){
+        return this.num;
+    }
+}
 options { tokenVocab=UppaalLexer; }
 
 document    :   prolog? misc* element misc*;
@@ -38,7 +51,7 @@ prolog      :   XMLDeclOpen attribute* SPECIAL_CLOSE ;
 content     :   chardata?
                 ((element | reference | CDATA | PI | COMMENT) chardata?)* ;
 
-element     :   '<' Name attribute* '>' content '<' '/' Name '>'
+element     :   '<' Name attribute* '>' content '</' Name '>'
             |   '<' Name attribute* '/>'
             ;
 
@@ -62,14 +75,14 @@ nta         :   '<' 'nta' '>' misc*
                 (template misc*)+
                 system misc*
                 queries misc*
-                '<' '/' 'nta' '>' ;
+                '</' 'nta' '>' ;
 
-declaration :   '<' 'declaration' '>' anything '<' '/' 'declaration' '>' ;
+declaration :   '<' 'declaration' '>' anything '</' 'declaration' '>' ;
 
 anything    :   chardata?
                 ((reference | CDATA | PI | COMMENT) chardata?)* ;
 
-template    :   '<' 'template' '>' misc* temp_content  '<' '/' 'template' '>' ;
+template    :   '<' 'template' '>' misc* temp_content  '</' 'template' '>' ;
 
 temp_content:   (name misc*)?
                 (parameter misc*)?
@@ -78,7 +91,7 @@ temp_content:   (name misc*)?
                 (init_loc misc*)
                 (transition misc*)*;
 
-parameter   :   '<' 'parameter' '>' anything '<' '/' 'parameter' '>' ;
+parameter   :   '<' 'parameter' '>' anything '</' 'parameter' '>' ;
 
 coordinate  :   'x' '=' STRING 'y' '=' STRING ;
 
@@ -89,24 +102,28 @@ location    :   '<' 'location' 'id' '=' STRING
                     (label_loc misc*)*
                     ('<' ('urgent' | 'committed') '/>' misc*)?
 
-                    '<' '/' 'location' '>' ;
+                    '</' 'location' '>' ;
 
-label_loc   :   '<' 'label' 'kind' '=' STRING coordinate?  '>' anything '<''/' 'label' '>' ;
+label_loc   :   '<' 'label' 'kind' '=' STRING coordinate?  '>' anything '</' 'label' '>' ;
 
 name        :   '<' 'name'
                     coordinate?
-                    '>' anything '<' '/' 'name' '>' ;
+                    '>' anything '</' 'name' '>' ;
 
 transition  :   '<' 'transition' '>'
                 misc* (source misc*) (target misc*)
-                (label_trans misc*)*
+                (label_trans misc*)+
                 (nail misc*)*
-                '<' '/' 'transition' '>' ;
+                '</' 'transition' '>' ;
 
 
 //Are equals to labels_loc but we can manipulate them differently
-label_trans :   '<' 'label' 'kind' '=' '"guard"' coordinate? '>' anything '<' '/' 'label' '>'
-            |   '<' 'label' 'kind' '=' STRING coordinate?  '>' anything '<''/' 'label' '>' ;
+label_trans :
+            (OPEN_GUARD IDENTIFIER '=' IDENTIFIER CLOSE_GUARD)
+
+
+
+            |   '<' 'label' 'kind' '=' STRING coordinate?  '>' anything '</' 'label' '>' ;
 
 
 source      :   '<' 'source' 'ref' '=' STRING '/>' ;
@@ -115,9 +132,9 @@ target      :   '<' 'target' 'ref' '=' STRING '/>' ;
 
 nail        :   '<' 'nail' coordinate? '/>' ;
 
-system      :   '<' 'system' '>' anything '<''/' 'system' '>' ;
+system      :   '<' 'system' '>' anything '</' 'system' '>' ;
 
-queries     :   '<' 'queries' '>' content '<''/' 'queries' '>' ;
+queries     :   '<' 'queries' '>' content '</' 'queries' '>' ;
 
 //query       :   '<' 'query' '>' content '<' 'query' '>' ;
 

@@ -29,6 +29,19 @@
 /** XML parser derived from ANTLR v4 ref guide book example */
 parser grammar UppaalParser;
 
+
+@parser::members { // add members to generated RowsParser
+    private int num;
+    /**
+    public UppaalParser(TokenStream input) { // custom constructor
+        this(input);
+        this.num = 0;
+    }*/
+
+    public int getNum(){
+        return this.num;
+    }
+}
 options { tokenVocab=UppaalLexer; }
 
 document    :   prolog? misc* element misc*;
@@ -99,13 +112,19 @@ name        :   '<' 'name'
 
 transition  :   '<' 'transition' '>'
                 misc* (source misc*) (target misc*)
-                (label_trans misc*)*
+                (label_trans misc*)+
                 (nail misc*)*
                 '<' '/' 'transition' '>' ;
 
 
 //Are equals to labels_loc but we can manipulate them differently
-label_trans :   '<' 'label' 'kind' '=' '"guard"' coordinate? '>' anything '<' '/' 'label' '>'
+label_trans :
+            (OPEN_GUARD IDENTIFIER CLOSE_GUARD)
+            {
+                System.out.println ($IDENTIFIER.text);
+            }
+
+
             |   '<' 'label' 'kind' '=' STRING coordinate?  '>' anything '<''/' 'label' '>' ;
 
 
