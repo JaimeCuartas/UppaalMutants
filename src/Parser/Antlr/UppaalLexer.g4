@@ -131,7 +131,7 @@ PI          :   '?>'                    -> popMode ; // close <?...?>
 IGNORE      :   .                       -> more ;
 
 
-// ----------------- Handle <? ... ?> ---------------------
+// ----------------- Handle <GUARD> ---------------------
 mode GUARD;
 
 CLOSE_GUARD :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'    -> popMode ;
@@ -139,6 +139,113 @@ CLOSE_GUARD :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'    -> popMode ;
 GUARD_S     :   [ \t\r\n]               -> skip ;
 
 
+NAT_GUARD           :   [0-9]+ ;
+
+LEFT_PARENTHESIS    :   '(' ;
+
+RIGHT_PARENTHESIS   :   ')' ;
+
+LEFT_BRACKET        :   '[' ;
+
+RIGHT_BRACKET       :   ']' ;
+
+COMMA               :   ',' ;
+
+INCREMENT           :   '++' ;
+
+DECREMENT           :   '--' ;
+
+ASSIGN              :   '=' ;
+
+ASSIGN_COLON        :   ':=' ;
+
+ASSIGN_ADD          :   '+=' ;
+
+ASSIGN_SUB          :   '-=' ;
+
+ASSIGN_MUL          :   '*=' ;
+
+ASSIGN_DIV          :   '/=' ;
+
+ASSIGN_PERCENT      :   '%=' ;
+
+ASSIGN_OR           :   '|=' ;
+
+ASSIGN_AND          :   '&amp;=' ;
+
+ASSIGN_XOR          :   '^=' ;
+
+ASSIGN_LSHIFT       :   '&lt;&lt;=' ;
+
+ASSIGN_RSHIFT       :   '&gt;&gt;=' ;
+
+
+//Unary
+
+ADD                 :   '+' ; //binary too
+
+SUB                 :   '-' ; //binary too
+
+EXCLAMATION         :   '!' ;
+
+NOT                 :   'not' ;
+
+//Binary
+
+LESS                :   '&lt;' ;
+LESSEQ              :   '&lt;=' ;
+COMPARE             :   '==' ;
+DIFFERENT           :   '!=' ;
+GREATEREQ           :   '&gt;=' ;
+GREATER             :   '&gt;' ;
+MUL                 :   '*' ;
+DIV                 :   '/' ;
+PERCENT             :   '%' ;
+BITAND              :   '&amp;' ;
+BITOR               :   '|' ;
+BITXOR              :   '^' ;
+LSHIFT              :   '&lt;&lt;' ;
+RSHIFT              :   '&gt;&gt;' ;
+AND_SYMBOL          :   '&amp;&amp;' ;
+OR_SYMBOL           :   '||' ;
+MINIMUM             :   '&lt;?' ;
+MAXIMUM             :   '&gt;?' ;
+OR                  :   'or' ;
+AND                 :   'and' ;
+IMPLY               :   'imply' ;
+
+
+//IF THEN ELSE
+
+IF                  :   '?' ;
+ELSE                :   ':' ;
+
+//Infix lookup operator to access process or structure type scope
+
+LOOKUP_OP           :   '.' ;
+
+//Quantifiers
+
+FORALL              :   'forall' ;
+EXISTS              :   'exists' ;
+
+//SUMMATION
+
+SUM                 :   'sum' ;
+
+//---TYPES---
+
+//prefix
+META                :   'meta' ;
+CONST               :   'const' ;
+
+//typeId
+INT                 :   'int' ;
+SCALAR              :   'scalar' ;
+
+//Boolean
+TRUE                :   'true' ;
+FALSE               :   'false' ;
 
 IDENTIFIER  :   [a-zA-Z_]([a-zA-Z0-9_])*;
 

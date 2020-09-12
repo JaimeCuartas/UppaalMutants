@@ -143,6 +143,30 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLabel_trans(UppaalParser.Label_transContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGuard_expr(UppaalParser.Guard_exprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#arguments}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArguments(UppaalParser.ArgumentsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitType(UppaalParser.TypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeId(UppaalParser.TypeIdContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link UppaalParser#source}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

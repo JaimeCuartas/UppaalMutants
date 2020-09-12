@@ -51,13 +51,13 @@ prolog      :   XMLDeclOpen attribute* SPECIAL_CLOSE ;
 content     :   chardata?
                 ((element | reference | CDATA | PI | COMMENT) chardata?)* ;
 
-element     :   '<' Name attribute* '>' content '<' '/' Name '>'
+element     :   '<' Name attribute* '>' content '</' Name '>'
             |   '<' Name attribute* '/>'
             ;
 
 reference   :   EntityRef | CharRef ;
 
-attribute   :   Name '=' STRING ; // Our STRING is AttValue in spec
+attribute   :   Name EQUALS STRING ; // Our STRING is AttValue in spec
 
 /** ``All text that is not markup constitutes the character data of
  *  the document.''
@@ -75,14 +75,14 @@ nta         :   '<' 'nta' '>' misc*
                 (template misc*)+
                 system misc*
                 queries misc*
-                '<' '/' 'nta' '>' ;
+                '</' 'nta' '>' ;
 
-declaration :   '<' 'declaration' '>' anything '<' '/' 'declaration' '>' ;
+declaration :   '<' 'declaration' '>' anything '</' 'declaration' '>' ;
 
 anything    :   chardata?
                 ((reference | CDATA | PI | COMMENT) chardata?)* ;
 
-template    :   '<' 'template' '>' misc* temp_content  '<' '/' 'template' '>' ;
+template    :   '<' 'template' '>' misc* temp_content  '</' 'template' '>' ;
 
 temp_content:   (name misc*)?
                 (parameter misc*)?
@@ -91,52 +91,80 @@ temp_content:   (name misc*)?
                 (init_loc misc*)
                 (transition misc*)*;
 
-parameter   :   '<' 'parameter' '>' anything '<' '/' 'parameter' '>' ;
+parameter   :   '<' 'parameter' '>' anything '</' 'parameter' '>' ;
 
-coordinate  :   'x' '=' STRING 'y' '=' STRING ;
+coordinate  :   'x' EQUALS STRING 'y' EQUALS STRING ;
 
-init_loc    :   '<' 'init' 'ref' '=' STRING '/>' ;
+init_loc    :   '<' 'init' 'ref' EQUALS STRING '/>' ;
 
-location    :   '<' 'location' 'id' '=' STRING
+location    :   '<' 'location' 'id' EQUALS STRING
                     coordinate? '>' misc* (name misc*)?
                     (label_loc misc*)*
                     ('<' ('urgent' | 'committed') '/>' misc*)?
 
-                    '<' '/' 'location' '>' ;
+                    '</' 'location' '>' ;
 
-label_loc   :   '<' 'label' 'kind' '=' STRING coordinate?  '>' anything '<''/' 'label' '>' ;
+label_loc   :   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' ;
 
 name        :   '<' 'name'
                     coordinate?
-                    '>' anything '<' '/' 'name' '>' ;
+                    '>' anything '</' 'name' '>' ;
 
 transition  :   '<' 'transition' '>'
                 misc* (source misc*) (target misc*)
                 (label_trans misc*)+
                 (nail misc*)*
-                '<' '/' 'transition' '>' ;
+                '</' 'transition' '>' ;
 
 
 //Are equals to labels_loc but we can manipulate them differently
 label_trans :
-            (OPEN_GUARD IDENTIFIER CLOSE_GUARD)
+            (OPEN_GUARD guard_expr CLOSE_GUARD)
             {
-                System.out.println ($IDENTIFIER.text);
+            System.out.println ($guard_expr.text);
             }
+            |   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' ;
 
 
-            |   '<' 'label' 'kind' '=' STRING coordinate?  '>' anything '<''/' 'label' '>' ;
+guard_expr  :   IDENTIFIER
+            |   NAT_GUARD
+            |   '(' guard_expr ')'
+            |   guard_expr '++' | '++' guard_expr
+            |   guard_expr '--' | '--' guard_expr
+            |   guard_expr
+                    assign=(ASSIGN | ':=' | '+=' | '-=' | '*=' | '/=' | '%=' | '|=' | '&amp;=' | '^=' | '&lt;&lt;=' | '&gt;&gt;=')
+                        guard_expr //assign is '=' in guard channel
+            |   unary=('-' | '+' | '!' | 'not') guard_expr
+            |   guard_expr binary=( '&lt;' | '&lt;=' | '==' | '!=' | '&gt;=' | '&gt;' //LESS is '<' in guard channel. Greater is '>' in guard channel
+                                   ) guard_expr
+            |   guard_expr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
+                                    |  '|' | '^' | '&lt;&lt;' | '&gt;&gt;' | '&amp;&amp;' | '||'
+                                    |  '&lt;?' | '&gt;?' | 'or' | 'and' | 'imply') guard_expr
+            |   guard_expr '?' guard_expr ':' guard_expr
+            |   guard_expr '.' IDENTIFIER
+            |   guard_expr '(' arguments ')'
+            |   'forall' '(' IDENTIFIER ':' type ')' guard_expr
+            |   'exists' '(' IDENTIFIER ':' type ')' guard_expr
+            |   'sum' '(' IDENTIFIER ':' type ')' guard_expr
+            |   'true'
+            |   'false'
+            ;
+arguments   :   (guard_expr  (',' guard_expr)*)? ;
+
+type        :   ('meta' | 'const')? typeId ;
+
+typeId      :   'int' | 'int' '[' guard_expr ',' guard_expr ']' | 'scalar' '[' guard_expr ']';
 
 
-source      :   '<' 'source' 'ref' '=' STRING '/>' ;
+source      :   '<' 'source' 'ref' EQUALS STRING '/>' ;
 
-target      :   '<' 'target' 'ref' '=' STRING '/>' ;
+target      :   '<' 'target' 'ref' EQUALS STRING '/>' ;
 
 nail        :   '<' 'nail' coordinate? '/>' ;
 
-system      :   '<' 'system' '>' anything '<''/' 'system' '>' ;
+system      :   '<' 'system' '>' anything '</' 'system' '>' ;
 
-queries     :   '<' 'queries' '>' content '<''/' 'queries' '>' ;
+queries     :   '<' 'queries' '>' content '</' 'queries' '>' ;
 
 //query       :   '<' 'query' '>' content '<' 'query' '>' ;
 
