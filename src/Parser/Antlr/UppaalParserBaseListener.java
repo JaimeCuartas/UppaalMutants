@@ -256,13 +256,25 @@ public class UppaalParserBaseListener implements UppaalParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLabel_trans(UppaalParser.Label_transContext ctx) { }
+	@Override public void enterLabelTransGuard(UppaalParser.LabelTransGuardContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitLabel_trans(UppaalParser.Label_transContext ctx) { }
+	@Override public void exitLabelTransGuard(UppaalParser.LabelTransGuardContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLabelTrans(UppaalParser.LabelTransContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLabelTrans(UppaalParser.LabelTransContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

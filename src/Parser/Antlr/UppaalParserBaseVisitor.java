@@ -157,7 +157,14 @@ public class UppaalParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> impl
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLabel_trans(UppaalParser.Label_transContext ctx) { return visitChildren(ctx); }
+	@Override public T visitLabelTransGuard(UppaalParser.LabelTransGuardContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitLabelTrans(UppaalParser.LabelTransContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

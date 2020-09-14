@@ -2217,11 +2217,38 @@ public class UppaalParser extends Parser {
 	}
 
 	public static class Label_transContext extends ParserRuleContext {
+		public Label_transContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_label_trans; }
+	 
+		public Label_transContext() { }
+		public void copyFrom(Label_transContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class LabelTransGuardContext extends Label_transContext {
 		public TerminalNode OPEN_GUARD() { return getToken(UppaalParser.OPEN_GUARD, 0); }
 		public Guard_exprContext guard_expr() {
 			return getRuleContext(Guard_exprContext.class,0);
 		}
 		public TerminalNode CLOSE_GUARD() { return getToken(UppaalParser.CLOSE_GUARD, 0); }
+		public LabelTransGuardContext(Label_transContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterLabelTransGuard(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitLabelTransGuard(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitLabelTransGuard(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class LabelTransContext extends Label_transContext {
 		public TerminalNode OPEN() { return getToken(UppaalParser.OPEN, 0); }
 		public List<TerminalNode> LABEL() { return getTokens(UppaalParser.LABEL); }
 		public TerminalNode LABEL(int i) {
@@ -2241,21 +2268,18 @@ public class UppaalParser extends Parser {
 		public CoordinateContext coordinate() {
 			return getRuleContext(CoordinateContext.class,0);
 		}
-		public Label_transContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_label_trans; }
+		public LabelTransContext(Label_transContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterLabel_trans(this);
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterLabelTrans(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitLabel_trans(this);
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitLabelTrans(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitLabel_trans(this);
+			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitLabelTrans(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -2269,6 +2293,7 @@ public class UppaalParser extends Parser {
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case OPEN_GUARD:
+				_localctx = new LabelTransGuardContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(427);
@@ -2280,6 +2305,7 @@ public class UppaalParser extends Parser {
 				}
 				break;
 			case OPEN:
+				_localctx = new LabelTransContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(431);

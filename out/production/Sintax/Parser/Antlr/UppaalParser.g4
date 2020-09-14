@@ -114,8 +114,8 @@ transition  :   '<' 'transition' '>'
 
 
 //Are equals to labels_loc but we can manipulate them differently
-label_trans :   OPEN_GUARD guard_expr CLOSE_GUARD
-            |   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' ;
+label_trans :   OPEN_GUARD guard_expr CLOSE_GUARD # LabelTransGuard
+            |   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' # labelTrans;
 
 
 guard_expr  :   IDENTIFIER  # IdentifierGuard
