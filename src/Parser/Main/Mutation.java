@@ -51,7 +51,7 @@ public class Mutation {
 
             System.out.println(tree.toStringTree(parser));
             UppaalVisitor eval = new UppaalVisitor(1);
-            eval.visit(tree);
+            System.out.println(eval.visit(tree));
 
         }catch (IOException e){
 
