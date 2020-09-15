@@ -137,7 +137,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         String labelLoc = "<label kind=";
         labelLoc = labelLoc.concat(ctx.STRING().getText()).concat(">");
         labelLoc = labelLoc.concat(visit(ctx.anything()));
-        labelLoc = labelLoc.concat("</label>");
+        labelLoc = labelLoc.concat("</label> ");
         return labelLoc;
     }
 
