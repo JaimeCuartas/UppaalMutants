@@ -30,7 +30,7 @@
 parser grammar UppaalParser;
 
 
-@parser::members { // add members to generated RowsParser
+@parser::members { // add members to generated UppaalParser
     private int num=0;
 
     public int getNum(){
