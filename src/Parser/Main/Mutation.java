@@ -18,12 +18,10 @@ public class Mutation {
 
             String inputFile = null;
             if ( args.length>0 ) {
-                System.out.println("Enter here with " + args[0]);
                 inputFile = args[0];
             }
             InputStream is = System.in;
             if ( inputFile!=null ) {
-                System.out.println("Use input to the system input  :D");
                 is = new FileInputStream(inputFile);
             }
 
@@ -32,26 +30,32 @@ public class Mutation {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
 
             UppaalParser parser = new UppaalParser(tokens);
-            parser.setBuildParseTree(false); // don't waste time bulding a tree
-            parser.model(); // parse
+            //parser.setBuildParseTree(false); // don't waste time bulding a tree
+            //parser.model(); // parse
+
+            //parser.reset();
+            //parser.setBuildParseTree(true);
+            ParseTree tree = parser.model();
             System.out.println( "El número de mutaciones es: "+ parser.getNum() );
 
-            System.out.println("Vamos a crear el listener");
-            parser.reset();
-            parser.setBuildParseTree(true);
-            ParseTree tree = parser.model();
             /*
             // Create a generic parse tree walker that can trigger callbacks
             ParseTreeWalker walker = new ParseTreeWalker();
             // Walk the tree created during the parse, trigger callbacks
             walker.walk(new UppaalListener(1), tree);
 
-            System.out.println(); // print a \n after translation
-            */
 
+            System.out.println(); // print a \n after translation
+
+            */
             System.out.println(tree.toStringTree(parser));
-            UppaalVisitor eval = new UppaalVisitor(1);
-            System.out.println(eval.visit(tree));
+            for(int i=1; i<=parser.getNum(); i++){
+                int idMutant = i;
+                new Thread(()->{
+                    UppaalVisitor eval = new UppaalVisitor(idMutant);
+                    System.out.println(eval.visit(tree) + "\n---------------------------------"+ idMutant);
+                }).start();
+            }
 
         }catch (IOException e){
 

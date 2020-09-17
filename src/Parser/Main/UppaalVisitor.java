@@ -8,7 +8,7 @@ import java.util.List;
 public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     private String output;
-    private int idOperator;
+    private final int idOperator;
     private int indexOperator;
 
     public UppaalVisitor (int idOperator){
@@ -213,7 +213,12 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     @Override
     public String visitComparisonGuard(UppaalParser.ComparisonGuardContext ctx) {
         String guard = visit(ctx.guard_expr(0));
-
+        this.indexOperator++;
+        if(this.idOperator!=this.indexOperator){
+            guard = guard.concat(" ").concat(ctx.binary.getText()).concat(" ");
+            guard = guard.concat(visit(ctx.guard_expr(1)));
+            return guard;
+        }
         switch (ctx.binary.getType()){
             case UppaalParser.GREATER:
                 guard = guard.concat(" &lt; ");
