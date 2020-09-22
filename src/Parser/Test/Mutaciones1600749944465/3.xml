@@ -1,5 +1,5 @@
-
-<?xml version="1.0"encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
 <nta>
 <declaration>/**
         * Jaime Cuartas Granada
@@ -97,7 +97,7 @@
 <transition><source ref="id0"/>
 <target ref="id1"/>
 <label kind="synchronisation" x="-552" y="-110">requestDoor!</label></transition>
-<init ref="id0"
+<init ref="id0">
 </template>
 <template>
 <name>Bridge</name>
@@ -179,7 +179,7 @@
 <transition><source ref="id13"/>
 <target ref="id14"/>
 <label kind="synchronisation" x="-331" y="68">openAction?</label></transition>
-<init ref="id13"
+<init ref="id13">
 </template>
 <template>
 <name>Door</name>
@@ -214,7 +214,7 @@
 <transition><source ref="id23"/>
 <target ref="id24"/>
 <label kind="synchronisation" x="-272" y="-85">openAction?</label><label kind="assignment" x="-254" y="-68">time = 0</label></transition>
-<init ref="id23"
+<init ref="id23">
 </template>
 <template>
 <name>Button</name>
@@ -239,7 +239,7 @@
 <transition><source ref="id29"/>
 <target ref="id27"/>
 <label kind="synchronisation" x="-442" y="-127">request?</label></transition>
-<init ref="id29"
+<init ref="id29">
 </template>
 <system>// Place template instantiations here.
 

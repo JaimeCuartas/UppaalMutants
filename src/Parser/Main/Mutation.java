@@ -60,10 +60,10 @@ public class Mutation {
                     try {
                         File myFile = new File("C:\\Users\\57310\\Documents\\Github\\XMLGrammar\\src\\Parser\\Test\\Mutaciones"+System.currentTimeMillis());
                         myFile.mkdirs();
-
-                        myWriter = new FileWriter(new File(myFile, Integer.toString(idMutant)));
+                        myWriter = new FileWriter(new File(myFile, Integer.toString(idMutant)+".xml"));
                         myWriter.write(eval.visit(tree));
                         myWriter.close();
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

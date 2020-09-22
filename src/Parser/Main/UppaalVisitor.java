@@ -21,9 +21,12 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     @Override
     public String visitModel(UppaalParser.ModelContext ctx) {
         this.output = this.output.concat("\n");
-        if(ctx.prolog()!=null){
-            this.output = this.output.concat(visit(ctx.prolog())).concat("\n");
-        }
+        this.output= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                "<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>\n";
+        /*if(ctx.prolog()!=null){
+            //this.output = this.output.concat(visit(ctx.prolog())).concat("\n");
+            //this.output = this.output.concat("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+        }*/
         this.output = this.output.concat(visit(ctx.nta()));
         return this.output;
     }
@@ -162,7 +165,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     @Override
     public String visitInit_loc(UppaalParser.Init_locContext ctx) {
         String initLoc = "<init ref=";
-        initLoc = initLoc.concat(ctx.STRING().getText());
+        initLoc = initLoc.concat(ctx.STRING().getText()).concat(">");
         return initLoc;
     }
 
