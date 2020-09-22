@@ -50,6 +50,10 @@ public class Mutation {
 
 */
             System.out.println(tree.toStringTree(parser));
+
+            File myFile = new File("C:\\Users\\57310\\Documents\\Github\\XMLGrammar\\src\\Parser\\Test\\Mutaciones"+System.currentTimeMillis());
+            myFile.mkdirs();
+
             for(int i=1; i<=parser.getNum(); i++){
                 int idMutant = i;
                 new Thread(()->{
@@ -58,8 +62,7 @@ public class Mutation {
                     FileWriter myWriter = null;
 
                     try {
-                        File myFile = new File("C:\\Users\\57310\\Documents\\Github\\XMLGrammar\\src\\Parser\\Test\\Mutaciones"+System.currentTimeMillis());
-                        myFile.mkdirs();
+
                         myWriter = new FileWriter(new File(myFile, Integer.toString(idMutant)+".xml"));
                         myWriter.write(eval.visit(tree));
                         myWriter.close();

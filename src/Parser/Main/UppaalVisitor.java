@@ -65,15 +65,15 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitTemplate(UppaalParser.TemplateContext ctx) {
-        String template = "<template>";
+        String template = "<template>\n";
         template = template.concat(visit(ctx.temp_content()));
-        template = template.concat("\n</template>");
+        template = template.concat("</template>");
         return template;
     }
 
     @Override
     public String visitTemp_content(UppaalParser.Temp_contentContext ctx) {
-        String temp_content = "\n";
+        String temp_content = "";
         if(ctx.name() != null){
             //print <name> ~[<&]+ </name>
             temp_content = temp_content.concat(visit(ctx.name())).concat("\n");
@@ -93,13 +93,15 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
             temp_content = temp_content.concat(visit(location)).concat("\n");
         }
 
+        temp_content = temp_content.concat(visit(ctx.init_loc())).concat("\n");
+
         List<UppaalParser.TransitionContext> transitions = ctx.transition();
 
         for(UppaalParser.TransitionContext transition: transitions){
             temp_content = temp_content.concat(visit(transition)).concat("\n");
         }
 
-        temp_content = temp_content.concat(visit(ctx.init_loc()));
+        //temp_content = temp_content.concat(visit(ctx.init_loc()));
 
         return temp_content;
     }
@@ -124,7 +126,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitParameter(UppaalParser.ParameterContext ctx) {
-        return ctx.getText().concat("\n");
+        return ctx.getText();
     }
 
     @Override
@@ -165,19 +167,24 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     @Override
     public String visitInit_loc(UppaalParser.Init_locContext ctx) {
         String initLoc = "<init ref=";
-        initLoc = initLoc.concat(ctx.STRING().getText()).concat(">");
+        initLoc = initLoc.concat(ctx.STRING().getText()).concat("/>");
         return initLoc;
     }
 
     @Override
     public String visitTransition(UppaalParser.TransitionContext ctx) {
-        String transition = "<transition>";
+        String transition = "<transition>\n";
         transition = transition.concat(visit(ctx.source())).concat("\n");
         transition = transition.concat(visit(ctx.target())).concat("\n");
 
         List<UppaalParser.Label_transContext> labels = ctx.label_trans();
         for(UppaalParser.Label_transContext label: labels){
-            transition = transition.concat(visit(label));
+            transition = transition.concat(visit(label)).concat("\n");
+        }
+
+        List<UppaalParser.NailContext> nails = ctx.nail();
+        for(UppaalParser.NailContext nail: nails){
+            transition = transition.concat(visit(nail)).concat("\n");
         }
 
         transition = transition.concat("</transition>");
@@ -295,13 +302,13 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
                 guard = guard.concat(" &lt; ");
                 break;
             case UppaalParser.GREATEREQ:
-                guard = guard.concat(" &lt= ");
+                guard = guard.concat(" &lt;= ");
                 break;
             case UppaalParser.LESS:
-                guard = guard.concat(" &gt ");
+                guard = guard.concat(" &gt; ");
                 break;
             case UppaalParser.LESSEQ:
-                guard = guard.concat(" &gt= ");
+                guard = guard.concat(" &gt;= ");
                 break;
             case UppaalParser.COMPARE:
                 guard = guard.concat(" != ");
@@ -401,6 +408,15 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     @Override
     public String visitTypeScalar(UppaalParser.TypeScalarContext ctx) {
         return ("scalar[").concat(visit(ctx.guard_expr())).concat("]");
+    }
+
+    @Override
+    public String visitNail(UppaalParser.NailContext ctx) {
+        //<nail x="391" y="85"/>
+        String nail = "<nail ";
+        nail = nail.concat(visit(ctx.coordinate()));
+        nail = nail.concat("/>");
+        return nail;
     }
 
     @Override
