@@ -1,15 +1,13 @@
 package Parser.Main;
 import Parser.Antlr.*;
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public class Mutation {
     public static void main(String[] args) throws Exception {
@@ -20,12 +18,14 @@ public class Mutation {
             if ( args.length>0 ) {
                 inputFile = args[0];
             }
+            /*
             InputStream is = System.in;
             if ( inputFile!=null ) {
                 is = new FileInputStream(inputFile);
             }
 
-            CharStream input = CharStreams.fromStream(is);
+            CharStream input = CharStreams.fromStream(is);*/
+            CharStream input = CharStreams.fromFileName(inputFile);
             UppaalLexer lexer = new UppaalLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
 
@@ -36,6 +36,7 @@ public class Mutation {
             //parser.reset();
             //parser.setBuildParseTree(true);
             ParseTree tree = parser.model();
+
             System.out.println( "El número de mutaciones es: "+ parser.getNum() );
 
             /*
@@ -53,7 +54,19 @@ public class Mutation {
                 int idMutant = i;
                 new Thread(()->{
                     UppaalVisitor eval = new UppaalVisitor(idMutant);
-                    System.out.println(eval.visit(tree) + "\n---------------------------------"+ idMutant);
+
+                    FileWriter myWriter = null;
+
+                    try {
+                        File myFile = new File("C:\\Users\\57310\\Documents\\Github\\XMLGrammar\\src\\Parser\\Test\\Mutaciones"+System.currentTimeMillis());
+                        myFile.mkdirs();
+
+                        myWriter = new FileWriter(new File(myFile, Integer.toString(idMutant)));
+                        myWriter.write(eval.visit(tree));
+                        myWriter.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }).start();
             }
 /*
