@@ -376,6 +376,30 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitExistsGuard(UppaalParser.ExistsGuardContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code StopWatchGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterStopWatchGuard(UppaalParser.StopWatchGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code StopWatchGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitStopWatchGuard(UppaalParser.StopWatchGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ArrayGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayGuard(UppaalParser.ArrayGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ArrayGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayGuard(UppaalParser.ArrayGuardContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code ForallGuard}
 	 * labeled alternative in {@link UppaalParser#guard_expr}.
 	 * @param ctx the parse tree
@@ -480,15 +504,41 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitType(UppaalParser.TypeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link UppaalParser#typeId}.
+	 * Enter a parse tree produced by the {@code TypeInt}
+	 * labeled alternative in {@link UppaalParser#typeId}.
 	 * @param ctx the parse tree
 	 */
-	void enterTypeId(UppaalParser.TypeIdContext ctx);
+	void enterTypeInt(UppaalParser.TypeIntContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link UppaalParser#typeId}.
+	 * Exit a parse tree produced by the {@code TypeInt}
+	 * labeled alternative in {@link UppaalParser#typeId}.
 	 * @param ctx the parse tree
 	 */
-	void exitTypeId(UppaalParser.TypeIdContext ctx);
+	void exitTypeInt(UppaalParser.TypeIntContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code TypeIntDomain}
+	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeIntDomain(UppaalParser.TypeIntDomainContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code TypeIntDomain}
+	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeIntDomain(UppaalParser.TypeIntDomainContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code TypeScalar}
+	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeScalar(UppaalParser.TypeScalarContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code TypeScalar}
+	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeScalar(UppaalParser.TypeScalarContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link UppaalParser#source}.
 	 * @param ctx the parse tree
@@ -539,4 +589,34 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitQueries(UppaalParser.QueriesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#query}.
+	 * @param ctx the parse tree
+	 */
+	void enterQuery(UppaalParser.QueryContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#query}.
+	 * @param ctx the parse tree
+	 */
+	void exitQuery(UppaalParser.QueryContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#formula}.
+	 * @param ctx the parse tree
+	 */
+	void enterFormula(UppaalParser.FormulaContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#formula}.
+	 * @param ctx the parse tree
+	 */
+	void exitFormula(UppaalParser.FormulaContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#comment}.
+	 * @param ctx the parse tree
+	 */
+	void enterComment(UppaalParser.CommentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#comment}.
+	 * @param ctx the parse tree
+	 */
+	void exitComment(UppaalParser.CommentContext ctx);
 }

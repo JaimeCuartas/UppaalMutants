@@ -38,22 +38,26 @@
         <transition>
             <source ref="id0"/>
             <target ref="id1"/>
-            <label kind="guard" x="1" y="1"> e &lt; q ==3 </label>
-            <label kind= "jeje" > </label>
+            <label kind="guard" x="2" y="2"> ((+e[2]' &lt; q) ==3) ? 2&lt;1: 2 and (2-1 &gt;10)</label>
+            <label kind= "otro" > </label>
 
         </transition>
         <transition>
             <source ref="id0"/>
             <target ref="id1"/>
-            <label kind="guard" x="2" y="2"> ((e &lt; q) ==3) and (2-1 &gt;10)</label>
-            <label kind= "jeje" > </label>
+            <label kind="guard" x="2" y="2"> sum(x: int[12&gt;2,32]) x&lt;2 </label>
+            <label kind= "otro" > 5==2 </label>
 
         </transition>
     </template>
     <system>// Place template instantiations here.
+        sefsefse mxz A&lt; e
 
     </system>
     <queries>
-
+        <algo>
+            iejje
+        </algo>
+sefsefse mxz A&lt; e
     </queries>
 </nta>

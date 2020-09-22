@@ -47,7 +47,7 @@ public class Mutation {
 
             System.out.println(); // print a \n after translation
 
-            */
+*/
             System.out.println(tree.toStringTree(parser));
             for(int i=1; i<=parser.getNum(); i++){
                 int idMutant = i;
@@ -56,7 +56,10 @@ public class Mutation {
                     System.out.println(eval.visit(tree) + "\n---------------------------------"+ idMutant);
                 }).start();
             }
-
+/*
+            UppaalVisitor eval = new UppaalVisitor(3);
+            System.out.println(eval.visit(tree));
+*/
         }catch (IOException e){
 
             e.printStackTrace();

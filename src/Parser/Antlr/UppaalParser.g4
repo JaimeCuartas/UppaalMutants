@@ -70,7 +70,7 @@ nta         :   '<' 'nta' '>' misc*
                 declaration misc*
                 (template misc*)+
                 system misc*
-                queries misc*
+                (queries misc*)?
                 '</' 'nta' '>' ;
 
 declaration :   '<' 'declaration' '>' anything '</' 'declaration' '>' ;
@@ -108,7 +108,7 @@ name        :   '<' 'name'
 
 transition  :   '<' 'transition' '>'
                 misc* (source misc*) (target misc*)
-                (label_trans misc*)+
+                (label_trans misc*)*
                 (nail misc*)*
                 '</' 'transition' '>' ;
 
@@ -120,6 +120,8 @@ label_trans :   OPEN_GUARD guard_expr CLOSE_GUARD # LabelTransGuard
 
 guard_expr  :   IDENTIFIER  # IdentifierGuard
             |   NAT_GUARD   # NatGuard
+            |   guard_expr '[' guard_expr ']'   # ArrayGuard
+            |   guard_expr '\''     # StopWatchGuard
             |   '(' guard_expr ')'  # ParenthesisGuard
             |   guard_expr '++'     # GuardIncrement
             |   '++' guard_expr     # IncrementGuard
@@ -135,7 +137,7 @@ guard_expr  :   IDENTIFIER  # IdentifierGuard
                 {
 
                 this.num++;
-                System.out.println ($binary.text);
+                //System.out.println ($binary.text);
                 }
                                    # ComparisonGuard
             |   guard_expr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
@@ -156,8 +158,10 @@ arguments   :   (guard_expr  (',' guard_expr)*)? ;
 
 type        :   ('meta' | 'const')? typeId ;
 
-typeId      :   'int' | 'int' '[' guard_expr ',' guard_expr ']' | 'scalar' '[' guard_expr ']';
-
+typeId      :   'int'                                       # TypeInt
+            |   'int' '[' guard_expr ',' guard_expr ']'     # TypeIntDomain
+            |   'scalar' '[' guard_expr ']'                 # TypeScalar
+            ;
 
 source      :   '<' 'source' 'ref' EQUALS STRING '/>' ;
 
@@ -167,9 +171,13 @@ nail        :   '<' 'nail' coordinate? '/>' ;
 
 system      :   '<' 'system' '>' anything '</' 'system' '>' ;
 
-queries     :   '<' 'queries' '>' content '</' 'queries' '>' ;
+queries     :   '<' 'queries' '>' misc* (query misc*)* '</' 'queries' '>' ;
 
-//query       :   '<' 'query' '>' content '<' 'query' '>' ;
+query       :   '<' 'query' '>' misc* formula misc* comment misc* '<' 'query' '>' ;
+
+formula     :   '<' 'formula' '>' anything '</' 'formula' '>' ;
+
+comment     :   '<' 'comment' '>' anything '</' 'comment' '>' ;
 
 
 //guard_expr  :   IDENTIFIER misc*;

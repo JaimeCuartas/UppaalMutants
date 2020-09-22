@@ -47,8 +47,8 @@ OPEN_GUARD  :   '<' [ \t\r\n]*'label' [ \t\r\n]+ 'kind' [ \t\r\n]* '=' [ \t\r\n]
                 [ \t\r\n]* '>'          -> pushMode(GUARD);
 
 
-OPEN        :   '<'                     -> pushMode(INSIDE) ;
-OPEN_SLASH  :   '</'                    -> pushMode(INSIDE) ;
+    OPEN        :   '<'                     -> pushMode(INSIDE) ;
+    OPEN_SLASH  :   '</'                    -> pushMode(INSIDE) ;
 XMLDeclOpen :   '<?xml' S               -> pushMode(INSIDE) ;
 SPECIAL_OPEN:   '<?' Name               -> more, pushMode(PROC_INSTR) ;
 
@@ -82,6 +82,10 @@ TARGET      :   'target' ;
 NAIL        :   'nail' ;
 SYSTEM      :   'system' ;
 QUERIES     :   'queries' ;
+QUERY       :   'query' ;
+FORMULA     :   'formula' ;
+QUERY_COMMENT:   'comment' ;
+
 //GUARD       :   '"guard"' ;
 
 
@@ -140,6 +144,8 @@ GUARD_S     :   [ \t\r\n]               -> skip ;
 
 
 NAT_GUARD           :   [0-9]+ ;
+
+APOSTROPHE          :   '\'' ;
 
 LEFT_PARENTHESIS    :   '(' ;
 

@@ -229,6 +229,20 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExistsGuard(UppaalParser.ExistsGuardContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code StopWatchGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStopWatchGuard(UppaalParser.StopWatchGuardContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ArrayGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayGuard(UppaalParser.ArrayGuardContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code ForallGuard}
 	 * labeled alternative in {@link UppaalParser#guard_expr}.
 	 * @param ctx the parse tree
@@ -290,11 +304,26 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitType(UppaalParser.TypeContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link UppaalParser#typeId}.
+	 * Visit a parse tree produced by the {@code TypeInt}
+	 * labeled alternative in {@link UppaalParser#typeId}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTypeId(UppaalParser.TypeIdContext ctx);
+	T visitTypeInt(UppaalParser.TypeIntContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code TypeIntDomain}
+	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeIntDomain(UppaalParser.TypeIntDomainContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code TypeScalar}
+	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeScalar(UppaalParser.TypeScalarContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link UppaalParser#source}.
 	 * @param ctx the parse tree
@@ -325,4 +354,22 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitQueries(UppaalParser.QueriesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#query}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitQuery(UppaalParser.QueryContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#formula}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFormula(UppaalParser.FormulaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#comment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComment(UppaalParser.CommentContext ctx);
 }
