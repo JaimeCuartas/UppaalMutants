@@ -173,7 +173,7 @@ system      :   '<' 'system' '>' anything '</' 'system' '>' ;
 
 queries     :   '<' 'queries' '>' misc* (query misc*)* '</' 'queries' '>' ;
 
-query       :   '<' 'query' '>' misc* formula misc* comment misc* '<' 'query' '>' ;
+query       :   '<' 'query' '>' misc* (formula misc*)? (comment misc*)? '</' 'query' '>' ;
 
 formula     :   '<' 'formula' '>' anything '</' 'formula' '>' ;
 

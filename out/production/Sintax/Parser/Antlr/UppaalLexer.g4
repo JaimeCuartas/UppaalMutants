@@ -82,6 +82,10 @@ TARGET      :   'target' ;
 NAIL        :   'nail' ;
 SYSTEM      :   'system' ;
 QUERIES     :   'queries' ;
+QUERY       :   'query' ;
+FORMULA     :   'formula' ;
+QUERY_COMMENT:   'comment' ;
+
 //GUARD       :   '"guard"' ;
 
 

@@ -22,7 +22,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     public String visitModel(UppaalParser.ModelContext ctx) {
         this.output = this.output.concat("\n");
         if(ctx.prolog()!=null){
-            this.output = this.output.concat(visit(ctx.prolog()));
+            this.output = this.output.concat(visit(ctx.prolog())).concat("\n");
         }
         this.output = this.output.concat(visit(ctx.nta()));
         return this.output;
@@ -35,7 +35,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitNta(UppaalParser.NtaContext ctx) {
-        String nta = "<nta>\n\t";
+        String nta = "<nta>\n";
         nta = nta.concat(visit(ctx.declaration()).concat("\n"));
 
         List<UppaalParser.TemplateContext> templates = ctx.template();
@@ -49,7 +49,6 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         if(ctx.queries() != null){
             nta = nta.concat(visit(ctx.queries())).concat("\n");
         }
-
 
         nta = nta.concat("</nta>");
         return nta;
@@ -129,10 +128,11 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     public String visitLocation(UppaalParser.LocationContext ctx) {
         String location = "<location id=".concat(ctx.STRING().getText());
         if(ctx.coordinate()!=null){
-            location = location.concat(visit(ctx.coordinate())).concat(">");
+            location = location.concat(visit(ctx.coordinate()));
         }
+        location = location.concat(">").concat("\n");
         if(ctx.name()!=null){
-            location = location.concat("\n").concat(visit(ctx.name())).concat("\n");
+            location = location.concat(visit(ctx.name())).concat("\n");
         }
 
         List<UppaalParser.Label_locContext> labelLocs = ctx.label_loc();
@@ -407,27 +407,36 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitQueries(UppaalParser.QueriesContext ctx) {
-        String queries = "";
+        String queries = "<queries>\n";
         List<UppaalParser.QueryContext> queryList = ctx.query();
         for(UppaalParser.QueryContext query: queryList){
-            queries = queries.concat(visit(query));
+            queries = queries.concat(visit(query)).concat("\n");
         }
-        return ("<queries>").concat(visit(ctx.content())).concat("</queries>");
+        queries = queries.concat("</queries>");
+        return queries;
     }
 
     @Override
     public String visitQuery(UppaalParser.QueryContext ctx) {
-        return super.visitQuery(ctx);
+        String query = "<query>\n";
+        if(ctx.formula()!=null){
+            query = query.concat(visit(ctx.formula())).concat("\n");
+        }
+        if(ctx.comment()!=null){
+            query = query.concat(visit(ctx.comment())).concat("\n");
+        }
+        query = query.concat("</query>");
+        return query;
     }
 
     @Override
     public String visitFormula(UppaalParser.FormulaContext ctx) {
-        return super.visitFormula(ctx);
+        return ("<formula>").concat(visit(ctx.anything())).concat("</formula>");
     }
 
     @Override
     public String visitComment(UppaalParser.CommentContext ctx) {
-        return super.visitComment(ctx);
+        return ("<comment>").concat(visit(ctx.anything())).concat("</comment>");
     }
 
     @Override

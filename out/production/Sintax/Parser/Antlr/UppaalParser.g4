@@ -70,7 +70,7 @@ nta         :   '<' 'nta' '>' misc*
                 declaration misc*
                 (template misc*)+
                 system misc*
-                queries misc*
+                (queries misc*)?
                 '</' 'nta' '>' ;
 
 declaration :   '<' 'declaration' '>' anything '</' 'declaration' '>' ;
@@ -171,9 +171,13 @@ nail        :   '<' 'nail' coordinate? '/>' ;
 
 system      :   '<' 'system' '>' anything '</' 'system' '>' ;
 
-queries     :   '<' 'queries' '>' content '</' 'queries' '>' ;
+queries     :   '<' 'queries' '>' misc* (query misc*)* '</' 'queries' '>' ;
 
-//query       :   '<' 'query' '>' content '<' 'query' '>' ;
+query       :   '<' 'query' '>' misc* (formula misc*)? (comment misc*)? '</' 'query' '>' ;
+
+formula     :   '<' 'formula' '>' anything '</' 'formula' '>' ;
+
+comment     :   '<' 'comment' '>' anything '</' 'comment' '>' ;
 
 
 //guard_expr  :   IDENTIFIER misc*;

@@ -55,9 +55,17 @@
 
     </system>
     <queries>
-        <algo>
-            iejje
-        </algo>
-sefsefse mxz A&lt; e
+        <query>
+            <formula>A[] (TramBridge.deploying or TramBridge.retracting) imply (not (TramDoor.opened))</formula>
+            <comment>For all paths the actions (deploying or retracting) of the bridge imply that the door is not open</comment>
+        </query>
+        <query>
+            <formula>A[] (Controller.traveling) imply ((not (TramDoor.opened)) and (not (TramBridge.deployed)))</formula>
+            <comment>For all paths the Tram is traveling with its door not open and its bridge not deployed</comment>
+        </query>
+        <query>
+            <formula>A[] not deadlock</formula>
+            <comment>The system is deadlock-free</comment>
+        </query>
     </queries>
 </nta>
