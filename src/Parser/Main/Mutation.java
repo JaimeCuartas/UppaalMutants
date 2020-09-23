@@ -7,6 +7,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import com.uppaal.engine.Parser;
+
 import java.io.*;
 
 public class Mutation {
@@ -48,7 +50,7 @@ public class Mutation {
 
             System.out.println(); // print a \n after translation
 
-*/
+*/          System.out.println(System.getProperty("user.dir"));
             System.out.println(tree.toStringTree(parser));
 
             File myFile = new File("C:\\Users\\57310\\Documents\\Github\\XMLGrammar\\src\\Parser\\Test\\Mutaciones"+System.currentTimeMillis());

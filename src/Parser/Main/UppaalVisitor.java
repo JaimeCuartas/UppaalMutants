@@ -158,7 +158,14 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     @Override
     public String visitLabel_loc(UppaalParser.Label_locContext ctx) {
         String labelLoc = "<label kind=";
-        labelLoc = labelLoc.concat(ctx.STRING().getText()).concat(">");
+        labelLoc = labelLoc.concat(ctx.STRING().getText());
+
+        if(ctx.coordinate()!=null){
+            labelLoc = labelLoc.concat(visit(ctx.coordinate()));
+        }
+
+        labelLoc = labelLoc.concat(">");
+
         labelLoc = labelLoc.concat(visit(ctx.anything()));
         labelLoc = labelLoc.concat("</label>");
         return labelLoc;
@@ -224,7 +231,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
             label = label.concat(visit(ctx.guard_expr()));
         }
 
-        label = label.concat("</label>").concat("\n");
+        label = label.concat("</label>");
         return label;
     }
 
