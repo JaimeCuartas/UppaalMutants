@@ -145,6 +145,8 @@ GUARD_S     :   [ \t\r\n]               -> skip ;
 
 NAT_GUARD           :   [0-9]+ ;
 
+DOUBLE_GUARD        :   ([0-9]+) '.' [0-9]+ ;
+
 APOSTROPHE          :   '\'' ;
 
 LEFT_PARENTHESIS    :   '(' ;
@@ -247,6 +249,9 @@ CONST               :   'const' ;
 
 //typeId
 INT                 :   'int' ;
+CLOCK               :   'clock' ;
+CHAN                :   'chan' ;
+BOOL                :   'bool' ;
 SCALAR              :   'scalar' ;
 
 //Boolean

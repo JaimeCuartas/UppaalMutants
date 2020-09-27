@@ -285,6 +285,13 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIncrementGuard(UppaalParser.IncrementGuardContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code DoubleGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDoubleGuard(UppaalParser.DoubleGuardContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code GuardIncrement}
 	 * labeled alternative in {@link UppaalParser#guard_expr}.
 	 * @param ctx the parse tree

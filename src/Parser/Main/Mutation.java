@@ -60,11 +60,8 @@ public class Mutation {
                 int idMutant = i;
                 new Thread(()->{
                     UppaalVisitor eval = new UppaalVisitor(idMutant);
-
                     FileWriter myWriter = null;
-
                     try {
-
                         myWriter = new FileWriter(new File(myFile, Integer.toString(idMutant)+".xml"));
                         myWriter.write(eval.visit(tree));
                         myWriter.close();

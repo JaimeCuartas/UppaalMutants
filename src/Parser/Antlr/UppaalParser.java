@@ -24,16 +24,17 @@ public class UppaalParser extends Parser {
 		SOURCE=28, TARGET=29, NAIL=30, SYSTEM=31, QUERIES=32, QUERY=33, FORMULA=34, 
 		QUERY_COMMENT=35, CLOSE=36, SPECIAL_CLOSE=37, SLASH_CLOSE=38, EQUALS=39, 
 		STRING=40, Name=41, S=42, PI=43, CLOSE_GUARD=44, GUARD_S=45, NAT_GUARD=46, 
-		APOSTROPHE=47, LEFT_PARENTHESIS=48, RIGHT_PARENTHESIS=49, LEFT_BRACKET=50, 
-		RIGHT_BRACKET=51, COMMA=52, INCREMENT=53, DECREMENT=54, ASSIGN=55, ASSIGN_COLON=56, 
-		ASSIGN_ADD=57, ASSIGN_SUB=58, ASSIGN_MUL=59, ASSIGN_DIV=60, ASSIGN_PERCENT=61, 
-		ASSIGN_OR=62, ASSIGN_AND=63, ASSIGN_XOR=64, ASSIGN_LSHIFT=65, ASSIGN_RSHIFT=66, 
-		ADD=67, SUB=68, EXCLAMATION=69, NOT=70, LESS=71, LESSEQ=72, COMPARE=73, 
-		DIFFERENT=74, GREATEREQ=75, GREATER=76, MUL=77, DIV=78, PERCENT=79, BITAND=80, 
-		BITOR=81, BITXOR=82, LSHIFT=83, RSHIFT=84, AND_SYMBOL=85, OR_SYMBOL=86, 
-		MINIMUM=87, MAXIMUM=88, OR=89, AND=90, IMPLY=91, IF=92, ELSE=93, LOOKUP_OP=94, 
-		FORALL=95, EXISTS=96, SUM=97, META=98, CONST=99, INT=100, SCALAR=101, 
-		TRUE=102, FALSE=103, IDENTIFIER=104;
+		DOUBLE_GUARD=47, APOSTROPHE=48, LEFT_PARENTHESIS=49, RIGHT_PARENTHESIS=50, 
+		LEFT_BRACKET=51, RIGHT_BRACKET=52, COMMA=53, INCREMENT=54, DECREMENT=55, 
+		ASSIGN=56, ASSIGN_COLON=57, ASSIGN_ADD=58, ASSIGN_SUB=59, ASSIGN_MUL=60, 
+		ASSIGN_DIV=61, ASSIGN_PERCENT=62, ASSIGN_OR=63, ASSIGN_AND=64, ASSIGN_XOR=65, 
+		ASSIGN_LSHIFT=66, ASSIGN_RSHIFT=67, ADD=68, SUB=69, EXCLAMATION=70, NOT=71, 
+		LESS=72, LESSEQ=73, COMPARE=74, DIFFERENT=75, GREATEREQ=76, GREATER=77, 
+		MUL=78, DIV=79, PERCENT=80, BITAND=81, BITOR=82, BITXOR=83, LSHIFT=84, 
+		RSHIFT=85, AND_SYMBOL=86, OR_SYMBOL=87, MINIMUM=88, MAXIMUM=89, OR=90, 
+		AND=91, IMPLY=92, IF=93, ELSE=94, LOOKUP_OP=95, FORALL=96, EXISTS=97, 
+		SUM=98, META=99, CONST=100, INT=101, CLOCK=102, CHAN=103, BOOL=104, SCALAR=105, 
+		TRUE=106, FALSE=107, IDENTIFIER=108;
 	public static final int
 		RULE_model = 0, RULE_prolog = 1, RULE_content = 2, RULE_element = 3, RULE_reference = 4, 
 		RULE_attribute = 5, RULE_chardata = 6, RULE_misc = 7, RULE_nta = 8, RULE_declaration = 9, 
@@ -62,14 +63,15 @@ public class UppaalParser extends Parser {
 			"'parameter'", "'init'", "'ref'", "'id'", "'x'", "'y'", "'urgent'", "'committed'", 
 			"'label'", "'kind'", "'transition'", "'source'", "'target'", "'nail'", 
 			"'system'", "'queries'", "'query'", "'formula'", "'comment'", "'>'", 
-			null, "'/>'", null, null, null, null, null, null, null, null, "'''", 
+			null, "'/>'", null, null, null, null, null, null, null, null, null, "'''", 
 			"'('", "')'", "'['", "']'", "','", "'++'", "'--'", null, "':='", "'+='", 
 			"'-='", "'*='", "'/='", "'%='", "'|='", "'&amp;='", "'^='", "'&lt;&lt;='", 
 			"'&gt;&gt;='", "'+'", "'-'", "'!'", "'not'", "'&lt;'", "'&lt;='", "'=='", 
 			"'!='", "'&gt;='", "'&gt;'", "'*'", "'/'", "'%'", "'&amp;'", "'|'", "'^'", 
 			"'&lt;&lt;'", "'&gt;&gt;'", "'&amp;&amp;'", "'||'", "'&lt;?'", "'&gt;?'", 
 			"'or'", "'and'", "'imply'", "'?'", "':'", "'.'", "'forall'", "'exists'", 
-			"'sum'", "'meta'", "'const'", "'int'", "'scalar'", "'true'", "'false'"
+			"'sum'", "'meta'", "'const'", "'int'", "'clock'", "'chan'", "'bool'", 
+			"'scalar'", "'true'", "'false'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -81,16 +83,16 @@ public class UppaalParser extends Parser {
 			"COMMITTED", "LABEL", "KIND", "TRANSITION", "SOURCE", "TARGET", "NAIL", 
 			"SYSTEM", "QUERIES", "QUERY", "FORMULA", "QUERY_COMMENT", "CLOSE", "SPECIAL_CLOSE", 
 			"SLASH_CLOSE", "EQUALS", "STRING", "Name", "S", "PI", "CLOSE_GUARD", 
-			"GUARD_S", "NAT_GUARD", "APOSTROPHE", "LEFT_PARENTHESIS", "RIGHT_PARENTHESIS", 
-			"LEFT_BRACKET", "RIGHT_BRACKET", "COMMA", "INCREMENT", "DECREMENT", "ASSIGN", 
-			"ASSIGN_COLON", "ASSIGN_ADD", "ASSIGN_SUB", "ASSIGN_MUL", "ASSIGN_DIV", 
-			"ASSIGN_PERCENT", "ASSIGN_OR", "ASSIGN_AND", "ASSIGN_XOR", "ASSIGN_LSHIFT", 
-			"ASSIGN_RSHIFT", "ADD", "SUB", "EXCLAMATION", "NOT", "LESS", "LESSEQ", 
-			"COMPARE", "DIFFERENT", "GREATEREQ", "GREATER", "MUL", "DIV", "PERCENT", 
-			"BITAND", "BITOR", "BITXOR", "LSHIFT", "RSHIFT", "AND_SYMBOL", "OR_SYMBOL", 
-			"MINIMUM", "MAXIMUM", "OR", "AND", "IMPLY", "IF", "ELSE", "LOOKUP_OP", 
-			"FORALL", "EXISTS", "SUM", "META", "CONST", "INT", "SCALAR", "TRUE", 
-			"FALSE", "IDENTIFIER"
+			"GUARD_S", "NAT_GUARD", "DOUBLE_GUARD", "APOSTROPHE", "LEFT_PARENTHESIS", 
+			"RIGHT_PARENTHESIS", "LEFT_BRACKET", "RIGHT_BRACKET", "COMMA", "INCREMENT", 
+			"DECREMENT", "ASSIGN", "ASSIGN_COLON", "ASSIGN_ADD", "ASSIGN_SUB", "ASSIGN_MUL", 
+			"ASSIGN_DIV", "ASSIGN_PERCENT", "ASSIGN_OR", "ASSIGN_AND", "ASSIGN_XOR", 
+			"ASSIGN_LSHIFT", "ASSIGN_RSHIFT", "ADD", "SUB", "EXCLAMATION", "NOT", 
+			"LESS", "LESSEQ", "COMPARE", "DIFFERENT", "GREATEREQ", "GREATER", "MUL", 
+			"DIV", "PERCENT", "BITAND", "BITOR", "BITXOR", "LSHIFT", "RSHIFT", "AND_SYMBOL", 
+			"OR_SYMBOL", "MINIMUM", "MAXIMUM", "OR", "AND", "IMPLY", "IF", "ELSE", 
+			"LOOKUP_OP", "FORALL", "EXISTS", "SUM", "META", "CONST", "INT", "CLOCK", 
+			"CHAN", "BOOL", "SCALAR", "TRUE", "FALSE", "IDENTIFIER"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -2237,10 +2239,10 @@ public class UppaalParser extends Parser {
 	}
 	public static class LabelTransGuardContext extends Label_transContext {
 		public TerminalNode OPEN_GUARD() { return getToken(UppaalParser.OPEN_GUARD, 0); }
+		public TerminalNode CLOSE_GUARD() { return getToken(UppaalParser.CLOSE_GUARD, 0); }
 		public Guard_exprContext guard_expr() {
 			return getRuleContext(Guard_exprContext.class,0);
 		}
-		public TerminalNode CLOSE_GUARD() { return getToken(UppaalParser.CLOSE_GUARD, 0); }
 		public LabelTransGuardContext(Label_transContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
@@ -2297,7 +2299,7 @@ public class UppaalParser extends Parser {
 		enterRule(_localctx, 40, RULE_label_trans);
 		int _la;
 		try {
-			setState(454);
+			setState(455);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case OPEN_GUARD:
@@ -2306,9 +2308,17 @@ public class UppaalParser extends Parser {
 				{
 				setState(436);
 				match(OPEN_GUARD);
-				setState(437);
-				guard_expr(0);
 				setState(438);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+				if (((((_la - 46)) & ~0x3f) == 0 && ((1L << (_la - 46)) & ((1L << (NAT_GUARD - 46)) | (1L << (DOUBLE_GUARD - 46)) | (1L << (LEFT_PARENTHESIS - 46)) | (1L << (INCREMENT - 46)) | (1L << (DECREMENT - 46)) | (1L << (ADD - 46)) | (1L << (SUB - 46)) | (1L << (EXCLAMATION - 46)) | (1L << (NOT - 46)) | (1L << (FORALL - 46)) | (1L << (EXISTS - 46)) | (1L << (SUM - 46)) | (1L << (TRUE - 46)) | (1L << (FALSE - 46)) | (1L << (IDENTIFIER - 46)))) != 0)) {
+					{
+					setState(437);
+					guard_expr(0);
+					}
+				}
+
+				setState(440);
 				match(CLOSE_GUARD);
 				}
 				break;
@@ -2316,35 +2326,35 @@ public class UppaalParser extends Parser {
 				_localctx = new LabelTransContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(440);
-				match(OPEN);
 				setState(441);
-				match(LABEL);
+				match(OPEN);
 				setState(442);
-				match(KIND);
+				match(LABEL);
 				setState(443);
-				match(EQUALS);
+				match(KIND);
 				setState(444);
+				match(EQUALS);
+				setState(445);
 				match(STRING);
-				setState(446);
+				setState(447);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				if (_la==X) {
 					{
-					setState(445);
+					setState(446);
 					coordinate();
 					}
 				}
 
-				setState(448);
-				match(CLOSE);
 				setState(449);
-				anything();
+				match(CLOSE);
 				setState(450);
-				match(OPEN_SLASH);
+				anything();
 				setState(451);
-				match(LABEL);
+				match(OPEN_SLASH);
 				setState(452);
+				match(LABEL);
+				setState(453);
 				match(CLOSE);
 				}
 				break;
@@ -2845,6 +2855,23 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class DoubleGuardContext extends Guard_exprContext {
+		public TerminalNode DOUBLE_GUARD() { return getToken(UppaalParser.DOUBLE_GUARD, 0); }
+		public DoubleGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterDoubleGuard(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitDoubleGuard(this);
+		}
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitDoubleGuard(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class GuardIncrementContext extends Guard_exprContext {
 		public Guard_exprContext guard_expr() {
 			return getRuleContext(Guard_exprContext.class,0);
@@ -2882,7 +2909,7 @@ public class UppaalParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(495);
+			setState(497);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case IDENTIFIER:
@@ -2891,7 +2918,7 @@ public class UppaalParser extends Parser {
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(457);
+				setState(458);
 				match(IDENTIFIER);
 				}
 				break;
@@ -2900,8 +2927,17 @@ public class UppaalParser extends Parser {
 				_localctx = new NatGuardContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(458);
+				setState(459);
 				match(NAT_GUARD);
+				}
+				break;
+			case DOUBLE_GUARD:
+				{
+				_localctx = new DoubleGuardContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(460);
+				match(DOUBLE_GUARD);
 				}
 				break;
 			case LEFT_PARENTHESIS:
@@ -2909,11 +2945,11 @@ public class UppaalParser extends Parser {
 				_localctx = new ParenthesisGuardContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(459);
-				match(LEFT_PARENTHESIS);
-				setState(460);
-				guard_expr(0);
 				setState(461);
+				match(LEFT_PARENTHESIS);
+				setState(462);
+				guard_expr(0);
+				setState(463);
 				match(RIGHT_PARENTHESIS);
 				}
 				break;
@@ -2922,9 +2958,9 @@ public class UppaalParser extends Parser {
 				_localctx = new IncrementGuardContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(463);
+				setState(465);
 				match(INCREMENT);
-				setState(464);
+				setState(466);
 				guard_expr(15);
 				}
 				break;
@@ -2933,9 +2969,9 @@ public class UppaalParser extends Parser {
 				_localctx = new DecrementGuardContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(465);
+				setState(467);
 				match(DECREMENT);
-				setState(466);
+				setState(468);
 				guard_expr(13);
 				}
 				break;
@@ -2947,10 +2983,10 @@ public class UppaalParser extends Parser {
 				_localctx = new UnaryGuardContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(467);
+				setState(469);
 				((UnaryGuardContext)_localctx).unary = _input.LT(1);
 				_la = _input.LA(1);
-				if ( !(((((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & ((1L << (ADD - 67)) | (1L << (SUB - 67)) | (1L << (EXCLAMATION - 67)) | (1L << (NOT - 67)))) != 0)) ) {
+				if ( !(((((_la - 68)) & ~0x3f) == 0 && ((1L << (_la - 68)) & ((1L << (ADD - 68)) | (1L << (SUB - 68)) | (1L << (EXCLAMATION - 68)) | (1L << (NOT - 68)))) != 0)) ) {
 					((UnaryGuardContext)_localctx).unary = (Token)_errHandler.recoverInline(this);
 				}
 				else {
@@ -2958,7 +2994,7 @@ public class UppaalParser extends Parser {
 					_errHandler.reportMatch(this);
 					consume();
 				}
-				setState(468);
+				setState(470);
 				guard_expr(11);
 				}
 				break;
@@ -2967,19 +3003,19 @@ public class UppaalParser extends Parser {
 				_localctx = new ForallGuardContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(469);
-				match(FORALL);
-				setState(470);
-				match(LEFT_PARENTHESIS);
 				setState(471);
-				match(IDENTIFIER);
+				match(FORALL);
 				setState(472);
-				match(ELSE);
+				match(LEFT_PARENTHESIS);
 				setState(473);
-				type();
+				match(IDENTIFIER);
 				setState(474);
-				match(RIGHT_PARENTHESIS);
+				match(ELSE);
 				setState(475);
+				type();
+				setState(476);
+				match(RIGHT_PARENTHESIS);
+				setState(477);
 				guard_expr(5);
 				}
 				break;
@@ -2988,19 +3024,19 @@ public class UppaalParser extends Parser {
 				_localctx = new ExistsGuardContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(477);
-				match(EXISTS);
-				setState(478);
-				match(LEFT_PARENTHESIS);
 				setState(479);
-				match(IDENTIFIER);
+				match(EXISTS);
 				setState(480);
-				match(ELSE);
+				match(LEFT_PARENTHESIS);
 				setState(481);
-				type();
+				match(IDENTIFIER);
 				setState(482);
-				match(RIGHT_PARENTHESIS);
+				match(ELSE);
 				setState(483);
+				type();
+				setState(484);
+				match(RIGHT_PARENTHESIS);
+				setState(485);
 				guard_expr(4);
 				}
 				break;
@@ -3009,19 +3045,19 @@ public class UppaalParser extends Parser {
 				_localctx = new SumGuardContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(485);
-				match(SUM);
-				setState(486);
-				match(LEFT_PARENTHESIS);
 				setState(487);
-				match(IDENTIFIER);
+				match(SUM);
 				setState(488);
-				match(ELSE);
+				match(LEFT_PARENTHESIS);
 				setState(489);
-				type();
+				match(IDENTIFIER);
 				setState(490);
-				match(RIGHT_PARENTHESIS);
+				match(ELSE);
 				setState(491);
+				type();
+				setState(492);
+				match(RIGHT_PARENTHESIS);
+				setState(493);
 				guard_expr(3);
 				}
 				break;
@@ -3030,7 +3066,7 @@ public class UppaalParser extends Parser {
 				_localctx = new TrueGuardContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(493);
+				setState(495);
 				match(TRUE);
 				}
 				break;
@@ -3039,7 +3075,7 @@ public class UppaalParser extends Parser {
 				_localctx = new FalseGuardContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(494);
+				setState(496);
 				match(FALSE);
 				}
 				break;
@@ -3047,27 +3083,27 @@ public class UppaalParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(535);
+			setState(537);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,55,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,56,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(533);
+					setState(535);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,54,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,55,_ctx) ) {
 					case 1:
 						{
 						_localctx = new AssignGuardContext(new Guard_exprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
-						setState(497);
+						setState(499);
 						if (!(precpred(_ctx, 12))) throw new FailedPredicateException(this, "precpred(_ctx, 12)");
-						setState(498);
+						setState(500);
 						((AssignGuardContext)_localctx).assign = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(((((_la - 55)) & ~0x3f) == 0 && ((1L << (_la - 55)) & ((1L << (ASSIGN - 55)) | (1L << (ASSIGN_COLON - 55)) | (1L << (ASSIGN_ADD - 55)) | (1L << (ASSIGN_SUB - 55)) | (1L << (ASSIGN_MUL - 55)) | (1L << (ASSIGN_DIV - 55)) | (1L << (ASSIGN_PERCENT - 55)) | (1L << (ASSIGN_OR - 55)) | (1L << (ASSIGN_AND - 55)) | (1L << (ASSIGN_XOR - 55)) | (1L << (ASSIGN_LSHIFT - 55)) | (1L << (ASSIGN_RSHIFT - 55)))) != 0)) ) {
+						if ( !(((((_la - 56)) & ~0x3f) == 0 && ((1L << (_la - 56)) & ((1L << (ASSIGN - 56)) | (1L << (ASSIGN_COLON - 56)) | (1L << (ASSIGN_ADD - 56)) | (1L << (ASSIGN_SUB - 56)) | (1L << (ASSIGN_MUL - 56)) | (1L << (ASSIGN_DIV - 56)) | (1L << (ASSIGN_PERCENT - 56)) | (1L << (ASSIGN_OR - 56)) | (1L << (ASSIGN_AND - 56)) | (1L << (ASSIGN_XOR - 56)) | (1L << (ASSIGN_LSHIFT - 56)) | (1L << (ASSIGN_RSHIFT - 56)))) != 0)) ) {
 							((AssignGuardContext)_localctx).assign = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -3075,7 +3111,7 @@ public class UppaalParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(499);
+						setState(501);
 						guard_expr(13);
 						}
 						break;
@@ -3083,12 +3119,12 @@ public class UppaalParser extends Parser {
 						{
 						_localctx = new ComparisonGuardContext(new Guard_exprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
-						setState(500);
+						setState(502);
 						if (!(precpred(_ctx, 10))) throw new FailedPredicateException(this, "precpred(_ctx, 10)");
-						setState(501);
+						setState(503);
 						((ComparisonGuardContext)_localctx).binary = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(((((_la - 71)) & ~0x3f) == 0 && ((1L << (_la - 71)) & ((1L << (LESS - 71)) | (1L << (LESSEQ - 71)) | (1L << (COMPARE - 71)) | (1L << (DIFFERENT - 71)) | (1L << (GREATEREQ - 71)) | (1L << (GREATER - 71)))) != 0)) ) {
+						if ( !(((((_la - 72)) & ~0x3f) == 0 && ((1L << (_la - 72)) & ((1L << (LESS - 72)) | (1L << (LESSEQ - 72)) | (1L << (COMPARE - 72)) | (1L << (DIFFERENT - 72)) | (1L << (GREATEREQ - 72)) | (1L << (GREATER - 72)))) != 0)) ) {
 							((ComparisonGuardContext)_localctx).binary = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -3096,12 +3132,12 @@ public class UppaalParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(502);
+						setState(504);
 						guard_expr(11);
 
 
 						                          this.num++;
-						                          //System.out.println ((((ComparisonGuardContext)_localctx).binary!=null?((ComparisonGuardContext)_localctx).binary.getText():null));
+						                          System.out.println ((((ComparisonGuardContext)_localctx).binary!=null?((ComparisonGuardContext)_localctx).binary.getText():null));
 						                          
 						}
 						break;
@@ -3109,12 +3145,12 @@ public class UppaalParser extends Parser {
 						{
 						_localctx = new BinaryGuardContext(new Guard_exprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
-						setState(505);
+						setState(507);
 						if (!(precpred(_ctx, 9))) throw new FailedPredicateException(this, "precpred(_ctx, 9)");
-						setState(506);
+						setState(508);
 						((BinaryGuardContext)_localctx).binary = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(((((_la - 67)) & ~0x3f) == 0 && ((1L << (_la - 67)) & ((1L << (ADD - 67)) | (1L << (SUB - 67)) | (1L << (MUL - 67)) | (1L << (DIV - 67)) | (1L << (PERCENT - 67)) | (1L << (BITAND - 67)) | (1L << (BITOR - 67)) | (1L << (BITXOR - 67)) | (1L << (LSHIFT - 67)) | (1L << (RSHIFT - 67)) | (1L << (AND_SYMBOL - 67)) | (1L << (OR_SYMBOL - 67)) | (1L << (MINIMUM - 67)) | (1L << (MAXIMUM - 67)) | (1L << (OR - 67)) | (1L << (AND - 67)) | (1L << (IMPLY - 67)))) != 0)) ) {
+						if ( !(((((_la - 68)) & ~0x3f) == 0 && ((1L << (_la - 68)) & ((1L << (ADD - 68)) | (1L << (SUB - 68)) | (1L << (MUL - 68)) | (1L << (DIV - 68)) | (1L << (PERCENT - 68)) | (1L << (BITAND - 68)) | (1L << (BITOR - 68)) | (1L << (BITXOR - 68)) | (1L << (LSHIFT - 68)) | (1L << (RSHIFT - 68)) | (1L << (AND_SYMBOL - 68)) | (1L << (OR_SYMBOL - 68)) | (1L << (MINIMUM - 68)) | (1L << (MAXIMUM - 68)) | (1L << (OR - 68)) | (1L << (AND - 68)) | (1L << (IMPLY - 68)))) != 0)) ) {
 							((BinaryGuardContext)_localctx).binary = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -3122,7 +3158,7 @@ public class UppaalParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(507);
+						setState(509);
 						guard_expr(10);
 						}
 						break;
@@ -3130,15 +3166,15 @@ public class UppaalParser extends Parser {
 						{
 						_localctx = new IfGuardContext(new Guard_exprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
-						setState(508);
-						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
-						setState(509);
-						match(IF);
 						setState(510);
-						guard_expr(0);
+						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
 						setState(511);
-						match(ELSE);
+						match(IF);
 						setState(512);
+						guard_expr(0);
+						setState(513);
+						match(ELSE);
+						setState(514);
 						guard_expr(9);
 						}
 						break;
@@ -3146,13 +3182,13 @@ public class UppaalParser extends Parser {
 						{
 						_localctx = new ArrayGuardContext(new Guard_exprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
-						setState(514);
-						if (!(precpred(_ctx, 19))) throw new FailedPredicateException(this, "precpred(_ctx, 19)");
-						setState(515);
-						match(LEFT_BRACKET);
 						setState(516);
-						guard_expr(0);
+						if (!(precpred(_ctx, 19))) throw new FailedPredicateException(this, "precpred(_ctx, 19)");
 						setState(517);
+						match(LEFT_BRACKET);
+						setState(518);
+						guard_expr(0);
+						setState(519);
 						match(RIGHT_BRACKET);
 						}
 						break;
@@ -3160,9 +3196,9 @@ public class UppaalParser extends Parser {
 						{
 						_localctx = new StopWatchGuardContext(new Guard_exprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
-						setState(519);
+						setState(521);
 						if (!(precpred(_ctx, 18))) throw new FailedPredicateException(this, "precpred(_ctx, 18)");
-						setState(520);
+						setState(522);
 						match(APOSTROPHE);
 						}
 						break;
@@ -3170,9 +3206,9 @@ public class UppaalParser extends Parser {
 						{
 						_localctx = new GuardIncrementContext(new Guard_exprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
-						setState(521);
+						setState(523);
 						if (!(precpred(_ctx, 16))) throw new FailedPredicateException(this, "precpred(_ctx, 16)");
-						setState(522);
+						setState(524);
 						match(INCREMENT);
 						}
 						break;
@@ -3180,9 +3216,9 @@ public class UppaalParser extends Parser {
 						{
 						_localctx = new GuardDecrementContext(new Guard_exprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
-						setState(523);
+						setState(525);
 						if (!(precpred(_ctx, 14))) throw new FailedPredicateException(this, "precpred(_ctx, 14)");
-						setState(524);
+						setState(526);
 						match(DECREMENT);
 						}
 						break;
@@ -3190,11 +3226,11 @@ public class UppaalParser extends Parser {
 						{
 						_localctx = new DotGuardContext(new Guard_exprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
-						setState(525);
-						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
-						setState(526);
-						match(LOOKUP_OP);
 						setState(527);
+						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
+						setState(528);
+						match(LOOKUP_OP);
+						setState(529);
 						match(IDENTIFIER);
 						}
 						break;
@@ -3202,22 +3238,22 @@ public class UppaalParser extends Parser {
 						{
 						_localctx = new FuncGuardContext(new Guard_exprContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
-						setState(528);
-						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
-						setState(529);
-						match(LEFT_PARENTHESIS);
 						setState(530);
-						arguments();
+						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
 						setState(531);
+						match(LEFT_PARENTHESIS);
+						setState(532);
+						arguments();
+						setState(533);
 						match(RIGHT_PARENTHESIS);
 						}
 						break;
 					}
 					} 
 				}
-				setState(537);
+				setState(539);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,55,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,56,_ctx);
 			}
 			}
 		}
@@ -3269,26 +3305,26 @@ public class UppaalParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(546);
+			setState(548);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (((((_la - 46)) & ~0x3f) == 0 && ((1L << (_la - 46)) & ((1L << (NAT_GUARD - 46)) | (1L << (LEFT_PARENTHESIS - 46)) | (1L << (INCREMENT - 46)) | (1L << (DECREMENT - 46)) | (1L << (ADD - 46)) | (1L << (SUB - 46)) | (1L << (EXCLAMATION - 46)) | (1L << (NOT - 46)) | (1L << (FORALL - 46)) | (1L << (EXISTS - 46)) | (1L << (SUM - 46)) | (1L << (TRUE - 46)) | (1L << (FALSE - 46)) | (1L << (IDENTIFIER - 46)))) != 0)) {
+			if (((((_la - 46)) & ~0x3f) == 0 && ((1L << (_la - 46)) & ((1L << (NAT_GUARD - 46)) | (1L << (DOUBLE_GUARD - 46)) | (1L << (LEFT_PARENTHESIS - 46)) | (1L << (INCREMENT - 46)) | (1L << (DECREMENT - 46)) | (1L << (ADD - 46)) | (1L << (SUB - 46)) | (1L << (EXCLAMATION - 46)) | (1L << (NOT - 46)) | (1L << (FORALL - 46)) | (1L << (EXISTS - 46)) | (1L << (SUM - 46)) | (1L << (TRUE - 46)) | (1L << (FALSE - 46)) | (1L << (IDENTIFIER - 46)))) != 0)) {
 				{
-				setState(538);
+				setState(540);
 				guard_expr(0);
-				setState(543);
+				setState(545);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while (_la==COMMA) {
 					{
 					{
-					setState(539);
+					setState(541);
 					match(COMMA);
-					setState(540);
+					setState(542);
 					guard_expr(0);
 					}
 					}
-					setState(545);
+					setState(547);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
@@ -3340,12 +3376,12 @@ public class UppaalParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(549);
+			setState(551);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==META || _la==CONST) {
 				{
-				setState(548);
+				setState(550);
 				_la = _input.LA(1);
 				if ( !(_la==META || _la==CONST) ) {
 				_errHandler.recoverInline(this);
@@ -3358,7 +3394,7 @@ public class UppaalParser extends Parser {
 				}
 			}
 
-			setState(551);
+			setState(553);
 			typeId();
 			}
 		}
@@ -3454,14 +3490,14 @@ public class UppaalParser extends Parser {
 		TypeIdContext _localctx = new TypeIdContext(_ctx, getState());
 		enterRule(_localctx, 48, RULE_typeId);
 		try {
-			setState(566);
+			setState(568);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,59,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,60,_ctx) ) {
 			case 1:
 				_localctx = new TypeIntContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(553);
+				setState(555);
 				match(INT);
 				}
 				break;
@@ -3469,17 +3505,17 @@ public class UppaalParser extends Parser {
 				_localctx = new TypeIntDomainContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(554);
-				match(INT);
-				setState(555);
-				match(LEFT_BRACKET);
 				setState(556);
-				guard_expr(0);
+				match(INT);
 				setState(557);
-				match(COMMA);
+				match(LEFT_BRACKET);
 				setState(558);
 				guard_expr(0);
 				setState(559);
+				match(COMMA);
+				setState(560);
+				guard_expr(0);
+				setState(561);
 				match(RIGHT_BRACKET);
 				}
 				break;
@@ -3487,13 +3523,13 @@ public class UppaalParser extends Parser {
 				_localctx = new TypeScalarContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(561);
-				match(SCALAR);
-				setState(562);
-				match(LEFT_BRACKET);
 				setState(563);
-				guard_expr(0);
+				match(SCALAR);
 				setState(564);
+				match(LEFT_BRACKET);
+				setState(565);
+				guard_expr(0);
+				setState(566);
 				match(RIGHT_BRACKET);
 				}
 				break;
@@ -3542,17 +3578,17 @@ public class UppaalParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(568);
-			match(OPEN);
-			setState(569);
-			match(SOURCE);
 			setState(570);
-			match(REF);
+			match(OPEN);
 			setState(571);
-			match(EQUALS);
+			match(SOURCE);
 			setState(572);
-			match(STRING);
+			match(REF);
 			setState(573);
+			match(EQUALS);
+			setState(574);
+			match(STRING);
+			setState(575);
 			match(SLASH_CLOSE);
 			}
 		}
@@ -3599,17 +3635,17 @@ public class UppaalParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(575);
-			match(OPEN);
-			setState(576);
-			match(TARGET);
 			setState(577);
-			match(REF);
+			match(OPEN);
 			setState(578);
-			match(EQUALS);
+			match(TARGET);
 			setState(579);
-			match(STRING);
+			match(REF);
 			setState(580);
+			match(EQUALS);
+			setState(581);
+			match(STRING);
+			setState(582);
 			match(SLASH_CLOSE);
 			}
 		}
@@ -3657,21 +3693,21 @@ public class UppaalParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(582);
+			setState(584);
 			match(OPEN);
-			setState(583);
-			match(NAIL);
 			setState(585);
+			match(NAIL);
+			setState(587);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==X) {
 				{
-				setState(584);
+				setState(586);
 				coordinate();
 				}
 			}
 
-			setState(587);
+			setState(589);
 			match(SLASH_CLOSE);
 			}
 		}
@@ -3725,19 +3761,19 @@ public class UppaalParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(589);
-			match(OPEN);
-			setState(590);
-			match(SYSTEM);
 			setState(591);
-			match(CLOSE);
+			match(OPEN);
 			setState(592);
-			anything();
-			setState(593);
-			match(OPEN_SLASH);
-			setState(594);
 			match(SYSTEM);
+			setState(593);
+			match(CLOSE);
+			setState(594);
+			anything();
 			setState(595);
+			match(OPEN_SLASH);
+			setState(596);
+			match(SYSTEM);
+			setState(597);
 			match(CLOSE);
 			}
 		}
@@ -3801,59 +3837,59 @@ public class UppaalParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(597);
-			match(OPEN);
-			setState(598);
-			match(QUERIES);
 			setState(599);
+			match(OPEN);
+			setState(600);
+			match(QUERIES);
+			setState(601);
 			match(CLOSE);
-			setState(603);
+			setState(605);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << COMMENT) | (1L << SEA_WS) | (1L << PI))) != 0)) {
 				{
 				{
-				setState(600);
+				setState(602);
 				misc();
 				}
 				}
-				setState(605);
+				setState(607);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(615);
+			setState(617);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==OPEN) {
 				{
 				{
-				setState(606);
+				setState(608);
 				query();
-				setState(610);
+				setState(612);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << COMMENT) | (1L << SEA_WS) | (1L << PI))) != 0)) {
 					{
 					{
-					setState(607);
+					setState(609);
 					misc();
 					}
 					}
-					setState(612);
+					setState(614);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
 				}
 				}
-				setState(617);
+				setState(619);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(618);
-			match(OPEN_SLASH);
-			setState(619);
-			match(QUERIES);
 			setState(620);
+			match(OPEN_SLASH);
+			setState(621);
+			match(QUERIES);
+			setState(622);
 			match(CLOSE);
 			}
 		}
@@ -3917,79 +3953,79 @@ public class UppaalParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(622);
-			match(OPEN);
-			setState(623);
-			match(QUERY);
 			setState(624);
+			match(OPEN);
+			setState(625);
+			match(QUERY);
+			setState(626);
 			match(CLOSE);
-			setState(628);
+			setState(630);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << COMMENT) | (1L << SEA_WS) | (1L << PI))) != 0)) {
 				{
 				{
-				setState(625);
+				setState(627);
 				misc();
 				}
 				}
-				setState(630);
+				setState(632);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(638);
+			setState(640);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,66,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,67,_ctx) ) {
 			case 1:
 				{
-				setState(631);
+				setState(633);
 				formula();
-				setState(635);
+				setState(637);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << COMMENT) | (1L << SEA_WS) | (1L << PI))) != 0)) {
 					{
 					{
-					setState(632);
+					setState(634);
 					misc();
 					}
 					}
-					setState(637);
+					setState(639);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
 				}
 				break;
 			}
-			setState(647);
+			setState(649);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==OPEN) {
 				{
-				setState(640);
+				setState(642);
 				comment();
-				setState(644);
+				setState(646);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << COMMENT) | (1L << SEA_WS) | (1L << PI))) != 0)) {
 					{
 					{
-					setState(641);
+					setState(643);
 					misc();
 					}
 					}
-					setState(646);
+					setState(648);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				}
 				}
 			}
 
-			setState(649);
-			match(OPEN_SLASH);
-			setState(650);
-			match(QUERY);
 			setState(651);
+			match(OPEN_SLASH);
+			setState(652);
+			match(QUERY);
+			setState(653);
 			match(CLOSE);
 			}
 		}
@@ -4043,19 +4079,19 @@ public class UppaalParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(653);
-			match(OPEN);
-			setState(654);
-			match(FORMULA);
 			setState(655);
-			match(CLOSE);
+			match(OPEN);
 			setState(656);
-			anything();
-			setState(657);
-			match(OPEN_SLASH);
-			setState(658);
 			match(FORMULA);
+			setState(657);
+			match(CLOSE);
+			setState(658);
+			anything();
 			setState(659);
+			match(OPEN_SLASH);
+			setState(660);
+			match(FORMULA);
+			setState(661);
 			match(CLOSE);
 			}
 		}
@@ -4109,19 +4145,19 @@ public class UppaalParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(661);
-			match(OPEN);
-			setState(662);
-			match(QUERY_COMMENT);
 			setState(663);
-			match(CLOSE);
+			match(OPEN);
 			setState(664);
-			anything();
-			setState(665);
-			match(OPEN_SLASH);
-			setState(666);
 			match(QUERY_COMMENT);
+			setState(665);
+			match(CLOSE);
+			setState(666);
+			anything();
 			setState(667);
+			match(OPEN_SLASH);
+			setState(668);
+			match(QUERY_COMMENT);
+			setState(669);
 			match(CLOSE);
 			}
 		}
@@ -4170,7 +4206,7 @@ public class UppaalParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3j\u02a0\4\2\t\2\4"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3n\u02a2\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -4206,34 +4242,34 @@ public class UppaalParser extends Parser {
 		"\25\3\25\3\25\7\25\u0196\n\25\f\25\16\25\u0199\13\25\3\25\3\25\7\25\u019d"+
 		"\n\25\f\25\16\25\u01a0\13\25\7\25\u01a2\n\25\f\25\16\25\u01a5\13\25\3"+
 		"\25\3\25\7\25\u01a9\n\25\f\25\16\25\u01ac\13\25\7\25\u01ae\n\25\f\25\16"+
-		"\25\u01b1\13\25\3\25\3\25\3\25\3\25\3\26\3\26\3\26\3\26\3\26\3\26\3\26"+
-		"\3\26\3\26\3\26\5\26\u01c1\n\26\3\26\3\26\3\26\3\26\3\26\3\26\5\26\u01c9"+
-		"\n\26\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27"+
+		"\25\u01b1\13\25\3\25\3\25\3\25\3\25\3\26\3\26\5\26\u01b9\n\26\3\26\3\26"+
+		"\3\26\3\26\3\26\3\26\3\26\5\26\u01c2\n\26\3\26\3\26\3\26\3\26\3\26\3\26"+
+		"\5\26\u01ca\n\26\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27"+
 		"\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27"+
-		"\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\5\27\u01f2"+
-		"\n\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27"+
 		"\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27"+
-		"\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\7\27\u0218\n\27\f\27\16"+
-		"\27\u021b\13\27\3\30\3\30\3\30\7\30\u0220\n\30\f\30\16\30\u0223\13\30"+
-		"\5\30\u0225\n\30\3\31\5\31\u0228\n\31\3\31\3\31\3\32\3\32\3\32\3\32\3"+
-		"\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\5\32\u0239\n\32\3\33\3\33"+
-		"\3\33\3\33\3\33\3\33\3\33\3\34\3\34\3\34\3\34\3\34\3\34\3\34\3\35\3\35"+
-		"\3\35\5\35\u024c\n\35\3\35\3\35\3\36\3\36\3\36\3\36\3\36\3\36\3\36\3\36"+
-		"\3\37\3\37\3\37\3\37\7\37\u025c\n\37\f\37\16\37\u025f\13\37\3\37\3\37"+
-		"\7\37\u0263\n\37\f\37\16\37\u0266\13\37\7\37\u0268\n\37\f\37\16\37\u026b"+
-		"\13\37\3\37\3\37\3\37\3\37\3 \3 \3 \3 \7 \u0275\n \f \16 \u0278\13 \3"+
-		" \3 \7 \u027c\n \f \16 \u027f\13 \5 \u0281\n \3 \3 \7 \u0285\n \f \16"+
-		" \u0288\13 \5 \u028a\n \3 \3 \3 \3 \3!\3!\3!\3!\3!\3!\3!\3!\3\"\3\"\3"+
-		"\"\3\"\3\"\3\"\3\"\3\"\3\"\2\3,#\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36"+
-		" \"$&(*,.\60\62\64\668:<>@B\2\13\3\2\6\7\4\2\b\b\r\r\5\2\3\3\b\b--\3\2"+
-		"\31\32\3\2EH\3\29D\3\2IN\4\2EFO]\3\2de\2\u02da\2E\3\2\2\2\4T\3\2\2\2\6"+
-		"^\3\2\2\2\b\u0086\3\2\2\2\n\u0088\3\2\2\2\f\u008a\3\2\2\2\16\u008e\3\2"+
-		"\2\2\20\u0090\3\2\2\2\22\u0092\3\2\2\2\24\u00c1\3\2\2\2\26\u00ca\3\2\2"+
-		"\2\30\u00da\3\2\2\2\32\u00ef\3\2\2\2\34\u0121\3\2\2\2\36\u0129\3\2\2\2"+
-		" \u0130\3\2\2\2\"\u0137\3\2\2\2$\u016a\3\2\2\2&\u0178\3\2\2\2(\u0183\3"+
-		"\2\2\2*\u01c8\3\2\2\2,\u01f1\3\2\2\2.\u0224\3\2\2\2\60\u0227\3\2\2\2\62"+
-		"\u0238\3\2\2\2\64\u023a\3\2\2\2\66\u0241\3\2\2\28\u0248\3\2\2\2:\u024f"+
-		"\3\2\2\2<\u0257\3\2\2\2>\u0270\3\2\2\2@\u028f\3\2\2\2B\u0297\3\2\2\2D"+
+		"\3\27\5\27\u01f4\n\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27"+
+		"\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27"+
+		"\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\3\27\7\27\u021a"+
+		"\n\27\f\27\16\27\u021d\13\27\3\30\3\30\3\30\7\30\u0222\n\30\f\30\16\30"+
+		"\u0225\13\30\5\30\u0227\n\30\3\31\5\31\u022a\n\31\3\31\3\31\3\32\3\32"+
+		"\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\3\32\5\32\u023b\n\32"+
+		"\3\33\3\33\3\33\3\33\3\33\3\33\3\33\3\34\3\34\3\34\3\34\3\34\3\34\3\34"+
+		"\3\35\3\35\3\35\5\35\u024e\n\35\3\35\3\35\3\36\3\36\3\36\3\36\3\36\3\36"+
+		"\3\36\3\36\3\37\3\37\3\37\3\37\7\37\u025e\n\37\f\37\16\37\u0261\13\37"+
+		"\3\37\3\37\7\37\u0265\n\37\f\37\16\37\u0268\13\37\7\37\u026a\n\37\f\37"+
+		"\16\37\u026d\13\37\3\37\3\37\3\37\3\37\3 \3 \3 \3 \7 \u0277\n \f \16 "+
+		"\u027a\13 \3 \3 \7 \u027e\n \f \16 \u0281\13 \5 \u0283\n \3 \3 \7 \u0287"+
+		"\n \f \16 \u028a\13 \5 \u028c\n \3 \3 \3 \3 \3!\3!\3!\3!\3!\3!\3!\3!\3"+
+		"\"\3\"\3\"\3\"\3\"\3\"\3\"\3\"\3\"\2\3,#\2\4\6\b\n\f\16\20\22\24\26\30"+
+		"\32\34\36 \"$&(*,.\60\62\64\668:<>@B\2\13\3\2\6\7\4\2\b\b\r\r\5\2\3\3"+
+		"\b\b--\3\2\31\32\3\2FI\3\2:E\3\2JO\4\2FGP^\3\2ef\2\u02de\2E\3\2\2\2\4"+
+		"T\3\2\2\2\6^\3\2\2\2\b\u0086\3\2\2\2\n\u0088\3\2\2\2\f\u008a\3\2\2\2\16"+
+		"\u008e\3\2\2\2\20\u0090\3\2\2\2\22\u0092\3\2\2\2\24\u00c1\3\2\2\2\26\u00ca"+
+		"\3\2\2\2\30\u00da\3\2\2\2\32\u00ef\3\2\2\2\34\u0121\3\2\2\2\36\u0129\3"+
+		"\2\2\2 \u0130\3\2\2\2\"\u0137\3\2\2\2$\u016a\3\2\2\2&\u0178\3\2\2\2(\u0183"+
+		"\3\2\2\2*\u01c9\3\2\2\2,\u01f3\3\2\2\2.\u0226\3\2\2\2\60\u0229\3\2\2\2"+
+		"\62\u023a\3\2\2\2\64\u023c\3\2\2\2\66\u0243\3\2\2\28\u024a\3\2\2\2:\u0251"+
+		"\3\2\2\2<\u0259\3\2\2\2>\u0272\3\2\2\2@\u0291\3\2\2\2B\u0299\3\2\2\2D"+
 		"F\5\4\3\2ED\3\2\2\2EF\3\2\2\2FJ\3\2\2\2GI\5\20\t\2HG\3\2\2\2IL\3\2\2\2"+
 		"JH\3\2\2\2JK\3\2\2\2KM\3\2\2\2LJ\3\2\2\2MQ\5\22\n\2NP\5\20\t\2ON\3\2\2"+
 		"\2PS\3\2\2\2QO\3\2\2\2QR\3\2\2\2R\3\3\2\2\2SQ\3\2\2\2TX\7\f\2\2UW\5\f"+
@@ -4344,87 +4380,88 @@ public class UppaalParser extends Parser {
 		"\u01ae\3\2\2\2\u01ac\u01aa\3\2\2\2\u01ad\u01a6\3\2\2\2\u01ae\u01b1\3\2"+
 		"\2\2\u01af\u01ad\3\2\2\2\u01af\u01b0\3\2\2\2\u01b0\u01b2\3\2\2\2\u01b1"+
 		"\u01af\3\2\2\2\u01b2\u01b3\7\13\2\2\u01b3\u01b4\7\35\2\2\u01b4\u01b5\7"+
-		"&\2\2\u01b5)\3\2\2\2\u01b6\u01b7\7\t\2\2\u01b7\u01b8\5,\27\2\u01b8\u01b9"+
-		"\7.\2\2\u01b9\u01c9\3\2\2\2\u01ba\u01bb\7\n\2\2\u01bb\u01bc\7\33\2\2\u01bc"+
-		"\u01bd\7\34\2\2\u01bd\u01be\7)\2\2\u01be\u01c0\7*\2\2\u01bf\u01c1\5\36"+
-		"\20\2\u01c0\u01bf\3\2\2\2\u01c0\u01c1\3\2\2\2\u01c1\u01c2\3\2\2\2\u01c2"+
-		"\u01c3\7&\2\2\u01c3\u01c4\5\26\f\2\u01c4\u01c5\7\13\2\2\u01c5\u01c6\7"+
-		"\33\2\2\u01c6\u01c7\7&\2\2\u01c7\u01c9\3\2\2\2\u01c8\u01b6\3\2\2\2\u01c8"+
-		"\u01ba\3\2\2\2\u01c9+\3\2\2\2\u01ca\u01cb\b\27\1\2\u01cb\u01f2\7j\2\2"+
-		"\u01cc\u01f2\7\60\2\2\u01cd\u01ce\7\62\2\2\u01ce\u01cf\5,\27\2\u01cf\u01d0"+
-		"\7\63\2\2\u01d0\u01f2\3\2\2\2\u01d1\u01d2\7\67\2\2\u01d2\u01f2\5,\27\21"+
-		"\u01d3\u01d4\78\2\2\u01d4\u01f2\5,\27\17\u01d5\u01d6\t\6\2\2\u01d6\u01f2"+
-		"\5,\27\r\u01d7\u01d8\7a\2\2\u01d8\u01d9\7\62\2\2\u01d9\u01da\7j\2\2\u01da"+
-		"\u01db\7_\2\2\u01db\u01dc\5\60\31\2\u01dc\u01dd\7\63\2\2\u01dd\u01de\5"+
-		",\27\7\u01de\u01f2\3\2\2\2\u01df\u01e0\7b\2\2\u01e0\u01e1\7\62\2\2\u01e1"+
-		"\u01e2\7j\2\2\u01e2\u01e3\7_\2\2\u01e3\u01e4\5\60\31\2\u01e4\u01e5\7\63"+
-		"\2\2\u01e5\u01e6\5,\27\6\u01e6\u01f2\3\2\2\2\u01e7\u01e8\7c\2\2\u01e8"+
-		"\u01e9\7\62\2\2\u01e9\u01ea\7j\2\2\u01ea\u01eb\7_\2\2\u01eb\u01ec\5\60"+
-		"\31\2\u01ec\u01ed\7\63\2\2\u01ed\u01ee\5,\27\5\u01ee\u01f2\3\2\2\2\u01ef"+
-		"\u01f2\7h\2\2\u01f0\u01f2\7i\2\2\u01f1\u01ca\3\2\2\2\u01f1\u01cc\3\2\2"+
-		"\2\u01f1\u01cd\3\2\2\2\u01f1\u01d1\3\2\2\2\u01f1\u01d3\3\2\2\2\u01f1\u01d5"+
-		"\3\2\2\2\u01f1\u01d7\3\2\2\2\u01f1\u01df\3\2\2\2\u01f1\u01e7\3\2\2\2\u01f1"+
-		"\u01ef\3\2\2\2\u01f1\u01f0\3\2\2\2\u01f2\u0219\3\2\2\2\u01f3\u01f4\f\16"+
-		"\2\2\u01f4\u01f5\t\7\2\2\u01f5\u0218\5,\27\17\u01f6\u01f7\f\f\2\2\u01f7"+
-		"\u01f8\t\b\2\2\u01f8\u01f9\5,\27\r\u01f9\u01fa\b\27\1\2\u01fa\u0218\3"+
-		"\2\2\2\u01fb\u01fc\f\13\2\2\u01fc\u01fd\t\t\2\2\u01fd\u0218\5,\27\f\u01fe"+
-		"\u01ff\f\n\2\2\u01ff\u0200\7^\2\2\u0200\u0201\5,\27\2\u0201\u0202\7_\2"+
-		"\2\u0202\u0203\5,\27\13\u0203\u0218\3\2\2\2\u0204\u0205\f\25\2\2\u0205"+
-		"\u0206\7\64\2\2\u0206\u0207\5,\27\2\u0207\u0208\7\65\2\2\u0208\u0218\3"+
-		"\2\2\2\u0209\u020a\f\24\2\2\u020a\u0218\7\61\2\2\u020b\u020c\f\22\2\2"+
-		"\u020c\u0218\7\67\2\2\u020d\u020e\f\20\2\2\u020e\u0218\78\2\2\u020f\u0210"+
-		"\f\t\2\2\u0210\u0211\7`\2\2\u0211\u0218\7j\2\2\u0212\u0213\f\b\2\2\u0213"+
-		"\u0214\7\62\2\2\u0214\u0215\5.\30\2\u0215\u0216\7\63\2\2\u0216\u0218\3"+
-		"\2\2\2\u0217\u01f3\3\2\2\2\u0217\u01f6\3\2\2\2\u0217\u01fb\3\2\2\2\u0217"+
-		"\u01fe\3\2\2\2\u0217\u0204\3\2\2\2\u0217\u0209\3\2\2\2\u0217\u020b\3\2"+
-		"\2\2\u0217\u020d\3\2\2\2\u0217\u020f\3\2\2\2\u0217\u0212\3\2\2\2\u0218"+
-		"\u021b\3\2\2\2\u0219\u0217\3\2\2\2\u0219\u021a\3\2\2\2\u021a-\3\2\2\2"+
-		"\u021b\u0219\3\2\2\2\u021c\u0221\5,\27\2\u021d\u021e\7\66\2\2\u021e\u0220"+
-		"\5,\27\2\u021f\u021d\3\2\2\2\u0220\u0223\3\2\2\2\u0221\u021f\3\2\2\2\u0221"+
-		"\u0222\3\2\2\2\u0222\u0225\3\2\2\2\u0223\u0221\3\2\2\2\u0224\u021c\3\2"+
-		"\2\2\u0224\u0225\3\2\2\2\u0225/\3\2\2\2\u0226\u0228\t\n\2\2\u0227\u0226"+
-		"\3\2\2\2\u0227\u0228\3\2\2\2\u0228\u0229\3\2\2\2\u0229\u022a\5\62\32\2"+
-		"\u022a\61\3\2\2\2\u022b\u0239\7f\2\2\u022c\u022d\7f\2\2\u022d\u022e\7"+
-		"\64\2\2\u022e\u022f\5,\27\2\u022f\u0230\7\66\2\2\u0230\u0231\5,\27\2\u0231"+
-		"\u0232\7\65\2\2\u0232\u0239\3\2\2\2\u0233\u0234\7g\2\2\u0234\u0235\7\64"+
-		"\2\2\u0235\u0236\5,\27\2\u0236\u0237\7\65\2\2\u0237\u0239\3\2\2\2\u0238"+
-		"\u022b\3\2\2\2\u0238\u022c\3\2\2\2\u0238\u0233\3\2\2\2\u0239\63\3\2\2"+
-		"\2\u023a\u023b\7\n\2\2\u023b\u023c\7\36\2\2\u023c\u023d\7\25\2\2\u023d"+
-		"\u023e\7)\2\2\u023e\u023f\7*\2\2\u023f\u0240\7(\2\2\u0240\65\3\2\2\2\u0241"+
-		"\u0242\7\n\2\2\u0242\u0243\7\37\2\2\u0243\u0244\7\25\2\2\u0244\u0245\7"+
-		")\2\2\u0245\u0246\7*\2\2\u0246\u0247\7(\2\2\u0247\67\3\2\2\2\u0248\u0249"+
-		"\7\n\2\2\u0249\u024b\7 \2\2\u024a\u024c\5\36\20\2\u024b\u024a\3\2\2\2"+
-		"\u024b\u024c\3\2\2\2\u024c\u024d\3\2\2\2\u024d\u024e\7(\2\2\u024e9\3\2"+
-		"\2\2\u024f\u0250\7\n\2\2\u0250\u0251\7!\2\2\u0251\u0252\7&\2\2\u0252\u0253"+
-		"\5\26\f\2\u0253\u0254\7\13\2\2\u0254\u0255\7!\2\2\u0255\u0256\7&\2\2\u0256"+
-		";\3\2\2\2\u0257\u0258\7\n\2\2\u0258\u0259\7\"\2\2\u0259\u025d\7&\2\2\u025a"+
-		"\u025c\5\20\t\2\u025b\u025a\3\2\2\2\u025c\u025f\3\2\2\2\u025d\u025b\3"+
-		"\2\2\2\u025d\u025e\3\2\2\2\u025e\u0269\3\2\2\2\u025f\u025d\3\2\2\2\u0260"+
-		"\u0264\5> \2\u0261\u0263\5\20\t\2\u0262\u0261\3\2\2\2\u0263\u0266\3\2"+
-		"\2\2\u0264\u0262\3\2\2\2\u0264\u0265\3\2\2\2\u0265\u0268\3\2\2\2\u0266"+
-		"\u0264\3\2\2\2\u0267\u0260\3\2\2\2\u0268\u026b\3\2\2\2\u0269\u0267\3\2"+
-		"\2\2\u0269\u026a\3\2\2\2\u026a\u026c\3\2\2\2\u026b\u0269\3\2\2\2\u026c"+
-		"\u026d\7\13\2\2\u026d\u026e\7\"\2\2\u026e\u026f\7&\2\2\u026f=\3\2\2\2"+
-		"\u0270\u0271\7\n\2\2\u0271\u0272\7#\2\2\u0272\u0276\7&\2\2\u0273\u0275"+
-		"\5\20\t\2\u0274\u0273\3\2\2\2\u0275\u0278\3\2\2\2\u0276\u0274\3\2\2\2"+
-		"\u0276\u0277\3\2\2\2\u0277\u0280\3\2\2\2\u0278\u0276\3\2\2\2\u0279\u027d"+
-		"\5@!\2\u027a\u027c\5\20\t\2\u027b\u027a\3\2\2\2\u027c\u027f\3\2\2\2\u027d"+
-		"\u027b\3\2\2\2\u027d\u027e\3\2\2\2\u027e\u0281\3\2\2\2\u027f\u027d\3\2"+
-		"\2\2\u0280\u0279\3\2\2\2\u0280\u0281\3\2\2\2\u0281\u0289\3\2\2\2\u0282"+
-		"\u0286\5B\"\2\u0283\u0285\5\20\t\2\u0284\u0283\3\2\2\2\u0285\u0288\3\2"+
-		"\2\2\u0286\u0284\3\2\2\2\u0286\u0287\3\2\2\2\u0287\u028a\3\2\2\2\u0288"+
-		"\u0286\3\2\2\2\u0289\u0282\3\2\2\2\u0289\u028a\3\2\2\2\u028a\u028b\3\2"+
-		"\2\2\u028b\u028c\7\13\2\2\u028c\u028d\7#\2\2\u028d\u028e\7&\2\2\u028e"+
-		"?\3\2\2\2\u028f\u0290\7\n\2\2\u0290\u0291\7$\2\2\u0291\u0292\7&\2\2\u0292"+
-		"\u0293\5\26\f\2\u0293\u0294\7\13\2\2\u0294\u0295\7$\2\2\u0295\u0296\7"+
-		"&\2\2\u0296A\3\2\2\2\u0297\u0298\7\n\2\2\u0298\u0299\7%\2\2\u0299\u029a"+
-		"\7&\2\2\u029a\u029b\5\26\f\2\u029b\u029c\7\13\2\2\u029c\u029d\7%\2\2\u029d"+
-		"\u029e\7&\2\2\u029eC\3\2\2\2GEJQX^ehlt\u0082\u0086\u0098\u009f\u00a6\u00ab"+
-		"\u00b1\u00b8\u00bb\u00ca\u00d0\u00d3\u00d7\u00e0\u00ec\u00ef\u00f5\u00f8"+
-		"\u00fe\u0101\u0107\u010c\u0112\u0119\u011e\u013d\u0143\u014a\u014d\u0153"+
-		"\u0158\u0161\u0164\u0170\u017b\u0189\u0190\u0197\u019e\u01a3\u01aa\u01af"+
-		"\u01c0\u01c8\u01f1\u0217\u0219\u0221\u0224\u0227\u0238\u024b\u025d\u0264"+
-		"\u0269\u0276\u027d\u0280\u0286\u0289";
+		"&\2\2\u01b5)\3\2\2\2\u01b6\u01b8\7\t\2\2\u01b7\u01b9\5,\27\2\u01b8\u01b7"+
+		"\3\2\2\2\u01b8\u01b9\3\2\2\2\u01b9\u01ba\3\2\2\2\u01ba\u01ca\7.\2\2\u01bb"+
+		"\u01bc\7\n\2\2\u01bc\u01bd\7\33\2\2\u01bd\u01be\7\34\2\2\u01be\u01bf\7"+
+		")\2\2\u01bf\u01c1\7*\2\2\u01c0\u01c2\5\36\20\2\u01c1\u01c0\3\2\2\2\u01c1"+
+		"\u01c2\3\2\2\2\u01c2\u01c3\3\2\2\2\u01c3\u01c4\7&\2\2\u01c4\u01c5\5\26"+
+		"\f\2\u01c5\u01c6\7\13\2\2\u01c6\u01c7\7\33\2\2\u01c7\u01c8\7&\2\2\u01c8"+
+		"\u01ca\3\2\2\2\u01c9\u01b6\3\2\2\2\u01c9\u01bb\3\2\2\2\u01ca+\3\2\2\2"+
+		"\u01cb\u01cc\b\27\1\2\u01cc\u01f4\7n\2\2\u01cd\u01f4\7\60\2\2\u01ce\u01f4"+
+		"\7\61\2\2\u01cf\u01d0\7\63\2\2\u01d0\u01d1\5,\27\2\u01d1\u01d2\7\64\2"+
+		"\2\u01d2\u01f4\3\2\2\2\u01d3\u01d4\78\2\2\u01d4\u01f4\5,\27\21\u01d5\u01d6"+
+		"\79\2\2\u01d6\u01f4\5,\27\17\u01d7\u01d8\t\6\2\2\u01d8\u01f4\5,\27\r\u01d9"+
+		"\u01da\7b\2\2\u01da\u01db\7\63\2\2\u01db\u01dc\7n\2\2\u01dc\u01dd\7`\2"+
+		"\2\u01dd\u01de\5\60\31\2\u01de\u01df\7\64\2\2\u01df\u01e0\5,\27\7\u01e0"+
+		"\u01f4\3\2\2\2\u01e1\u01e2\7c\2\2\u01e2\u01e3\7\63\2\2\u01e3\u01e4\7n"+
+		"\2\2\u01e4\u01e5\7`\2\2\u01e5\u01e6\5\60\31\2\u01e6\u01e7\7\64\2\2\u01e7"+
+		"\u01e8\5,\27\6\u01e8\u01f4\3\2\2\2\u01e9\u01ea\7d\2\2\u01ea\u01eb\7\63"+
+		"\2\2\u01eb\u01ec\7n\2\2\u01ec\u01ed\7`\2\2\u01ed\u01ee\5\60\31\2\u01ee"+
+		"\u01ef\7\64\2\2\u01ef\u01f0\5,\27\5\u01f0\u01f4\3\2\2\2\u01f1\u01f4\7"+
+		"l\2\2\u01f2\u01f4\7m\2\2\u01f3\u01cb\3\2\2\2\u01f3\u01cd\3\2\2\2\u01f3"+
+		"\u01ce\3\2\2\2\u01f3\u01cf\3\2\2\2\u01f3\u01d3\3\2\2\2\u01f3\u01d5\3\2"+
+		"\2\2\u01f3\u01d7\3\2\2\2\u01f3\u01d9\3\2\2\2\u01f3\u01e1\3\2\2\2\u01f3"+
+		"\u01e9\3\2\2\2\u01f3\u01f1\3\2\2\2\u01f3\u01f2\3\2\2\2\u01f4\u021b\3\2"+
+		"\2\2\u01f5\u01f6\f\16\2\2\u01f6\u01f7\t\7\2\2\u01f7\u021a\5,\27\17\u01f8"+
+		"\u01f9\f\f\2\2\u01f9\u01fa\t\b\2\2\u01fa\u01fb\5,\27\r\u01fb\u01fc\b\27"+
+		"\1\2\u01fc\u021a\3\2\2\2\u01fd\u01fe\f\13\2\2\u01fe\u01ff\t\t\2\2\u01ff"+
+		"\u021a\5,\27\f\u0200\u0201\f\n\2\2\u0201\u0202\7_\2\2\u0202\u0203\5,\27"+
+		"\2\u0203\u0204\7`\2\2\u0204\u0205\5,\27\13\u0205\u021a\3\2\2\2\u0206\u0207"+
+		"\f\25\2\2\u0207\u0208\7\65\2\2\u0208\u0209\5,\27\2\u0209\u020a\7\66\2"+
+		"\2\u020a\u021a\3\2\2\2\u020b\u020c\f\24\2\2\u020c\u021a\7\62\2\2\u020d"+
+		"\u020e\f\22\2\2\u020e\u021a\78\2\2\u020f\u0210\f\20\2\2\u0210\u021a\7"+
+		"9\2\2\u0211\u0212\f\t\2\2\u0212\u0213\7a\2\2\u0213\u021a\7n\2\2\u0214"+
+		"\u0215\f\b\2\2\u0215\u0216\7\63\2\2\u0216\u0217\5.\30\2\u0217\u0218\7"+
+		"\64\2\2\u0218\u021a\3\2\2\2\u0219\u01f5\3\2\2\2\u0219\u01f8\3\2\2\2\u0219"+
+		"\u01fd\3\2\2\2\u0219\u0200\3\2\2\2\u0219\u0206\3\2\2\2\u0219\u020b\3\2"+
+		"\2\2\u0219\u020d\3\2\2\2\u0219\u020f\3\2\2\2\u0219\u0211\3\2\2\2\u0219"+
+		"\u0214\3\2\2\2\u021a\u021d\3\2\2\2\u021b\u0219\3\2\2\2\u021b\u021c\3\2"+
+		"\2\2\u021c-\3\2\2\2\u021d\u021b\3\2\2\2\u021e\u0223\5,\27\2\u021f\u0220"+
+		"\7\67\2\2\u0220\u0222\5,\27\2\u0221\u021f\3\2\2\2\u0222\u0225\3\2\2\2"+
+		"\u0223\u0221\3\2\2\2\u0223\u0224\3\2\2\2\u0224\u0227\3\2\2\2\u0225\u0223"+
+		"\3\2\2\2\u0226\u021e\3\2\2\2\u0226\u0227\3\2\2\2\u0227/\3\2\2\2\u0228"+
+		"\u022a\t\n\2\2\u0229\u0228\3\2\2\2\u0229\u022a\3\2\2\2\u022a\u022b\3\2"+
+		"\2\2\u022b\u022c\5\62\32\2\u022c\61\3\2\2\2\u022d\u023b\7g\2\2\u022e\u022f"+
+		"\7g\2\2\u022f\u0230\7\65\2\2\u0230\u0231\5,\27\2\u0231\u0232\7\67\2\2"+
+		"\u0232\u0233\5,\27\2\u0233\u0234\7\66\2\2\u0234\u023b\3\2\2\2\u0235\u0236"+
+		"\7k\2\2\u0236\u0237\7\65\2\2\u0237\u0238\5,\27\2\u0238\u0239\7\66\2\2"+
+		"\u0239\u023b\3\2\2\2\u023a\u022d\3\2\2\2\u023a\u022e\3\2\2\2\u023a\u0235"+
+		"\3\2\2\2\u023b\63\3\2\2\2\u023c\u023d\7\n\2\2\u023d\u023e\7\36\2\2\u023e"+
+		"\u023f\7\25\2\2\u023f\u0240\7)\2\2\u0240\u0241\7*\2\2\u0241\u0242\7(\2"+
+		"\2\u0242\65\3\2\2\2\u0243\u0244\7\n\2\2\u0244\u0245\7\37\2\2\u0245\u0246"+
+		"\7\25\2\2\u0246\u0247\7)\2\2\u0247\u0248\7*\2\2\u0248\u0249\7(\2\2\u0249"+
+		"\67\3\2\2\2\u024a\u024b\7\n\2\2\u024b\u024d\7 \2\2\u024c\u024e\5\36\20"+
+		"\2\u024d\u024c\3\2\2\2\u024d\u024e\3\2\2\2\u024e\u024f\3\2\2\2\u024f\u0250"+
+		"\7(\2\2\u02509\3\2\2\2\u0251\u0252\7\n\2\2\u0252\u0253\7!\2\2\u0253\u0254"+
+		"\7&\2\2\u0254\u0255\5\26\f\2\u0255\u0256\7\13\2\2\u0256\u0257\7!\2\2\u0257"+
+		"\u0258\7&\2\2\u0258;\3\2\2\2\u0259\u025a\7\n\2\2\u025a\u025b\7\"\2\2\u025b"+
+		"\u025f\7&\2\2\u025c\u025e\5\20\t\2\u025d\u025c\3\2\2\2\u025e\u0261\3\2"+
+		"\2\2\u025f\u025d\3\2\2\2\u025f\u0260\3\2\2\2\u0260\u026b\3\2\2\2\u0261"+
+		"\u025f\3\2\2\2\u0262\u0266\5> \2\u0263\u0265\5\20\t\2\u0264\u0263\3\2"+
+		"\2\2\u0265\u0268\3\2\2\2\u0266\u0264\3\2\2\2\u0266\u0267\3\2\2\2\u0267"+
+		"\u026a\3\2\2\2\u0268\u0266\3\2\2\2\u0269\u0262\3\2\2\2\u026a\u026d\3\2"+
+		"\2\2\u026b\u0269\3\2\2\2\u026b\u026c\3\2\2\2\u026c\u026e\3\2\2\2\u026d"+
+		"\u026b\3\2\2\2\u026e\u026f\7\13\2\2\u026f\u0270\7\"\2\2\u0270\u0271\7"+
+		"&\2\2\u0271=\3\2\2\2\u0272\u0273\7\n\2\2\u0273\u0274\7#\2\2\u0274\u0278"+
+		"\7&\2\2\u0275\u0277\5\20\t\2\u0276\u0275\3\2\2\2\u0277\u027a\3\2\2\2\u0278"+
+		"\u0276\3\2\2\2\u0278\u0279\3\2\2\2\u0279\u0282\3\2\2\2\u027a\u0278\3\2"+
+		"\2\2\u027b\u027f\5@!\2\u027c\u027e\5\20\t\2\u027d\u027c\3\2\2\2\u027e"+
+		"\u0281\3\2\2\2\u027f\u027d\3\2\2\2\u027f\u0280\3\2\2\2\u0280\u0283\3\2"+
+		"\2\2\u0281\u027f\3\2\2\2\u0282\u027b\3\2\2\2\u0282\u0283\3\2\2\2\u0283"+
+		"\u028b\3\2\2\2\u0284\u0288\5B\"\2\u0285\u0287\5\20\t\2\u0286\u0285\3\2"+
+		"\2\2\u0287\u028a\3\2\2\2\u0288\u0286\3\2\2\2\u0288\u0289\3\2\2\2\u0289"+
+		"\u028c\3\2\2\2\u028a\u0288\3\2\2\2\u028b\u0284\3\2\2\2\u028b\u028c\3\2"+
+		"\2\2\u028c\u028d\3\2\2\2\u028d\u028e\7\13\2\2\u028e\u028f\7#\2\2\u028f"+
+		"\u0290\7&\2\2\u0290?\3\2\2\2\u0291\u0292\7\n\2\2\u0292\u0293\7$\2\2\u0293"+
+		"\u0294\7&\2\2\u0294\u0295\5\26\f\2\u0295\u0296\7\13\2\2\u0296\u0297\7"+
+		"$\2\2\u0297\u0298\7&\2\2\u0298A\3\2\2\2\u0299\u029a\7\n\2\2\u029a\u029b"+
+		"\7%\2\2\u029b\u029c\7&\2\2\u029c\u029d\5\26\f\2\u029d\u029e\7\13\2\2\u029e"+
+		"\u029f\7%\2\2\u029f\u02a0\7&\2\2\u02a0C\3\2\2\2HEJQX^ehlt\u0082\u0086"+
+		"\u0098\u009f\u00a6\u00ab\u00b1\u00b8\u00bb\u00ca\u00d0\u00d3\u00d7\u00e0"+
+		"\u00ec\u00ef\u00f5\u00f8\u00fe\u0101\u0107\u010c\u0112\u0119\u011e\u013d"+
+		"\u0143\u014a\u014d\u0153\u0158\u0161\u0164\u0170\u017b\u0189\u0190\u0197"+
+		"\u019e\u01a3\u01aa\u01af\u01b8\u01c1\u01c9\u01f3\u0219\u021b\u0223\u0226"+
+		"\u0229\u023a\u024d\u025f\u0266\u026b\u0278\u027f\u0282\u0288\u028b";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

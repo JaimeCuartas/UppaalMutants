@@ -472,6 +472,18 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitIncrementGuard(UppaalParser.IncrementGuardContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code DoubleGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterDoubleGuard(UppaalParser.DoubleGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DoubleGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitDoubleGuard(UppaalParser.DoubleGuardContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code GuardIncrement}
 	 * labeled alternative in {@link UppaalParser#guard_expr}.
 	 * @param ctx the parse tree
