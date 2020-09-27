@@ -1,14 +1,15 @@
 package Parser.Main;
 import Parser.Antlr.*;
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import com.uppaal.engine.Parser;
+
+import java.io.*;
 
 public class Mutation {
     public static void main(String[] args) throws Exception {
@@ -17,33 +18,68 @@ public class Mutation {
 
             String inputFile = null;
             if ( args.length>0 ) {
-                System.out.println("Enter here with " + args[0]);
                 inputFile = args[0];
             }
+            /*
             InputStream is = System.in;
             if ( inputFile!=null ) {
-                System.out.println("Use input to the system input  :D");
                 is = new FileInputStream(inputFile);
             }
 
-            CharStream input = CharStreams.fromStream(is);
+            CharStream input = CharStreams.fromStream(is);*/
+            CharStream input = CharStreams.fromFileName(inputFile);
             UppaalLexer lexer = new UppaalLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-            UppaalParser parser = new UppaalParser(tokens); // pass column number!
-            parser.setBuildParseTree(false); // don't waste time bulding a tree
-            parser.model(); // parse
-            /**CharStream input = CharStreams.fromStream(is);
-// create a lexer that feeds off of input CharStream
-            UppaalLexer lexer = new UppaalLexer(input);
-// create a buffer of tokens pulled from the lexer
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-// create a parser that feeds off the tokens buffer
             UppaalParser parser = new UppaalParser(tokens);
-            ParseTree tree = parser.model(); // begin parsing at init rule
-            System.out.println(tree.toStringTree(parser)); // print LISP-style tree
-             */
+            //parser.setBuildParseTree(false); // don't waste time bulding a tree
+            //parser.model(); // parse
+
+            //parser.reset();
+            //parser.setBuildParseTree(true);
+            ParseTree tree = parser.model();
+
+            System.out.println( "El número de mutaciones es: "+ parser.getNum() );
+
+            /*
+            // Create a generic parse tree walker that can trigger callbacks
+            ParseTreeWalker walker = new ParseTreeWalker();
+            // Walk the tree created during the parse, trigger callbacks
+            walker.walk(new UppaalListener(1), tree);
+
+
+            System.out.println(); // print a \n after translation
+
+*/          System.out.println(System.getProperty("user.dir"));
+            System.out.println(tree.toStringTree(parser));
+
+            File myFile = new File("C:\\Users\\57310\\Documents\\Github\\XMLGrammar\\src\\Parser\\Test\\Mutaciones"+System.currentTimeMillis());
+            myFile.mkdirs();
+
+            for(int i=1; i<=parser.getNum(); i++){
+                int idMutant = i;
+                new Thread(()->{
+                    UppaalVisitor eval = new UppaalVisitor(idMutant);
+
+                    FileWriter myWriter = null;
+
+                    try {
+
+                        myWriter = new FileWriter(new File(myFile, Integer.toString(idMutant)+".xml"));
+                        myWriter.write(eval.visit(tree));
+                        myWriter.close();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
+/*
+            UppaalVisitor eval = new UppaalVisitor(3);
+            System.out.println(eval.visit(tree));
+*/
         }catch (IOException e){
+
             e.printStackTrace();
         }
     }

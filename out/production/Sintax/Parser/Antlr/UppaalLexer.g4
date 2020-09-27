@@ -42,7 +42,13 @@ CharRef     :   '&#' DIGIT+ ';'
             ;
 SEA_WS      :   (' '|'\t'|'\r'? '\n')+ ;
 
-OPEN        :   '<'                     -> pushMode(INSIDE) ;
+OPEN_GUARD  :   '<' [ \t\r\n]*'label' [ \t\r\n]+ 'kind' [ \t\r\n]* '=' [ \t\r\n]*
+                '"guard"' ( [ \t\r\n]* 'x' [ \t\r\n]* '=' [ \t\r\n]* '"' ('-')? DIGIT+ '"' [ \t\r\n]* Y [ \t\r\n]* '=' [ \t\r\n]* '"' ('-')? DIGIT+ '"')?
+                [ \t\r\n]* '>'          -> pushMode(GUARD);
+
+
+    OPEN        :   '<'                     -> pushMode(INSIDE) ;
+    OPEN_SLASH  :   '</'                    -> pushMode(INSIDE) ;
 XMLDeclOpen :   '<?xml' S               -> pushMode(INSIDE) ;
 SPECIAL_OPEN:   '<?' Name               -> more, pushMode(PROC_INSTR) ;
 
@@ -51,6 +57,9 @@ TEXT        :   ~[<&]+ ;        // match any 16 bit char other than < and &
 
 // ----------------- Everything INSIDE of a tag ---------------------
 mode INSIDE;
+
+
+
 
 NTA         :   'nta' ;
 DECLARATION :   'declaration' ;
@@ -73,13 +82,21 @@ TARGET      :   'target' ;
 NAIL        :   'nail' ;
 SYSTEM      :   'system' ;
 QUERIES     :   'queries' ;
-GUARD       :   '"guard"' ;
+QUERY       :   'query' ;
+FORMULA     :   'formula' ;
+QUERY_COMMENT:   'comment' ;
+
+//GUARD       :   '"guard"' ;
+
+
+
+
 
 
 CLOSE       :   '>'                     -> popMode ;
 SPECIAL_CLOSE:  '?>'                    -> popMode ; // close <?xml...?>
 SLASH_CLOSE :   '/>'                    -> popMode ;
-SLASH       :   '/' ;
+//SLASH       :   '/' ;
 EQUALS      :   '=' ;
 STRING      :   '"' ~[<"]* '"'
             |   '\'' ~[<']* '\''
@@ -116,3 +133,126 @@ mode PROC_INSTR;
 
 PI          :   '?>'                    -> popMode ; // close <?...?>
 IGNORE      :   .                       -> more ;
+
+
+// ----------------- Handle <GUARD> ---------------------
+mode GUARD;
+
+CLOSE_GUARD :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'    -> popMode ;
+
+GUARD_S     :   [ \t\r\n]               -> skip ;
+
+
+NAT_GUARD           :   [0-9]+ ;
+
+APOSTROPHE          :   '\'' ;
+
+LEFT_PARENTHESIS    :   '(' ;
+
+RIGHT_PARENTHESIS   :   ')' ;
+
+LEFT_BRACKET        :   '[' ;
+
+RIGHT_BRACKET       :   ']' ;
+
+COMMA               :   ',' ;
+
+INCREMENT           :   '++' ;
+
+DECREMENT           :   '--' ;
+
+ASSIGN              :   '=' ;
+
+ASSIGN_COLON        :   ':=' ;
+
+ASSIGN_ADD          :   '+=' ;
+
+ASSIGN_SUB          :   '-=' ;
+
+ASSIGN_MUL          :   '*=' ;
+
+ASSIGN_DIV          :   '/=' ;
+
+ASSIGN_PERCENT      :   '%=' ;
+
+ASSIGN_OR           :   '|=' ;
+
+ASSIGN_AND          :   '&amp;=' ;
+
+ASSIGN_XOR          :   '^=' ;
+
+ASSIGN_LSHIFT       :   '&lt;&lt;=' ;
+
+ASSIGN_RSHIFT       :   '&gt;&gt;=' ;
+
+
+//Unary
+
+ADD                 :   '+' ; //binary too
+
+SUB                 :   '-' ; //binary too
+
+EXCLAMATION         :   '!' ;
+
+NOT                 :   'not' ;
+
+//Binary
+
+LESS                :   '&lt;' ;
+LESSEQ              :   '&lt;=' ;
+COMPARE             :   '==' ;
+DIFFERENT           :   '!=' ;
+GREATEREQ           :   '&gt;=' ;
+GREATER             :   '&gt;' ;
+MUL                 :   '*' ;
+DIV                 :   '/' ;
+PERCENT             :   '%' ;
+BITAND              :   '&amp;' ;
+BITOR               :   '|' ;
+BITXOR              :   '^' ;
+LSHIFT              :   '&lt;&lt;' ;
+RSHIFT              :   '&gt;&gt;' ;
+AND_SYMBOL          :   '&amp;&amp;' ;
+OR_SYMBOL           :   '||' ;
+MINIMUM             :   '&lt;?' ;
+MAXIMUM             :   '&gt;?' ;
+OR                  :   'or' ;
+AND                 :   'and' ;
+IMPLY               :   'imply' ;
+
+
+//IF THEN ELSE
+
+IF                  :   '?' ;
+ELSE                :   ':' ;
+
+//Infix lookup operator to access process or structure type scope
+
+LOOKUP_OP           :   '.' ;
+
+//Quantifiers
+
+FORALL              :   'forall' ;
+EXISTS              :   'exists' ;
+
+//SUMMATION
+
+SUM                 :   'sum' ;
+
+//---TYPES---
+
+//prefix
+META                :   'meta' ;
+CONST               :   'const' ;
+
+//typeId
+INT                 :   'int' ;
+SCALAR              :   'scalar' ;
+
+//Boolean
+TRUE                :   'true' ;
+FALSE               :   'false' ;
+
+IDENTIFIER  :   [a-zA-Z_]([a-zA-Z0-9_])*;
+
+

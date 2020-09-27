@@ -29,22 +29,35 @@
 /** XML parser derived from ANTLR v4 ref guide book example */
 parser grammar UppaalParser;
 
+
+@parser::members { // add members to generated UppaalParser
+    private int num=0;
+
+    public int getNum(){
+        return this.num;
+    }
+    public void setNum(int num){
+        this.num = num;
+    }
+}
 options { tokenVocab=UppaalLexer; }
 
-document    :   prolog? misc* element misc*;
+//document    :   prolog? misc* element misc*;
+
+model       :   prolog? misc* nta misc* ;
 
 prolog      :   XMLDeclOpen attribute* SPECIAL_CLOSE ;
 
 content     :   chardata?
                 ((element | reference | CDATA | PI | COMMENT) chardata?)* ;
 
-element     :   '<' Name attribute* '>' content '<' '/' Name '>'
+element     :   '<' Name attribute* '>' content '</' Name '>'
             |   '<' Name attribute* '/>'
             ;
 
 reference   :   EntityRef | CharRef ;
 
-attribute   :   Name '=' STRING ; // Our STRING is AttValue in spec
+attribute   :   Name EQUALS STRING ; // Our STRING is AttValue in spec
 
 /** ``All text that is not markup constitutes the character data of
  *  the document.''
@@ -53,23 +66,19 @@ chardata    :   TEXT | SEA_WS ;
 
 misc        :   COMMENT | PI | SEA_WS ;
 
-
-
-model       :   prolog? misc* nta misc* ;
-
 nta         :   '<' 'nta' '>' misc*
                 declaration misc*
                 (template misc*)+
                 system misc*
-                queries misc*
-                '<' '/' 'nta' '>' ;
+                (queries misc*)?
+                '</' 'nta' '>' ;
 
-declaration :   '<' 'declaration' '>' anything '<' '/' 'declaration' '>' ;
+declaration :   '<' 'declaration' '>' anything '</' 'declaration' '>' ;
 
 anything    :   chardata?
                 ((reference | CDATA | PI | COMMENT) chardata?)* ;
 
-template    :   '<' 'template' '>' misc* temp_content  '<' '/' 'template' '>' ;
+template    :   '<' 'template' '>' misc* temp_content  '</' 'template' '>' ;
 
 temp_content:   (name misc*)?
                 (parameter misc*)?
@@ -78,48 +87,97 @@ temp_content:   (name misc*)?
                 (init_loc misc*)
                 (transition misc*)*;
 
-parameter   :   '<' 'parameter' '>' anything '<' '/' 'parameter' '>' ;
+parameter   :   '<' 'parameter' '>' anything '</' 'parameter' '>' ;
 
-coordinate  :   'x' '=' STRING 'y' '=' STRING ;
+coordinate  :   'x' EQUALS STRING 'y' EQUALS STRING ;
 
-init_loc    :   '<' 'init' 'ref' '=' STRING '/>' ;
+init_loc    :   '<' 'init' 'ref' EQUALS STRING '/>' ;
 
-location    :   '<' 'location' 'id' '=' STRING
+location    :   '<' 'location' 'id' EQUALS STRING
                     coordinate? '>' misc* (name misc*)?
                     (label_loc misc*)*
                     ('<' ('urgent' | 'committed') '/>' misc*)?
 
-                    '<' '/' 'location' '>' ;
+                    '</' 'location' '>' ;
 
-label_loc   :   '<' 'label' 'kind' '=' STRING coordinate?  '>' anything '<''/' 'label' '>' ;
+label_loc   :   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' ;
 
 name        :   '<' 'name'
                     coordinate?
-                    '>' anything '<' '/' 'name' '>' ;
+                    '>' anything '</' 'name' '>' ;
 
 transition  :   '<' 'transition' '>'
                 misc* (source misc*) (target misc*)
                 (label_trans misc*)*
                 (nail misc*)*
-                '<' '/' 'transition' '>' ;
+                '</' 'transition' '>' ;
 
 
 //Are equals to labels_loc but we can manipulate them differently
-label_trans :   '<' 'label' 'kind' '=' '"guard"' coordinate? '>' anything '<' '/' 'label' '>'
-            |   '<' 'label' 'kind' '=' STRING coordinate?  '>' anything '<''/' 'label' '>' ;
+label_trans :   OPEN_GUARD guard_expr CLOSE_GUARD # LabelTransGuard
+            |   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' # labelTrans;
 
 
-source      :   '<' 'source' 'ref' '=' STRING '/>' ;
+guard_expr  :   IDENTIFIER  # IdentifierGuard
+            |   NAT_GUARD   # NatGuard
+            |   guard_expr '[' guard_expr ']'   # ArrayGuard
+            |   guard_expr '\''     # StopWatchGuard
+            |   '(' guard_expr ')'  # ParenthesisGuard
+            |   guard_expr '++'     # GuardIncrement
+            |   '++' guard_expr     # IncrementGuard
+            |   guard_expr '--'     # GuardDecrement
+            |   '--' guard_expr     # DecrementGuard
+            |   guard_expr
+                    //assign is '=' in guard channel
+                    assign=(ASSIGN | ':=' | '+=' | '-=' | '*=' | '/=' | '%=' | '|=' | '&amp;=' | '^=' | '&lt;&lt;=' | '&gt;&gt;=')
+                        guard_expr  # AssignGuard
+            |   unary=('-' | '+' | '!' | 'not') guard_expr  # UnaryGuard
+            |   guard_expr binary=( '&lt;' | '&lt;=' | '==' | '!=' | '&gt;=' | '&gt;' //LESS is '<' in guard channel. Greater is '>' in guard channel
+                                   ) guard_expr
+                {
 
-target      :   '<' 'target' 'ref' '=' STRING '/>' ;
+                this.num++;
+                //System.out.println ($binary.text);
+                }
+                                   # ComparisonGuard
+            |   guard_expr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
+                                    |  '|' | '^' | '&lt;&lt;' | '&gt;&gt;' | '&amp;&amp;' | '||'
+                                    |  '&lt;?' | '&gt;?' | 'or' | 'and' | 'imply')
+                                    guard_expr   #BinaryGuard
+            |   guard_expr '?' guard_expr ':' guard_expr
+                                    # IfGuard
+            |   guard_expr '.' IDENTIFIER   # DotGuard
+            |   guard_expr '(' arguments ')'# FuncGuard
+            |   'forall' '(' IDENTIFIER ':' type ')' guard_expr     # ForallGuard
+            |   'exists' '(' IDENTIFIER ':' type ')' guard_expr     # ExistsGuard
+            |   'sum' '(' IDENTIFIER ':' type ')' guard_expr        # SumGuard
+            |   'true'  # TrueGuard
+            |   'false' # FalseGuard
+            ;
+arguments   :   (guard_expr  (',' guard_expr)*)? ;
+
+type        :   ('meta' | 'const')? typeId ;
+
+typeId      :   'int'                                       # TypeInt
+            |   'int' '[' guard_expr ',' guard_expr ']'     # TypeIntDomain
+            |   'scalar' '[' guard_expr ']'                 # TypeScalar
+            ;
+
+source      :   '<' 'source' 'ref' EQUALS STRING '/>' ;
+
+target      :   '<' 'target' 'ref' EQUALS STRING '/>' ;
 
 nail        :   '<' 'nail' coordinate? '/>' ;
 
-system      :   '<' 'system' '>' anything '<''/' 'system' '>' ;
+system      :   '<' 'system' '>' anything '</' 'system' '>' ;
 
-queries     :   '<' 'queries' '>' content '<''/' 'queries' '>' ;
+queries     :   '<' 'queries' '>' misc* (query misc*)* '</' 'queries' '>' ;
 
-//query       :   '<' 'query' '>' content '<' 'query' '>' ;
+query       :   '<' 'query' '>' misc* (formula misc*)? (comment misc*)? '</' 'query' '>' ;
+
+formula     :   '<' 'formula' '>' anything '</' 'formula' '>' ;
+
+comment     :   '<' 'comment' '>' anything '</' 'comment' '>' ;
 
 
 //guard_expr  :   IDENTIFIER misc*;

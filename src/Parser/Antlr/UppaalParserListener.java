@@ -8,15 +8,15 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface UppaalParserListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link UppaalParser#document}.
+	 * Enter a parse tree produced by {@link UppaalParser#model}.
 	 * @param ctx the parse tree
 	 */
-	void enterDocument(UppaalParser.DocumentContext ctx);
+	void enterModel(UppaalParser.ModelContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link UppaalParser#document}.
+	 * Exit a parse tree produced by {@link UppaalParser#model}.
 	 * @param ctx the parse tree
 	 */
-	void exitDocument(UppaalParser.DocumentContext ctx);
+	void exitModel(UppaalParser.ModelContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link UppaalParser#prolog}.
 	 * @param ctx the parse tree
@@ -87,16 +87,6 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMisc(UppaalParser.MiscContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link UppaalParser#model}.
-	 * @param ctx the parse tree
-	 */
-	void enterModel(UppaalParser.ModelContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link UppaalParser#model}.
-	 * @param ctx the parse tree
-	 */
-	void exitModel(UppaalParser.ModelContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link UppaalParser#nta}.
 	 * @param ctx the parse tree
@@ -218,15 +208,337 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitTransition(UppaalParser.TransitionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link UppaalParser#label_trans}.
+	 * Enter a parse tree produced by the {@code LabelTransGuard}
+	 * labeled alternative in {@link UppaalParser#label_trans}.
 	 * @param ctx the parse tree
 	 */
-	void enterLabel_trans(UppaalParser.Label_transContext ctx);
+	void enterLabelTransGuard(UppaalParser.LabelTransGuardContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link UppaalParser#label_trans}.
+	 * Exit a parse tree produced by the {@code LabelTransGuard}
+	 * labeled alternative in {@link UppaalParser#label_trans}.
 	 * @param ctx the parse tree
 	 */
-	void exitLabel_trans(UppaalParser.Label_transContext ctx);
+	void exitLabelTransGuard(UppaalParser.LabelTransGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code labelTrans}
+	 * labeled alternative in {@link UppaalParser#label_trans}.
+	 * @param ctx the parse tree
+	 */
+	void enterLabelTrans(UppaalParser.LabelTransContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code labelTrans}
+	 * labeled alternative in {@link UppaalParser#label_trans}.
+	 * @param ctx the parse tree
+	 */
+	void exitLabelTrans(UppaalParser.LabelTransContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code SumGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterSumGuard(UppaalParser.SumGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code SumGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitSumGuard(UppaalParser.SumGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ParenthesisGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterParenthesisGuard(UppaalParser.ParenthesisGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ParenthesisGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitParenthesisGuard(UppaalParser.ParenthesisGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FalseGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterFalseGuard(UppaalParser.FalseGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FalseGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitFalseGuard(UppaalParser.FalseGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code AssignGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignGuard(UppaalParser.AssignGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code AssignGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignGuard(UppaalParser.AssignGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DotGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterDotGuard(UppaalParser.DotGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DotGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitDotGuard(UppaalParser.DotGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DecrementGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterDecrementGuard(UppaalParser.DecrementGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DecrementGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitDecrementGuard(UppaalParser.DecrementGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code UnaryGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnaryGuard(UppaalParser.UnaryGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code UnaryGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnaryGuard(UppaalParser.UnaryGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ComparisonGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterComparisonGuard(UppaalParser.ComparisonGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ComparisonGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitComparisonGuard(UppaalParser.ComparisonGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IdentifierGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdentifierGuard(UppaalParser.IdentifierGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IdentifierGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdentifierGuard(UppaalParser.IdentifierGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code BinaryGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterBinaryGuard(UppaalParser.BinaryGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code BinaryGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitBinaryGuard(UppaalParser.BinaryGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code NatGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterNatGuard(UppaalParser.NatGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code NatGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitNatGuard(UppaalParser.NatGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExistsGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExistsGuard(UppaalParser.ExistsGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExistsGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExistsGuard(UppaalParser.ExistsGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code StopWatchGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterStopWatchGuard(UppaalParser.StopWatchGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code StopWatchGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitStopWatchGuard(UppaalParser.StopWatchGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ArrayGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayGuard(UppaalParser.ArrayGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ArrayGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayGuard(UppaalParser.ArrayGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForallGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterForallGuard(UppaalParser.ForallGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForallGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitForallGuard(UppaalParser.ForallGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code GuardDecrement}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterGuardDecrement(UppaalParser.GuardDecrementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code GuardDecrement}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitGuardDecrement(UppaalParser.GuardDecrementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code TrueGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterTrueGuard(UppaalParser.TrueGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code TrueGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitTrueGuard(UppaalParser.TrueGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IfGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfGuard(UppaalParser.IfGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IfGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfGuard(UppaalParser.IfGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FuncGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncGuard(UppaalParser.FuncGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FuncGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncGuard(UppaalParser.FuncGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IncrementGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterIncrementGuard(UppaalParser.IncrementGuardContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IncrementGuard}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitIncrementGuard(UppaalParser.IncrementGuardContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code GuardIncrement}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterGuardIncrement(UppaalParser.GuardIncrementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code GuardIncrement}
+	 * labeled alternative in {@link UppaalParser#guard_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitGuardIncrement(UppaalParser.GuardIncrementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#arguments}.
+	 * @param ctx the parse tree
+	 */
+	void enterArguments(UppaalParser.ArgumentsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#arguments}.
+	 * @param ctx the parse tree
+	 */
+	void exitArguments(UppaalParser.ArgumentsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void enterType(UppaalParser.TypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void exitType(UppaalParser.TypeContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code TypeInt}
+	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeInt(UppaalParser.TypeIntContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code TypeInt}
+	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeInt(UppaalParser.TypeIntContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code TypeIntDomain}
+	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeIntDomain(UppaalParser.TypeIntDomainContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code TypeIntDomain}
+	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeIntDomain(UppaalParser.TypeIntDomainContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code TypeScalar}
+	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeScalar(UppaalParser.TypeScalarContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code TypeScalar}
+	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeScalar(UppaalParser.TypeScalarContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link UppaalParser#source}.
 	 * @param ctx the parse tree
@@ -277,4 +589,34 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitQueries(UppaalParser.QueriesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#query}.
+	 * @param ctx the parse tree
+	 */
+	void enterQuery(UppaalParser.QueryContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#query}.
+	 * @param ctx the parse tree
+	 */
+	void exitQuery(UppaalParser.QueryContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#formula}.
+	 * @param ctx the parse tree
+	 */
+	void enterFormula(UppaalParser.FormulaContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#formula}.
+	 * @param ctx the parse tree
+	 */
+	void exitFormula(UppaalParser.FormulaContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#comment}.
+	 * @param ctx the parse tree
+	 */
+	void enterComment(UppaalParser.CommentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#comment}.
+	 * @param ctx the parse tree
+	 */
+	void exitComment(UppaalParser.CommentContext ctx);
 }
