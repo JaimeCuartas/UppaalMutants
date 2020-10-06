@@ -108,6 +108,370 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitDeclaration(UppaalParser.DeclarationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link UppaalParser#decl_content}.
+	 * @param ctx the parse tree
+	 */
+	void enterDecl_content(UppaalParser.Decl_contentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#decl_content}.
+	 * @param ctx the parse tree
+	 */
+	void exitDecl_content(UppaalParser.Decl_contentContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IdentifierExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterIdentifierExpr(UppaalParser.IdentifierExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IdentifierExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitIdentifierExpr(UppaalParser.IdentifierExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code NatExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterNatExpr(UppaalParser.NatExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code NatExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitNatExpr(UppaalParser.NatExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DoubleExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterDoubleExpr(UppaalParser.DoubleExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DoubleExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitDoubleExpr(UppaalParser.DoubleExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ArrayExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayExpr(UppaalParser.ArrayExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ArrayExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayExpr(UppaalParser.ArrayExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code StopWatchExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterStopWatchExpr(UppaalParser.StopWatchExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code StopWatchExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitStopWatchExpr(UppaalParser.StopWatchExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ParenthesisExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterParenthesisExpr(UppaalParser.ParenthesisExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ParenthesisExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitParenthesisExpr(UppaalParser.ParenthesisExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprIncrement}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprIncrement(UppaalParser.ExprIncrementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprIncrement}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprIncrement(UppaalParser.ExprIncrementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IncrementExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterIncrementExpr(UppaalParser.IncrementExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IncrementExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitIncrementExpr(UppaalParser.IncrementExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExprDecrement}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExprDecrement(UppaalParser.ExprDecrementContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExprDecrement}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExprDecrement(UppaalParser.ExprDecrementContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DecrementExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterDecrementExpr(UppaalParser.DecrementExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DecrementExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitDecrementExpr(UppaalParser.DecrementExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code AssignExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssignExpr(UppaalParser.AssignExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code AssignExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssignExpr(UppaalParser.AssignExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code UnaryExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnaryExpr(UppaalParser.UnaryExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code UnaryExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnaryExpr(UppaalParser.UnaryExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ComparisonExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterComparisonExpr(UppaalParser.ComparisonExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ComparisonExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitComparisonExpr(UppaalParser.ComparisonExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code BinaryExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterBinaryExpr(UppaalParser.BinaryExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code BinaryExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitBinaryExpr(UppaalParser.BinaryExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code IfExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfExpr(UppaalParser.IfExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code IfExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfExpr(UppaalParser.IfExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code DotExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterDotExpr(UppaalParser.DotExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code DotExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitDotExpr(UppaalParser.DotExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FuncExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncExpr(UppaalParser.FuncExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FuncExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncExpr(UppaalParser.FuncExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ForallExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterForallExpr(UppaalParser.ForallExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ForallExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitForallExpr(UppaalParser.ForallExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ExistsExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterExistsExpr(UppaalParser.ExistsExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ExistsExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitExistsExpr(UppaalParser.ExistsExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code SumExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterSumExpr(UppaalParser.SumExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code SumExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitSumExpr(UppaalParser.SumExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code TrueGuarExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterTrueGuarExpr(UppaalParser.TrueGuarExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code TrueGuarExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitTrueGuarExpr(UppaalParser.TrueGuarExprContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code FalseGuardExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterFalseGuardExpr(UppaalParser.FalseGuardExprContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code FalseGuardExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitFalseGuardExpr(UppaalParser.FalseGuardExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#variableDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableDecl(UppaalParser.VariableDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#variableDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableDecl(UppaalParser.VariableDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void enterType(UppaalParser.TypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#type}.
+	 * @param ctx the parse tree
+	 */
+	void exitType(UppaalParser.TypeContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#prefix}.
+	 * @param ctx the parse tree
+	 */
+	void enterPrefix(UppaalParser.PrefixContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#prefix}.
+	 * @param ctx the parse tree
+	 */
+	void exitPrefix(UppaalParser.PrefixContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeId(UppaalParser.TypeIdContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeId(UppaalParser.TypeIdContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#fieldDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterFieldDecl(UppaalParser.FieldDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#fieldDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitFieldDecl(UppaalParser.FieldDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#arrayDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrayDecl(UppaalParser.ArrayDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#arrayDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrayDecl(UppaalParser.ArrayDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#variableID}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableID(UppaalParser.VariableIDContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#variableID}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableID(UppaalParser.VariableIDContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#initialiser}.
+	 * @param ctx the parse tree
+	 */
+	void enterInitialiser(UppaalParser.InitialiserContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#initialiser}.
+	 * @param ctx the parse tree
+	 */
+	void exitInitialiser(UppaalParser.InitialiserContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#typeDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterTypeDecl(UppaalParser.TypeDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#typeDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitTypeDecl(UppaalParser.TypeDeclContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link UppaalParser#anything}.
 	 * @param ctx the parse tree
 	 */
@@ -167,6 +531,16 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitInit_loc(UppaalParser.Init_locContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#branchpoint}.
+	 * @param ctx the parse tree
+	 */
+	void enterBranchpoint(UppaalParser.BranchpointContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#branchpoint}.
+	 * @param ctx the parse tree
+	 */
+	void exitBranchpoint(UppaalParser.BranchpointContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link UppaalParser#location}.
 	 * @param ctx the parse tree
@@ -496,61 +870,61 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitGuardIncrement(UppaalParser.GuardIncrementContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link UppaalParser#arguments}.
+	 * Enter a parse tree produced by {@link UppaalParser#guard_arguments}.
 	 * @param ctx the parse tree
 	 */
-	void enterArguments(UppaalParser.ArgumentsContext ctx);
+	void enterGuard_arguments(UppaalParser.Guard_argumentsContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link UppaalParser#arguments}.
+	 * Exit a parse tree produced by {@link UppaalParser#guard_arguments}.
 	 * @param ctx the parse tree
 	 */
-	void exitArguments(UppaalParser.ArgumentsContext ctx);
+	void exitGuard_arguments(UppaalParser.Guard_argumentsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link UppaalParser#type}.
+	 * Enter a parse tree produced by {@link UppaalParser#guard_type}.
 	 * @param ctx the parse tree
 	 */
-	void enterType(UppaalParser.TypeContext ctx);
+	void enterGuard_type(UppaalParser.Guard_typeContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link UppaalParser#type}.
+	 * Exit a parse tree produced by {@link UppaalParser#guard_type}.
 	 * @param ctx the parse tree
 	 */
-	void exitType(UppaalParser.TypeContext ctx);
+	void exitGuard_type(UppaalParser.Guard_typeContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code TypeInt}
-	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * Enter a parse tree produced by the {@code GuardTypeInt}
+	 * labeled alternative in {@link UppaalParser#guard_typeId}.
 	 * @param ctx the parse tree
 	 */
-	void enterTypeInt(UppaalParser.TypeIntContext ctx);
+	void enterGuardTypeInt(UppaalParser.GuardTypeIntContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code TypeInt}
-	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * Exit a parse tree produced by the {@code GuardTypeInt}
+	 * labeled alternative in {@link UppaalParser#guard_typeId}.
 	 * @param ctx the parse tree
 	 */
-	void exitTypeInt(UppaalParser.TypeIntContext ctx);
+	void exitGuardTypeInt(UppaalParser.GuardTypeIntContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code TypeIntDomain}
-	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * Enter a parse tree produced by the {@code GuardTypeIntDomain}
+	 * labeled alternative in {@link UppaalParser#guard_typeId}.
 	 * @param ctx the parse tree
 	 */
-	void enterTypeIntDomain(UppaalParser.TypeIntDomainContext ctx);
+	void enterGuardTypeIntDomain(UppaalParser.GuardTypeIntDomainContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code TypeIntDomain}
-	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * Exit a parse tree produced by the {@code GuardTypeIntDomain}
+	 * labeled alternative in {@link UppaalParser#guard_typeId}.
 	 * @param ctx the parse tree
 	 */
-	void exitTypeIntDomain(UppaalParser.TypeIntDomainContext ctx);
+	void exitGuardTypeIntDomain(UppaalParser.GuardTypeIntDomainContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code TypeScalar}
-	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * Enter a parse tree produced by the {@code GuardTypeScalar}
+	 * labeled alternative in {@link UppaalParser#guard_typeId}.
 	 * @param ctx the parse tree
 	 */
-	void enterTypeScalar(UppaalParser.TypeScalarContext ctx);
+	void enterGuardTypeScalar(UppaalParser.GuardTypeScalarContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code TypeScalar}
-	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * Exit a parse tree produced by the {@code GuardTypeScalar}
+	 * labeled alternative in {@link UppaalParser#guard_typeId}.
 	 * @param ctx the parse tree
 	 */
-	void exitTypeScalar(UppaalParser.TypeScalarContext ctx);
+	void exitGuardTypeScalar(UppaalParser.GuardTypeScalarContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link UppaalParser#source}.
 	 * @param ctx the parse tree

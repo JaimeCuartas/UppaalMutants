@@ -71,6 +71,220 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeclaration(UppaalParser.DeclarationContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link UppaalParser#decl_content}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDecl_content(UppaalParser.Decl_contentContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code IdentifierExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdentifierExpr(UppaalParser.IdentifierExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code NatExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNatExpr(UppaalParser.NatExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code DoubleExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDoubleExpr(UppaalParser.DoubleExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ArrayExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayExpr(UppaalParser.ArrayExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code StopWatchExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStopWatchExpr(UppaalParser.StopWatchExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ParenthesisExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParenthesisExpr(UppaalParser.ParenthesisExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprIncrement}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprIncrement(UppaalParser.ExprIncrementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code IncrementExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIncrementExpr(UppaalParser.IncrementExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExprDecrement}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExprDecrement(UppaalParser.ExprDecrementContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code DecrementExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDecrementExpr(UppaalParser.DecrementExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code AssignExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAssignExpr(UppaalParser.AssignExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code UnaryExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnaryExpr(UppaalParser.UnaryExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ComparisonExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComparisonExpr(UppaalParser.ComparisonExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code BinaryExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBinaryExpr(UppaalParser.BinaryExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code IfExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIfExpr(UppaalParser.IfExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code DotExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDotExpr(UppaalParser.DotExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code FuncExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncExpr(UppaalParser.FuncExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ForallExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitForallExpr(UppaalParser.ForallExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code ExistsExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExistsExpr(UppaalParser.ExistsExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code SumExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSumExpr(UppaalParser.SumExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code TrueGuarExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTrueGuarExpr(UppaalParser.TrueGuarExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code FalseGuardExpr}
+	 * labeled alternative in {@link UppaalParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFalseGuardExpr(UppaalParser.FalseGuardExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#variableDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariableDecl(UppaalParser.VariableDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#type}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitType(UppaalParser.TypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#prefix}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPrefix(UppaalParser.PrefixContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#typeId}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeId(UppaalParser.TypeIdContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#fieldDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFieldDecl(UppaalParser.FieldDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#arrayDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArrayDecl(UppaalParser.ArrayDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#variableID}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariableID(UppaalParser.VariableIDContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#initialiser}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInitialiser(UppaalParser.InitialiserContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#typeDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTypeDecl(UppaalParser.TypeDeclContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link UppaalParser#anything}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -106,6 +320,12 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitInit_loc(UppaalParser.Init_locContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#branchpoint}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBranchpoint(UppaalParser.BranchpointContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link UppaalParser#location}.
 	 * @param ctx the parse tree
@@ -299,38 +519,38 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitGuardIncrement(UppaalParser.GuardIncrementContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link UppaalParser#arguments}.
+	 * Visit a parse tree produced by {@link UppaalParser#guard_arguments}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitArguments(UppaalParser.ArgumentsContext ctx);
+	T visitGuard_arguments(UppaalParser.Guard_argumentsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link UppaalParser#type}.
+	 * Visit a parse tree produced by {@link UppaalParser#guard_type}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitType(UppaalParser.TypeContext ctx);
+	T visitGuard_type(UppaalParser.Guard_typeContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code TypeInt}
-	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * Visit a parse tree produced by the {@code GuardTypeInt}
+	 * labeled alternative in {@link UppaalParser#guard_typeId}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTypeInt(UppaalParser.TypeIntContext ctx);
+	T visitGuardTypeInt(UppaalParser.GuardTypeIntContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code TypeIntDomain}
-	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * Visit a parse tree produced by the {@code GuardTypeIntDomain}
+	 * labeled alternative in {@link UppaalParser#guard_typeId}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTypeIntDomain(UppaalParser.TypeIntDomainContext ctx);
+	T visitGuardTypeIntDomain(UppaalParser.GuardTypeIntDomainContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code TypeScalar}
-	 * labeled alternative in {@link UppaalParser#typeId}.
+	 * Visit a parse tree produced by the {@code GuardTypeScalar}
+	 * labeled alternative in {@link UppaalParser#guard_typeId}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitTypeScalar(UppaalParser.TypeScalarContext ctx);
+	T visitGuardTypeScalar(UppaalParser.GuardTypeScalarContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link UppaalParser#source}.
 	 * @param ctx the parse tree

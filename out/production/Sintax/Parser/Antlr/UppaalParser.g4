@@ -83,7 +83,8 @@ template    :   '<' 'template' '>' misc* temp_content  '</' 'template' '>' ;
 temp_content:   (name misc*)?
                 (parameter misc*)?
                 (declaration misc*)?
-                (location misc*)+
+
+                ((location misc*) | (branchpoint misc*))+
                 (init_loc misc*)
                 (transition misc*)*;
 
@@ -92,6 +93,10 @@ parameter   :   '<' 'parameter' '>' anything '</' 'parameter' '>' ;
 coordinate  :   'x' EQUALS STRING 'y' EQUALS STRING ;
 
 init_loc    :   '<' 'init' 'ref' EQUALS STRING '/>' ;
+
+branchpoint :   '<' 'branchpoint' 'id' EQUALS STRING
+                    coordinate? '>' misc*
+                    '</' 'branchpoint' '>';
 
 location    :   '<' 'location' 'id' EQUALS STRING
                     coordinate? '>' misc* (name misc*)?
@@ -138,7 +143,7 @@ guard_expr  :   IDENTIFIER  # IdentifierGuard
                 {
 
                 this.num++;
-                System.out.println ($binary.text);
+                //System.out.println ($binary.text);
                 }
                                    # ComparisonGuard
             |   guard_expr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
@@ -148,20 +153,22 @@ guard_expr  :   IDENTIFIER  # IdentifierGuard
             |   guard_expr '?' guard_expr ':' guard_expr
                                     # IfGuard
             |   guard_expr '.' IDENTIFIER   # DotGuard
-            |   guard_expr '(' arguments ')'# FuncGuard
-            |   'forall' '(' IDENTIFIER ':' type ')' guard_expr     # ForallGuard
-            |   'exists' '(' IDENTIFIER ':' type ')' guard_expr     # ExistsGuard
-            |   'sum' '(' IDENTIFIER ':' type ')' guard_expr        # SumGuard
+            |   guard_expr '(' guard_arguments ')'# FuncGuard
+            |   'forall' '(' IDENTIFIER ':' guard_type ')' guard_expr     # ForallGuard
+            |   'exists' '(' IDENTIFIER ':' guard_type ')' guard_expr     # ExistsGuard
+            |   'sum' '(' IDENTIFIER ':' guard_type ')' guard_expr        # SumGuard
             |   'true'  # TrueGuard
             |   'false' # FalseGuard
             ;
-arguments   :   (guard_expr  (',' guard_expr)*)? ;
 
-type        :   ('meta' | 'const')? typeId ;
+guard_arguments   :   (guard_expr  (',' guard_expr)*)? ;
 
-typeId      :   'int'                                       # TypeInt
-            |   'int' '[' guard_expr ',' guard_expr ']'     # TypeIntDomain
-            |   'scalar' '[' guard_expr ']'                 # TypeScalar
+guard_type        :   ('meta' | 'const')? guard_typeId ;
+
+guard_typeId
+            :   'int'                                       # GuardTypeInt
+            |   'int' '[' guard_expr ',' guard_expr ']'     # GuardTypeIntDomain
+            |   'scalar' '[' guard_expr ']'                 # GuardTypeScalar
             ;
 
 source      :   '<' 'source' 'ref' EQUALS STRING '/>' ;

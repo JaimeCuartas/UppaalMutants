@@ -44,7 +44,7 @@ SEA_WS      :   (' '|'\t'|'\r'? '\n')+ ;
 
 OPEN_GUARD  :   '<' [ \t\r\n]*'label' [ \t\r\n]+ 'kind' [ \t\r\n]* '=' [ \t\r\n]*
                 '"guard"' ( [ \t\r\n]* 'x' [ \t\r\n]* '=' [ \t\r\n]* '"' ('-')? DIGIT+ '"' [ \t\r\n]* Y [ \t\r\n]* '=' [ \t\r\n]* '"' ('-')? DIGIT+ '"')?
-                [ \t\r\n]* '>'          -> pushMode(GUARD);
+                [ \t\r\n]* '>'          -> pushMode(EXPRESSIONS);
 
 
     OPEN        :   '<'                     -> pushMode(INSIDE) ;
@@ -64,6 +64,7 @@ mode INSIDE;
 NTA         :   'nta' ;
 DECLARATION :   'declaration' ;
 TEMPLATE    :   'template' ;
+BRANCHPOINT :   'branchpoint' ;
 LOCATION    :   'location' ;
 NAME        :   'name' ;
 PARAMETER   :   'parameter' ;
@@ -136,7 +137,7 @@ IGNORE      :   .                       -> more ;
 
 
 // ----------------- Handle <GUARD> ---------------------
-mode GUARD;
+mode EXPRESSIONS;
 
 CLOSE_GUARD :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'    -> popMode ;
 

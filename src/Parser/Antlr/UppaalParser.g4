@@ -28,7 +28,7 @@
 
 /** XML parser derived from ANTLR v4 ref guide book example */
 parser grammar UppaalParser;
-
+//check 275 page
 
 @parser::members { // add members to generated UppaalParser
     private int num=0;
@@ -73,8 +73,69 @@ nta         :   '<' 'nta' '>' misc*
                 (queries misc*)?
                 '</' 'nta' '>' ;
 
-declaration :   '<' 'declaration' '>' anything '</' 'declaration' '>' ;
+//declaration :   '<' 'declaration' '>' anything '</' 'declaration' '>' ;
 
+declaration :   OPEN_DECLARATION decl_content CLOSE_DECLARATION;
+
+decl_content:   (variableDecl | typeDecl)*; // | function | chanPriority)* ;
+
+expr        :   IDENTIFIER  # IdentifierExpr
+            |   NAT   # NatExpr
+            |   DOUBLE    # DoubleExpr
+            |   guard_expr '[' guard_expr ']'   # ArrayExpr
+            |   guard_expr '\''     # StopWatchExpr
+            |   '(' guard_expr ')'  # ParenthesisExpr
+            |   guard_expr '++'     # ExprIncrement
+            |   '++' guard_expr     # IncrementExpr
+            |   guard_expr '--'     # ExprDecrement
+            |   '--' guard_expr     # DecrementExpr
+            |   guard_expr
+                    //assign is '=' in guard channel
+                    assign=(ASSIGN | ':=' | '+=' | '-=' | '*=' | '/=' | '%=' | '|=' | '&amp;=' | '^=' | '&lt;&lt;=' | '&gt;&gt;=')
+                        guard_expr  # AssignExpr
+            |   unary=('-' | '+' | '!' | 'not') guard_expr  # UnaryExpr
+            |   guard_expr binary=( '&lt;' | '&lt;=' | '==' | '!=' | '&gt;=' | '&gt;' //LESS is '<' in guard channel. Greater is '>' in guard channel
+                                   ) guard_expr     # ComparisonExpr
+            |   guard_expr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
+                                    |  '|' | '^' | '&lt;&lt;' | '&gt;&gt;' | '&amp;&amp;' | '||'
+                                    |  '&lt;?' | '&gt;?' | 'or' | 'and' | 'imply')
+                                    guard_expr      #BinaryExpr
+            |   guard_expr '?' guard_expr ':' guard_expr
+                                    # IfExpr
+            |   guard_expr '.' IDENTIFIER   # DotExpr
+            |   guard_expr '(' guard_arguments ')'# FuncExpr
+            |   'forall' '(' IDENTIFIER ':' guard_type ')' guard_expr     # ForallExpr
+            |   'exists' '(' IDENTIFIER ':' guard_type ')' guard_expr     # ExistsExpr
+            |   'sum' '(' IDENTIFIER ':' guard_type ')' guard_expr        # SumExpr
+            |   'true'  # TrueGuarExpr
+            |   'false' # FalseGuardExpr
+            ;
+
+variableDecl:   type variableID (',' variableID)* ';' ;
+
+type        :   prefix? typeId ;
+
+prefix      :   URGENT | 'broadcast' | 'meta' | 'const' ;
+
+typeId      :   IDENTIFIER | 'int' | 'clock' | 'chan' | 'bool'
+            |  'int' '[' expr ',' expr ']'
+            |  'scalar' '[' expr ']'
+            |  'struct' '{' fieldDecl (fieldDecl)* '}' ;
+
+fieldDecl   :   type IDENTIFIER arrayDecl* (',' IDENTIFIER arrayDecl*)* ';' ;
+
+arrayDecl   :   '[' expr ']'
+            |   '[' type ']' ;
+
+variableID  :   IDENTIFIER arrayDecl* (ASSIGN initialiser )? ;
+
+initialiser :   expr
+            |   '{' initialiser (',' initialiser)* '}'
+            ;
+
+typeDecl    :   'typedef' type IDENTIFIER arrayDecl* (',' IDENTIFIER arrayDecl*)* ';' ;
+
+////////////////////////////////////////////////////////////////////////////////
 anything    :   chardata?
                 ((reference | CDATA | PI | COMMENT) chardata?)* ;
 
@@ -83,7 +144,8 @@ template    :   '<' 'template' '>' misc* temp_content  '</' 'template' '>' ;
 temp_content:   (name misc*)?
                 (parameter misc*)?
                 (declaration misc*)?
-                (location misc*)+
+
+                ((location misc*) | (branchpoint misc*))+
                 (init_loc misc*)
                 (transition misc*)*;
 
@@ -93,10 +155,14 @@ coordinate  :   'x' EQUALS STRING 'y' EQUALS STRING ;
 
 init_loc    :   '<' 'init' 'ref' EQUALS STRING '/>' ;
 
+branchpoint :   '<' 'branchpoint' 'id' EQUALS STRING
+                    coordinate? '>' misc*
+                    '</' 'branchpoint' '>';
+
 location    :   '<' 'location' 'id' EQUALS STRING
                     coordinate? '>' misc* (name misc*)?
                     (label_loc misc*)*
-                    ('<' ('urgent' | 'committed') '/>' misc*)?
+                    ('<' (URGENT_LOC | 'committed') '/>' misc*)?
 
                     '</' 'location' '>' ;
 
@@ -119,8 +185,8 @@ label_trans :   OPEN_GUARD guard_expr? CLOSE_GUARD # LabelTransGuard
 
 
 guard_expr  :   IDENTIFIER  # IdentifierGuard
-            |   NAT_GUARD   # NatGuard
-            |   DOUBLE_GUARD    # DoubleGuard
+            |   NAT   # NatGuard
+            |   DOUBLE    # DoubleGuard
             |   guard_expr '[' guard_expr ']'   # ArrayGuard
             |   guard_expr '\''     # StopWatchGuard
             |   '(' guard_expr ')'  # ParenthesisGuard
@@ -138,7 +204,7 @@ guard_expr  :   IDENTIFIER  # IdentifierGuard
                 {
 
                 this.num++;
-                System.out.println ($binary.text);
+                //System.out.println ($binary.text);
                 }
                                    # ComparisonGuard
             |   guard_expr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
@@ -148,20 +214,22 @@ guard_expr  :   IDENTIFIER  # IdentifierGuard
             |   guard_expr '?' guard_expr ':' guard_expr
                                     # IfGuard
             |   guard_expr '.' IDENTIFIER   # DotGuard
-            |   guard_expr '(' arguments ')'# FuncGuard
-            |   'forall' '(' IDENTIFIER ':' type ')' guard_expr     # ForallGuard
-            |   'exists' '(' IDENTIFIER ':' type ')' guard_expr     # ExistsGuard
-            |   'sum' '(' IDENTIFIER ':' type ')' guard_expr        # SumGuard
+            |   guard_expr '(' guard_arguments ')'# FuncGuard
+            |   'forall' '(' IDENTIFIER ':' guard_type ')' guard_expr     # ForallGuard
+            |   'exists' '(' IDENTIFIER ':' guard_type ')' guard_expr     # ExistsGuard
+            |   'sum' '(' IDENTIFIER ':' guard_type ')' guard_expr        # SumGuard
             |   'true'  # TrueGuard
             |   'false' # FalseGuard
             ;
-arguments   :   (guard_expr  (',' guard_expr)*)? ;
 
-type        :   ('meta' | 'const')? typeId ;
+guard_arguments   :   (guard_expr  (',' guard_expr)*)? ;
 
-typeId      :   'int'                                       # TypeInt
-            |   'int' '[' guard_expr ',' guard_expr ']'     # TypeIntDomain
-            |   'scalar' '[' guard_expr ']'                 # TypeScalar
+guard_type        :   ('meta' | 'const')? guard_typeId ;
+
+guard_typeId
+            :   'int'                                       # GuardTypeInt
+            |   'int' '[' guard_expr ',' guard_expr ']'     # GuardTypeIntDomain
+            |   'scalar' '[' guard_expr ']'                 # GuardTypeScalar
             ;
 
 source      :   '<' 'source' 'ref' EQUALS STRING '/>' ;

@@ -145,7 +145,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
             location = location.concat(visit(labelLoc)).concat("\n");
         }
 
-        if(ctx.URGENT()!=null){
+        if(ctx.URGENT_LOC()!=null){
             location = location.concat("<urgent/>\n");
         }
         if(ctx.COMMITTED()!=null){
@@ -242,7 +242,12 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitNatGuard(UppaalParser.NatGuardContext ctx) {
-        return ctx.NAT_GUARD().getText();
+        return ctx.NAT().getText();
+    }
+
+    @Override
+    public String visitDoubleGuard(UppaalParser.DoubleGuardContext ctx) {
+        return ctx.DOUBLE().getText();
     }
 
     @Override
@@ -348,22 +353,22 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitFuncGuard(UppaalParser.FuncGuardContext ctx) {
-        return visit(ctx.guard_expr()).concat("(").concat(visit(ctx.arguments())).concat(")");
+        return visit(ctx.guard_expr()).concat("(").concat(visit(ctx.guard_arguments())).concat(")");
     }
 
     @Override
     public String visitForallGuard(UppaalParser.ForallGuardContext ctx) {
-        return ("forall(").concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.type())).concat(")").concat(visit(ctx.guard_expr()));
+        return ("forall(").concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.guard_type())).concat(")").concat(visit(ctx.guard_expr()));
     }
 
     @Override
     public String visitExistsGuard(UppaalParser.ExistsGuardContext ctx) {
-        return ("exists(").concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.type())).concat(")").concat(visit(ctx.guard_expr()));
+        return ("exists(").concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.guard_type())).concat(")").concat(visit(ctx.guard_expr()));
     }
 
     @Override
     public String visitSumGuard(UppaalParser.SumGuardContext ctx) {
-        return ("sum(").concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.type())).concat(")").concat(visit(ctx.guard_expr()));
+        return ("sum(").concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.guard_type())).concat(")").concat(visit(ctx.guard_expr()));
     }
 
     @Override
@@ -376,8 +381,10 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         return "false";
     }
 
+
+
     @Override
-    public String visitArguments(UppaalParser.ArgumentsContext ctx) {
+    public String visitGuard_arguments(UppaalParser.Guard_argumentsContext ctx) {
         String arguments = "";
 
         List<UppaalParser.Guard_exprContext> expressions = ctx.guard_expr();
@@ -391,7 +398,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     }
 
     @Override
-    public String visitType(UppaalParser.TypeContext ctx) {
+    public String visitGuard_type(UppaalParser.Guard_typeContext ctx) {
         String type = "";
         if(ctx.META() != null){
             type = "meta ";
@@ -399,21 +406,21 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         if(ctx.CONST() != null){
             type = "const ";
         }
-        return type.concat(visit(ctx.typeId()));
+        return type.concat(visit(ctx.guard_typeId()));
     }
 
     @Override
-    public String visitTypeInt(UppaalParser.TypeIntContext ctx) {
+    public String visitGuardTypeInt(UppaalParser.GuardTypeIntContext ctx) {
         return "int";
     }
 
     @Override
-    public String visitTypeIntDomain(UppaalParser.TypeIntDomainContext ctx) {
+    public String visitGuardTypeIntDomain(UppaalParser.GuardTypeIntDomainContext ctx) {
         return ("int[").concat(visit(ctx.guard_expr(0))).concat(", ").concat(visit(ctx.guard_expr(1))).concat("]");
     }
 
     @Override
-    public String visitTypeScalar(UppaalParser.TypeScalarContext ctx) {
+    public String visitGuardTypeScalar(UppaalParser.GuardTypeScalarContext ctx) {
         return ("scalar[").concat(visit(ctx.guard_expr())).concat("]");
     }
 
