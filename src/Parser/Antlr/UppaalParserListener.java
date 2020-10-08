@@ -472,6 +472,116 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitTypeDecl(UppaalParser.TypeDeclContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link UppaalParser#function}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunction(UppaalParser.FunctionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#function}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunction(UppaalParser.FunctionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#funcParameters}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncParameters(UppaalParser.FuncParametersContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#funcParameters}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncParameters(UppaalParser.FuncParametersContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#funcParameter}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncParameter(UppaalParser.FuncParameterContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#funcParameter}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncParameter(UppaalParser.FuncParameterContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#block}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlock(UppaalParser.BlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#block}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlock(UppaalParser.BlockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatement(UppaalParser.StatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatement(UppaalParser.StatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#for_loop}.
+	 * @param ctx the parse tree
+	 */
+	void enterFor_loop(UppaalParser.For_loopContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#for_loop}.
+	 * @param ctx the parse tree
+	 */
+	void exitFor_loop(UppaalParser.For_loopContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#iteration}.
+	 * @param ctx the parse tree
+	 */
+	void enterIteration(UppaalParser.IterationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#iteration}.
+	 * @param ctx the parse tree
+	 */
+	void exitIteration(UppaalParser.IterationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#while_loop}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhile_loop(UppaalParser.While_loopContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#while_loop}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhile_loop(UppaalParser.While_loopContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#do_while}.
+	 * @param ctx the parse tree
+	 */
+	void enterDo_while(UppaalParser.Do_whileContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#do_while}.
+	 * @param ctx the parse tree
+	 */
+	void exitDo_while(UppaalParser.Do_whileContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#if_statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterIf_statement(UppaalParser.If_statementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#if_statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitIf_statement(UppaalParser.If_statementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#return_statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterReturn_statement(UppaalParser.Return_statementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#return_statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitReturn_statement(UppaalParser.Return_statementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link UppaalParser#anything}.
 	 * @param ctx the parse tree
 	 */

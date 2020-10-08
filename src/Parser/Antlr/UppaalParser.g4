@@ -77,11 +77,11 @@ nta         :   '<' 'nta' '>' misc*
 
 declaration :   OPEN_DECLARATION decl_content CLOSE_DECLARATION;
 
-decl_content:   (variableDecl | typeDecl)*; // | function | chanPriority)* ;
+decl_content:   (variableDecl | typeDecl | function)*; // | function | chanPriority)* ;
 
 expr        :   IDENTIFIER  # IdentifierExpr
             |   NAT   # NatExpr
-            |   DOUBLE    # DoubleExpr
+            |   POINT    # DoubleExpr
             |   guard_expr '[' guard_expr ']'   # ArrayExpr
             |   guard_expr '\''     # StopWatchExpr
             |   '(' guard_expr ')'  # ParenthesisExpr
@@ -104,9 +104,9 @@ expr        :   IDENTIFIER  # IdentifierExpr
                                     # IfExpr
             |   guard_expr '.' IDENTIFIER   # DotExpr
             |   guard_expr '(' guard_arguments ')'# FuncExpr
-            |   'forall' '(' IDENTIFIER ':' guard_type ')' guard_expr     # ForallExpr
-            |   'exists' '(' IDENTIFIER ':' guard_type ')' guard_expr     # ExistsExpr
-            |   'sum' '(' IDENTIFIER ':' guard_type ')' guard_expr        # SumExpr
+            |   'forall' '(' IDENTIFIER ':' type ')' guard_expr     # ForallExpr
+            |   'exists' '(' IDENTIFIER ':' type ')' guard_expr     # ExistsExpr
+            |   'sum' '(' IDENTIFIER ':' type ')' guard_expr        # SumExpr
             |   'true'  # TrueGuarExpr
             |   'false' # FalseGuardExpr
             ;
@@ -117,7 +117,7 @@ type        :   prefix? typeId ;
 
 prefix      :   URGENT | 'broadcast' | 'meta' | 'const' ;
 
-typeId      :   IDENTIFIER | 'int' | 'clock' | 'chan' | 'bool'
+typeId      :   IDENTIFIER | 'int' | 'double' | 'clock' | 'chan' | 'bool'
             |  'int' '[' expr ',' expr ']'
             |  'scalar' '[' expr ']'
             |  'struct' '{' fieldDecl (fieldDecl)* '}' ;
@@ -135,6 +135,36 @@ initialiser :   expr
 
 typeDecl    :   'typedef' type IDENTIFIER arrayDecl* (',' IDENTIFIER arrayDecl*)* ';' ;
 
+function    :   type IDENTIFIER '(' funcParameters ')' block ;
+
+funcParameters: (funcParameter (',' funcParameter)*)? ;
+
+funcParameter:  type ('&amp;')? IDENTIFIER arrayDecl* ;
+
+block       :   '{' decl_content statement* '}' ;
+
+statement   :   block
+            |   ';'
+            |   expr ';'
+            |   for_loop
+            |   iteration
+            |   while_loop
+            |   do_while
+            |   if_statement
+            |   return_statement ;
+
+for_loop    :   'for' '(' expr ';' expr ';' expr ')' statement ;
+
+iteration   :   'for' '(' IDENTIFIER ':' type ')' statement ;
+
+while_loop  :   'while' '(' expr ')' statement ;
+
+do_while    :   'do' statement 'while' '(' expr ')' ';' ;
+
+if_statement:   'if' '(' expr ')' statement ('else' statement)? ;
+
+return_statement: 'return' (expr)? ';' ;
+
 ////////////////////////////////////////////////////////////////////////////////
 anything    :   chardata?
                 ((reference | CDATA | PI | COMMENT) chardata?)* ;
@@ -149,7 +179,7 @@ temp_content:   (name misc*)?
                 (init_loc misc*)
                 (transition misc*)*;
 
-parameter   :   '<' 'parameter' '>' anything '</' 'parameter' '>' ;
+parameter   :   OPEN_PARAMETER funcParameters CLOSE_PARAMETER ;
 
 coordinate  :   'x' EQUALS STRING 'y' EQUALS STRING ;
 
@@ -186,7 +216,7 @@ label_trans :   OPEN_GUARD guard_expr? CLOSE_GUARD # LabelTransGuard
 
 guard_expr  :   IDENTIFIER  # IdentifierGuard
             |   NAT   # NatGuard
-            |   DOUBLE    # DoubleGuard
+            |   POINT    # DoubleGuard
             |   guard_expr '[' guard_expr ']'   # ArrayGuard
             |   guard_expr '\''     # StopWatchGuard
             |   '(' guard_expr ')'  # ParenthesisGuard

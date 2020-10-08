@@ -247,7 +247,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitDoubleGuard(UppaalParser.DoubleGuardContext ctx) {
-        return ctx.DOUBLE().getText();
+        return ctx.POINT().getText();
     }
 
     @Override

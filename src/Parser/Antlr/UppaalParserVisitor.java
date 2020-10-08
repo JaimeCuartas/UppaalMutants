@@ -285,6 +285,72 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTypeDecl(UppaalParser.TypeDeclContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link UppaalParser#function}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunction(UppaalParser.FunctionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#funcParameters}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncParameters(UppaalParser.FuncParametersContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#funcParameter}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncParameter(UppaalParser.FuncParameterContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#block}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBlock(UppaalParser.BlockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatement(UppaalParser.StatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#for_loop}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFor_loop(UppaalParser.For_loopContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#iteration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIteration(UppaalParser.IterationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#while_loop}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhile_loop(UppaalParser.While_loopContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#do_while}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDo_while(UppaalParser.Do_whileContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#if_statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIf_statement(UppaalParser.If_statementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#return_statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReturn_statement(UppaalParser.Return_statementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link UppaalParser#anything}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
