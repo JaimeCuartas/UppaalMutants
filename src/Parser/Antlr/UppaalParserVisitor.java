@@ -259,6 +259,12 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDecrementExpr(UppaalParser.DecrementExprContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link UppaalParser#arguments}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArguments(UppaalParser.ArgumentsContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link UppaalParser#variableDecl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

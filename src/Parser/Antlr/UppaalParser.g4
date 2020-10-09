@@ -88,7 +88,7 @@ declarations:   variableDecl    # VariableDeclaration
 expr        :   IDENTIFIER  # IdentifierExpr
             |   NAT         # NatExpr
             |   POINT       # DoubleExpr
-            |   expr '[' guard_expr ']'   # ArrayExpr
+            |   expr '[' expr ']'   # ArrayExpr
             |   expr '\''     # StopWatchExpr
             |   '(' expr ')'  # ParenthesisExpr
             |   expr '++'     # ExprIncrement
@@ -105,17 +105,20 @@ expr        :   IDENTIFIER  # IdentifierExpr
             |   expr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
                                     |  '|' | '^' | '&lt;&lt;' | '&gt;&gt;' | '&amp;&amp;' | '||'
                                     |  '&lt;?' | '&gt;?' | 'or' | 'and' | 'imply')
-                                    guard_expr      #BinaryExpr
+                                    expr      #BinaryExpr
             |   expr '?' expr ':' expr
                                     # IfExpr
             |   expr '.' IDENTIFIER   # DotExpr
-            |   expr '(' guard_arguments ')'# FuncExpr
+            |   expr '(' arguments ')'# FuncExpr
             |   'forall' '(' IDENTIFIER ':' type ')' expr     # ForallExpr
             |   'exists' '(' IDENTIFIER ':' type ')' expr     # ExistsExpr
             |   'sum' '(' IDENTIFIER ':' type ')' expr        # SumExpr
             |   'true'  # TrueExpr
             |   'false' # FalseExpr
             ;
+
+
+arguments   :   (expr  (',' expr)*)? ;
 
 variableDecl:   type variableID (',' variableID)* ';' ;
 

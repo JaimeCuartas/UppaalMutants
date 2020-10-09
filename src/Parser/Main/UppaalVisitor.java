@@ -80,6 +80,132 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     }
 
     @Override
+    public String visitIdentifierExpr(UppaalParser.IdentifierExprContext ctx) {
+        return ctx.IDENTIFIER().getText();
+    }
+
+    @Override
+    public String visitNatExpr(UppaalParser.NatExprContext ctx) {
+        return ctx.NAT().getText();
+    }
+
+    @Override
+    public String visitDoubleExpr(UppaalParser.DoubleExprContext ctx) {
+        return ctx.POINT().getText();
+    }
+
+    @Override
+    public String visitArrayExpr(UppaalParser.ArrayExprContext ctx) {
+        return visit(ctx.expr(0)).concat("[").concat(visit(ctx.expr(1))).concat("]");
+    }
+
+    @Override
+    public String visitStopWatchExpr(UppaalParser.StopWatchExprContext ctx) {
+        return visit(ctx.expr()).concat("'");
+    }
+
+    @Override
+    public String visitParenthesisExpr(UppaalParser.ParenthesisExprContext ctx) {
+        return "(".concat(visit(ctx.expr())).concat(")");
+    }
+
+    @Override
+    public String visitExprIncrement(UppaalParser.ExprIncrementContext ctx) {
+        return visit(ctx.expr()).concat("++");
+    }
+
+    @Override
+    public String visitIncrementExpr(UppaalParser.IncrementExprContext ctx) {
+        return "++".concat(visit(ctx.expr()));
+    }
+
+    @Override
+    public String visitExprDecrement(UppaalParser.ExprDecrementContext ctx) {
+        return visit(ctx.expr()).concat("--");
+    }
+
+    @Override
+    public String visitDecrementExpr(UppaalParser.DecrementExprContext ctx) {
+        return "--".concat(visit(ctx.expr()));
+    }
+
+    @Override
+    public String visitAssignExpr(UppaalParser.AssignExprContext ctx) {
+        return visit(ctx.expr(0)).concat(ctx.assign.getText()).concat(visit(ctx.expr(1)));
+    }
+
+    @Override
+    public String visitUnaryExpr(UppaalParser.UnaryExprContext ctx) {
+        return ctx.unary.getText().concat(visit(ctx.expr()));
+    }
+
+    @Override
+    public String visitComparisonExpr(UppaalParser.ComparisonExprContext ctx) {
+        return visit(ctx.expr(0)).concat(ctx.binary.getText()).concat(visit(ctx.expr(1)));
+    }
+
+
+    @Override
+    public String visitBinaryExpr(UppaalParser.BinaryExprContext ctx) {
+        return visit(ctx.expr(0)).concat(ctx.binary.getText()).concat(visit(ctx.expr(1)));
+    }
+
+    @Override
+    public String visitIfExpr(UppaalParser.IfExprContext ctx) {
+        return visit(ctx.expr(0)).concat("?").concat(visit(ctx.expr(1))).concat(":").concat(visit(ctx.expr(2)));
+    }
+
+    @Override
+    public String visitDotExpr(UppaalParser.DotExprContext ctx) {
+        return visit(ctx.expr()).concat(".").concat(ctx.IDENTIFIER().getText());
+    }
+
+
+    @Override
+    public String visitFuncExpr(UppaalParser.FuncExprContext ctx) {
+        return visit(ctx.expr()).concat("(").concat(visit(ctx.arguments())).concat(")");
+    }
+    
+    @Override
+    public String visitForallExpr(UppaalParser.ForallExprContext ctx) {
+        return "forall (".concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.type())).concat(")").concat(visit(ctx.expr()));
+    }
+
+    @Override
+    public String visitExistsExpr(UppaalParser.ExistsExprContext ctx) {
+        return "exists (".concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.type())).concat(")").concat(visit(ctx.expr()));
+    }
+
+    @Override
+    public String visitSumExpr(UppaalParser.SumExprContext ctx) {
+        return "sum (".concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.type())).concat(")").concat(visit(ctx.expr()));
+    }
+
+    @Override
+    public String visitTrueExpr(UppaalParser.TrueExprContext ctx) {
+        return "true";
+    }
+
+    @Override
+    public String visitFalseExpr(UppaalParser.FalseExprContext ctx) {
+        return "false";
+    }
+
+    @Override
+    public String visitArguments(UppaalParser.ArgumentsContext ctx) {
+        String arguments = "";
+
+        List<UppaalParser.ExprContext> expressions = ctx.expr();
+
+        String separator = "";
+        for(UppaalParser.ExprContext expr: expressions){
+            arguments = arguments.concat(separator).concat(visit(expr));
+            separator = ", ";
+        }
+        return arguments;
+    }
+
+    @Override
     public String visitVariableDeclaration(UppaalParser.VariableDeclarationContext ctx) {
         return visit(ctx.variableDecl());
     }

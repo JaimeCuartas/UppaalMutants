@@ -430,6 +430,16 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitDecrementExpr(UppaalParser.DecrementExprContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link UppaalParser#arguments}.
+	 * @param ctx the parse tree
+	 */
+	void enterArguments(UppaalParser.ArgumentsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#arguments}.
+	 * @param ctx the parse tree
+	 */
+	void exitArguments(UppaalParser.ArgumentsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link UppaalParser#variableDecl}.
 	 * @param ctx the parse tree
 	 */
