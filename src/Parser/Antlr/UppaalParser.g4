@@ -77,94 +77,125 @@ nta         :   '<' 'nta' '>' misc*
 
 declaration :   OPEN_DECLARATION decl_content CLOSE_DECLARATION;
 
-decl_content:   (variableDecl | typeDecl | function)*; // | function | chanPriority)* ;
+decl_content:   declarations* ;
+
+declarations:   variableDecl    # VariableDeclaration
+            |   typeDecl        # typeDeclaration
+            |   function        # FunctionDeclaration
+            |   chanPriority    # ChanDeclaration
+            ;
 
 expr        :   IDENTIFIER  # IdentifierExpr
-            |   NAT   # NatExpr
-            |   POINT    # DoubleExpr
-            |   guard_expr '[' guard_expr ']'   # ArrayExpr
-            |   guard_expr '\''     # StopWatchExpr
-            |   '(' guard_expr ')'  # ParenthesisExpr
-            |   guard_expr '++'     # ExprIncrement
-            |   '++' guard_expr     # IncrementExpr
-            |   guard_expr '--'     # ExprDecrement
-            |   '--' guard_expr     # DecrementExpr
-            |   guard_expr
+            |   NAT         # NatExpr
+            |   POINT       # DoubleExpr
+            |   expr '[' guard_expr ']'   # ArrayExpr
+            |   expr '\''     # StopWatchExpr
+            |   '(' expr ')'  # ParenthesisExpr
+            |   expr '++'     # ExprIncrement
+            |   '++' expr     # IncrementExpr
+            |   expr '--'     # ExprDecrement
+            |   '--' expr     # DecrementExpr
+            |   expr
                     //assign is '=' in guard channel
                     assign=(ASSIGN | ':=' | '+=' | '-=' | '*=' | '/=' | '%=' | '|=' | '&amp;=' | '^=' | '&lt;&lt;=' | '&gt;&gt;=')
-                        guard_expr  # AssignExpr
-            |   unary=('-' | '+' | '!' | 'not') guard_expr  # UnaryExpr
-            |   guard_expr binary=( '&lt;' | '&lt;=' | '==' | '!=' | '&gt;=' | '&gt;' //LESS is '<' in guard channel. Greater is '>' in guard channel
-                                   ) guard_expr     # ComparisonExpr
-            |   guard_expr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
+                        expr  # AssignExpr
+            |   unary=('-' | '+' | '!' | 'not') expr  # UnaryExpr
+            |   expr binary=( '&lt;' | '&lt;=' | '==' | '!=' | '&gt;=' | '&gt;' //LESS is '<' in guard channel. Greater is '>' in guard channel
+                                   ) expr     # ComparisonExpr
+            |   expr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
                                     |  '|' | '^' | '&lt;&lt;' | '&gt;&gt;' | '&amp;&amp;' | '||'
                                     |  '&lt;?' | '&gt;?' | 'or' | 'and' | 'imply')
                                     guard_expr      #BinaryExpr
-            |   guard_expr '?' guard_expr ':' guard_expr
+            |   expr '?' expr ':' expr
                                     # IfExpr
-            |   guard_expr '.' IDENTIFIER   # DotExpr
-            |   guard_expr '(' guard_arguments ')'# FuncExpr
-            |   'forall' '(' IDENTIFIER ':' type ')' guard_expr     # ForallExpr
-            |   'exists' '(' IDENTIFIER ':' type ')' guard_expr     # ExistsExpr
-            |   'sum' '(' IDENTIFIER ':' type ')' guard_expr        # SumExpr
-            |   'true'  # TrueGuarExpr
-            |   'false' # FalseGuardExpr
+            |   expr '.' IDENTIFIER   # DotExpr
+            |   expr '(' guard_arguments ')'# FuncExpr
+            |   'forall' '(' IDENTIFIER ':' type ')' expr     # ForallExpr
+            |   'exists' '(' IDENTIFIER ':' type ')' expr     # ExistsExpr
+            |   'sum' '(' IDENTIFIER ':' type ')' expr        # SumExpr
+            |   'true'  # TrueExpr
+            |   'false' # FalseExpr
             ;
 
 variableDecl:   type variableID (',' variableID)* ';' ;
 
 type        :   prefix? typeId ;
 
-prefix      :   URGENT | 'broadcast' | 'meta' | 'const' ;
+prefix      :   URGENT      # UrgentPrefix
+            |   'broadcast' # BroadcastPrefix
+            |   'meta'      # MetaPrefix
+            |   'const'     # ConstPrefix
+            ;
 
-typeId      :   IDENTIFIER | 'int' | 'double' | 'clock' | 'chan' | 'bool'
-            |  'int' '[' expr ',' expr ']'
-            |  'scalar' '[' expr ']'
-            |  'struct' '{' fieldDecl (fieldDecl)* '}' ;
+typeId      :   IDENTIFIER  # IdentifierType
+            |   'int'       # IntType
+            |   'double'    # DoubleType
+            |   'clock'     # ClockType
+            |   'chan'      # ChanType
+            |   'bool'      # BoolType
+            |   'int' '[' expr ',' expr ']'     # IntDomainType
+            |   'scalar' '[' expr ']'           # ScalarType
+            |   'struct' '{' (fieldDecl)+ '}'   # StructType
+            ;
 
-fieldDecl   :   type IDENTIFIER arrayDecl* (',' IDENTIFIER arrayDecl*)* ';' ;
+fieldDecl   :   type varFieldDecl (',' varFieldDecl)* ';' ;
 
-arrayDecl   :   '[' expr ']'
-            |   '[' type ']' ;
+varFieldDecl:   IDENTIFIER arrayDecl* ;
+
+arrayDecl   :   '[' expr ']'    # ArrayDeclExpr
+            |   '[' type ']'    # ArrayDeclType
+            ;
 
 variableID  :   IDENTIFIER arrayDecl* (ASSIGN initialiser )? ;
 
-initialiser :   expr
-            |   '{' initialiser (',' initialiser)* '}'
+initialiser :   expr                                        # InitialiserExpr
+            |   '{' initialiser (',' initialiser)* '}'      # InitialiserArray
             ;
 
-typeDecl    :   'typedef' type IDENTIFIER arrayDecl* (',' IDENTIFIER arrayDecl*)* ';' ;
+//typeDecl    :   'typedef' type IDENTIFIER arrayDecl* (',' IDENTIFIER arrayDecl*)* ';' ;
+typeDecl    :   'typedef' type varFieldDecl (',' varFieldDecl)* ';' ;
 
 function    :   type IDENTIFIER '(' funcParameters ')' block ;
 
 funcParameters: (funcParameter (',' funcParameter)*)? ;
 
-funcParameter:  type ('&amp;')? IDENTIFIER arrayDecl* ;
+//funcParameter:  type ('&amp;')? IDENTIFIER arrayDecl* ;
+funcParameter:  type ('&amp;')? varFieldDecl ;
 
 block       :   '{' decl_content statement* '}' ;
 
-statement   :   block
-            |   ';'
-            |   expr ';'
-            |   for_loop
-            |   iteration
-            |   while_loop
-            |   do_while
-            |   if_statement
-            |   return_statement ;
+statement   :   block           # StatementBlock
+            |   ';'             # StatementSemicolon
+            |   expr ';'        # StatementExpr
+            |   forLoop         # StatementFor
+            |   iteration       # StatementIteration
+            |   whileLoop       # StatementWhile
+            |   doWhile         # StatementDoWhile
+            |   ifStatement     # StatementIf
+            |   returnStatement # StatementReturn
+            ;
 
-for_loop    :   'for' '(' expr ';' expr ';' expr ')' statement ;
+forLoop     :   'for' '(' expr ';' expr ';' expr ')' statement ;
 
 iteration   :   'for' '(' IDENTIFIER ':' type ')' statement ;
 
-while_loop  :   'while' '(' expr ')' statement ;
+whileLoop  :   'while' '(' expr ')' statement ;
 
-do_while    :   'do' statement 'while' '(' expr ')' ';' ;
+doWhile    :   'do' statement 'while' '(' expr ')' ';' ;
 
-if_statement:   'if' '(' expr ')' statement ('else' statement)? ;
+ifStatement:   'if' '(' expr ')' statement ('else' statement)? ;
 
-return_statement: 'return' (expr)? ';' ;
+returnStatement: 'return' (expr)? ';' ;
 
+chanPriority:  'chan' 'priority' chanOrDef (chanSeparator chanOrDef)* ';' ;
+
+chanOrDef   :   (chanExpr | 'default' ) ;
+
+chanSeparator:  (',' | '&lt;') ;
+
+chanExpr    :   IDENTIFIER              # ChanIdentifier
+            |   chanExpr '[' expr ']'   # ChanArray
+            ;
 ////////////////////////////////////////////////////////////////////////////////
 anything    :   chardata?
                 ((reference | CDATA | PI | COMMENT) chardata?)* ;

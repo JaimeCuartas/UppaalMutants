@@ -170,6 +170,10 @@ IF                  :   'if' ;
 ELSE                :   'else' ;
 RETURN              :   'return' ;
 
+//priority
+PRIORITY            :   'priority' ;
+DEFAULT             :   'default' ;
+
 //expressions
 APOSTROPHE          :   '\'' ;
 

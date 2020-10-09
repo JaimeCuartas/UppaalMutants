@@ -3,6 +3,7 @@ package Parser.Main;
 import Parser.Antlr.UppaalParser;
 import Parser.Antlr.UppaalParserBaseVisitor;
 import Parser.Antlr.UppaalParserListener;
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.List;
 
@@ -59,7 +60,419 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitDeclaration(UppaalParser.DeclarationContext ctx) {
+        String declaration = ctx.OPEN_DECLARATION().getText();
+        declaration = declaration.concat(visit(ctx.decl_content()));
+        declaration = declaration.concat(ctx.CLOSE_DECLARATION().getText());
         return ctx.getText();
+    }
+
+    @Override
+    public String visitDecl_content(UppaalParser.Decl_contentContext ctx) {
+        String decl_content = "";
+
+        List<UppaalParser.DeclarationsContext> declarations = ctx.declarations();
+
+        for(UppaalParser.DeclarationsContext declaration: declarations){
+            decl_content = decl_content.concat(visit(declaration)).concat("\n");
+        }
+
+        return decl_content;
+    }
+
+    @Override
+    public String visitVariableDeclaration(UppaalParser.VariableDeclarationContext ctx) {
+        return visit(ctx.variableDecl());
+    }
+
+    @Override
+    public String visitVariableDecl(UppaalParser.VariableDeclContext ctx) {
+        String variableDecl = visit(ctx.type());
+
+        List<UppaalParser.VariableIDContext> variablesId = ctx.variableID();
+        String separator = " ";
+
+        for(UppaalParser.VariableIDContext variableId: variablesId){
+            variableDecl = variableDecl.concat(separator).concat(visit(variableId));
+            separator = ", ";
+        }
+        variableDecl = variableDecl.concat(";");
+        return variableDecl;
+    }
+
+    @Override
+    public String visitType(UppaalParser.TypeContext ctx) {
+        String type = "";
+        if(ctx.prefix() != null){
+            type = visit(ctx.prefix()).concat(" ");
+        }
+        type = type.concat(visit(ctx.typeId()));
+        return super.visitType(ctx);
+    }
+
+    @Override
+    public String visitUrgentPrefix(UppaalParser.UrgentPrefixContext ctx) {
+        return "urgent";
+    }
+
+    @Override
+    public String visitBroadcastPrefix(UppaalParser.BroadcastPrefixContext ctx) {
+        return "broadcast";
+    }
+
+    @Override
+    public String visitMetaPrefix(UppaalParser.MetaPrefixContext ctx) {
+        return "meta";
+    }
+
+    @Override
+    public String visitConstPrefix(UppaalParser.ConstPrefixContext ctx) {
+        return "const";
+    }
+
+    @Override
+    public String visitIdentifierType(UppaalParser.IdentifierTypeContext ctx) {
+        return ctx.IDENTIFIER().getText();
+    }
+
+    @Override
+    public String visitIntType(UppaalParser.IntTypeContext ctx) {
+        return "int";
+    }
+
+    @Override
+    public String visitDoubleType(UppaalParser.DoubleTypeContext ctx) {
+        return "double";
+    }
+
+    @Override
+    public String visitClockType(UppaalParser.ClockTypeContext ctx) {
+        return "clock";
+    }
+
+    @Override
+    public String visitChanType(UppaalParser.ChanTypeContext ctx) {
+        return "chan";
+    }
+
+    @Override
+    public String visitBoolType(UppaalParser.BoolTypeContext ctx) {
+        return "bool";
+    }
+
+    @Override
+    public String visitIntDomainType(UppaalParser.IntDomainTypeContext ctx) {
+        String intDomain = "int [";
+        intDomain = intDomain.concat(visit(ctx.expr(0))).concat(", ").concat(visit(ctx.expr(1))).concat("]");
+        return intDomain;
+    }
+
+    @Override
+    public String visitScalarType(UppaalParser.ScalarTypeContext ctx) {
+        String scalar = "scalar [";
+        scalar = scalar.concat(visit(ctx.expr())).concat("]");
+        return scalar;
+    }
+
+    @Override
+    public String visitStructType(UppaalParser.StructTypeContext ctx) {
+        String struct = "struct {\n";
+        List<UppaalParser.FieldDeclContext> fields = ctx.fieldDecl();
+        for(UppaalParser.FieldDeclContext field: fields){
+            struct = struct.concat(visit(field));
+        }
+        return struct;
+    }
+
+    @Override
+    public String visitFieldDecl(UppaalParser.FieldDeclContext ctx) {
+        String fieldDecl = visit(ctx.type());
+        List<UppaalParser.VarFieldDeclContext> varsField = ctx.varFieldDecl();
+        String separator = " ";
+
+        for(UppaalParser.VarFieldDeclContext varField: varsField){
+            fieldDecl = fieldDecl.concat(separator).concat(visit(varField));
+            separator = ", ";
+        }
+
+        fieldDecl = fieldDecl.concat(";");
+        return fieldDecl;
+    }
+
+    @Override
+    public String visitVarFieldDecl(UppaalParser.VarFieldDeclContext ctx) {
+        String varField = ctx.IDENTIFIER().getText();
+        List<UppaalParser.ArrayDeclContext> arraysDecl = ctx.arrayDecl();
+
+        for(UppaalParser.ArrayDeclContext arrayDecl: arraysDecl){
+            varField = varField.concat(visit(arrayDecl));
+        }
+        return super.visitVarFieldDecl(ctx);
+    }
+
+    @Override
+    public String visitArrayDeclExpr(UppaalParser.ArrayDeclExprContext ctx) {
+        String arrayDecl = "[";
+        arrayDecl = arrayDecl.concat(visit(ctx.expr())).concat("]");
+        return arrayDecl;
+    }
+
+    @Override
+    public String visitArrayDeclType(UppaalParser.ArrayDeclTypeContext ctx) {
+        String arrayDecl = "[";
+        arrayDecl = arrayDecl.concat(visit(ctx.type())).concat("]");
+        return arrayDecl;
+    }
+
+    @Override
+    public String visitVariableID(UppaalParser.VariableIDContext ctx) {
+        String variableId = ctx.IDENTIFIER().getText().concat(" ");
+
+        List<UppaalParser.ArrayDeclContext> arraysDecl = ctx.arrayDecl();
+
+        for(UppaalParser.ArrayDeclContext arrayDecl: arraysDecl){
+            variableId = variableId.concat(visit(arrayDecl));
+        }
+
+        if(ctx.initialiser()!=null){
+            variableId = variableId.concat("= ").concat(visit(ctx.initialiser()));
+        }
+
+        return variableId;
+    }
+
+    @Override
+    public String visitInitialiserExpr(UppaalParser.InitialiserExprContext ctx) {
+        return visit(ctx.expr());
+    }
+
+    @Override
+    public String visitInitialiserArray(UppaalParser.InitialiserArrayContext ctx) {
+        String initiliserArray = "{";
+        List<UppaalParser.InitialiserContext> initialisers = ctx.initialiser();
+        String separator = "";
+        for(UppaalParser.InitialiserContext initialiser : initialisers){
+            initiliserArray = initiliserArray.concat(separator).concat(visit(initialiser));
+            separator = ", ";
+        }
+
+        initiliserArray = initiliserArray.concat("}");
+
+        return initiliserArray;
+    }
+
+    @Override
+    public String visitTypeDeclaration(UppaalParser.TypeDeclarationContext ctx) {
+        return visit(ctx.typeDecl());
+    }
+
+    @Override
+    public String visitTypeDecl(UppaalParser.TypeDeclContext ctx) {
+        String typeDecl = "typedef ".concat(visit(ctx.type()));
+
+        List<UppaalParser.VarFieldDeclContext> varFields = ctx.varFieldDecl();
+        String separator = " ";
+        for (UppaalParser.VarFieldDeclContext varField: varFields){
+            typeDecl = typeDecl.concat(separator).concat(visit(varField));
+            separator = ", ";
+        }
+
+        typeDecl = typeDecl.concat(";");
+        return typeDecl;
+    }
+
+    @Override
+    public String visitFunctionDeclaration(UppaalParser.FunctionDeclarationContext ctx) {
+        return visit(ctx.function());
+    }
+
+    @Override
+    public String visitFunction(UppaalParser.FunctionContext ctx) {
+        String visitFunction = visit(ctx.type()).concat(" ").concat(ctx.IDENTIFIER().getText()).concat("(");
+        visitFunction = visitFunction.concat(visit(ctx.funcParameters()));
+        visitFunction = visitFunction.concat(")").concat(visit(ctx.block()));
+        return visitFunction;
+    }
+
+    @Override
+    public String visitFuncParameters(UppaalParser.FuncParametersContext ctx) {
+        String visitFunParameters = "";
+
+        List<UppaalParser.FuncParameterContext> funcParameters = ctx.funcParameter();
+        String separator = "";
+
+        for(UppaalParser.FuncParameterContext funcParameter: funcParameters){
+            visitFunParameters = visitFunParameters.concat(separator).concat(visit(funcParameter));
+        }
+
+        return visitFunParameters;
+    }
+
+    @Override
+    public String visitFuncParameter(UppaalParser.FuncParameterContext ctx) {
+        String funcParameter = visit(ctx.type()).concat(" ");
+
+        if(ctx.BITAND() != null){
+            funcParameter = funcParameter.concat("&amp;");
+        }
+
+        funcParameter = funcParameter.concat(visit(ctx.varFieldDecl()));
+
+        return super.visitFuncParameter(ctx);
+    }
+
+    @Override
+    public String visitBlock(UppaalParser.BlockContext ctx) {
+        String block = "{\n";
+        block = block.concat(visit(ctx.decl_content()));
+
+        List<UppaalParser.StatementContext> statements = ctx.statement();
+
+        for(UppaalParser.StatementContext statement : statements){
+            block = block.concat(visit(statement)).concat("\n");
+        }
+
+        block = block.concat("}");
+
+        return block;
+    }
+
+    @Override
+    public String visitStatementBlock(UppaalParser.StatementBlockContext ctx) {
+        return visit(ctx.block());
+    }
+
+    @Override
+    public String visitStatementSemicolon(UppaalParser.StatementSemicolonContext ctx) {
+        return ";";
+    }
+
+    @Override
+    public String visitStatementExpr(UppaalParser.StatementExprContext ctx) {
+        return visit(ctx.expr()).concat(";");
+    }
+
+    @Override
+    public String visitStatementFor(UppaalParser.StatementForContext ctx) {
+        return visit(ctx.forLoop());
+    }
+
+    @Override
+    public String visitStatementIteration(UppaalParser.StatementIterationContext ctx) {
+        return visit(ctx.iteration());
+    }
+
+    @Override
+    public String visitStatementWhile(UppaalParser.StatementWhileContext ctx) {
+        return visit(ctx.whileLoop());
+    }
+
+    @Override
+    public String visitStatementDoWhile(UppaalParser.StatementDoWhileContext ctx) {
+        return visit(ctx.doWhile());
+    }
+
+    @Override
+    public String visitStatementIf(UppaalParser.StatementIfContext ctx) {
+        return visit(ctx.ifStatement());
+    }
+
+    @Override
+    public String visitStatementReturn(UppaalParser.StatementReturnContext ctx) {
+        return visit(ctx.returnStatement());
+    }
+
+    @Override
+    public String visitForLoop(UppaalParser.ForLoopContext ctx) {
+        String forLoop = "for (";
+        forLoop = forLoop.concat(visit(ctx.expr(0))).concat(";").concat(visit(ctx.expr(1))).concat(";").concat(visit(ctx.expr(2))).concat(")");
+        forLoop = forLoop.concat(visit(ctx.statement()));
+        return forLoop;
+    }
+
+    @Override
+    public String visitIteration(UppaalParser.IterationContext ctx) {
+        String iteration = "for (";
+        iteration = iteration.concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.type())).concat(")");
+        iteration = iteration.concat(visit(ctx.statement()));
+        return iteration;
+    }
+
+    @Override
+    public String visitWhileLoop(UppaalParser.WhileLoopContext ctx) {
+        String whileLoop = "while (";
+        whileLoop = whileLoop.concat(visit(ctx.expr())).concat(")");
+        whileLoop = whileLoop.concat(visit(ctx.statement()));
+        return whileLoop;
+    }
+
+    @Override
+    public String visitDoWhile(UppaalParser.DoWhileContext ctx) {
+        String doWhile = "do ";
+        doWhile = doWhile.concat(visit(ctx.statement())).concat("while (").concat(visit(ctx.expr())).concat(");");
+        return doWhile;
+    }
+
+    @Override
+    public String visitIfStatement(UppaalParser.IfStatementContext ctx) {
+        String ifStatement = "if (";
+        ifStatement = ifStatement.concat(visit(ctx.expr())).concat(")").concat(visit(ctx.statement(0)));
+        if (ctx.statement(1)!=null){
+            ifStatement = ifStatement.concat("else ").concat(visit(ctx.statement(1)));
+        }
+        return ifStatement;
+    }
+
+    @Override
+    public String visitReturnStatement(UppaalParser.ReturnStatementContext ctx) {
+        String returnStatement = "return ";
+        if(ctx.expr()!=null){
+            returnStatement = returnStatement.concat(visit(ctx.expr()));
+        }
+        returnStatement = returnStatement.concat(";");
+        return returnStatement;
+    }
+
+    @Override
+    public String visitChanDeclaration(UppaalParser.ChanDeclarationContext ctx) {
+        return visit(ctx.chanPriority());
+    }
+
+    @Override
+    public String visitChanPriority(UppaalParser.ChanPriorityContext ctx) {
+        String chanPriority = "chan priority ";
+        chanPriority = chanPriority.concat(visit(ctx.chanOrDef(0)));
+        for(int i=0; i<ctx.chanSeparator().size(); i++){
+            chanPriority = chanPriority.concat(visit(ctx.chanSeparator(i))).concat(visit(ctx.chanOrDef(i+1)));
+        }
+        return chanPriority;
+    }
+
+    @Override
+    public String visitChanOrDef(UppaalParser.ChanOrDefContext ctx) {
+        if(ctx.DEFAULT()!=null){
+            return "default";
+        }
+        return visit(ctx.chanExpr());
+    }
+
+    @Override
+    public String visitChanSeparator(UppaalParser.ChanSeparatorContext ctx) {
+        if(ctx.COMMA()!=null){
+            return ", ";
+        }
+        return "&lt;";
+    }
+
+    @Override
+    public String visitChanIdentifier(UppaalParser.ChanIdentifierContext ctx) {
+        return ctx.IDENTIFIER().getText();
+    }
+
+    @Override
+    public String visitChanArray(UppaalParser.ChanArrayContext ctx) {
+        String chanArray = visit(ctx.chanExpr()).concat("[");
+        chanArray = chanArray.concat(visit(ctx.expr())).concat("]");
+        return chanArray;
     }
 
 
@@ -126,6 +539,9 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitParameter(UppaalParser.ParameterContext ctx) {
+        String parameter = ctx.OPEN_PARAMETER().getText();
+        parameter = parameter.concat(visit(ctx.funcParameters()));
+        parameter = parameter.concat(ctx.CLOSE_PARAMETER().getText());
         return ctx.getText();
     }
 
