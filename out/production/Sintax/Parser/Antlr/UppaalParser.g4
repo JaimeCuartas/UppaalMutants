@@ -28,7 +28,7 @@
 
 /** XML parser derived from ANTLR v4 ref guide book example */
 parser grammar UppaalParser;
-
+//check 275 page
 
 @parser::members { // add members to generated UppaalParser
     private int num=0;
@@ -73,8 +73,133 @@ nta         :   '<' 'nta' '>' misc*
                 (queries misc*)?
                 '</' 'nta' '>' ;
 
-declaration :   '<' 'declaration' '>' anything '</' 'declaration' '>' ;
+//declaration :   '<' 'declaration' '>' anything '</' 'declaration' '>' ;
 
+declaration :   OPEN_DECLARATION decl_content CLOSE_DECLARATION;
+
+decl_content:   declarations* ;
+
+declarations:   variableDecl    # VariableDeclaration
+            |   typeDecl        # typeDeclaration
+            |   function        # FunctionDeclaration
+            |   chanPriority    # ChanDeclaration
+            ;
+
+expr        :   IDENTIFIER  # IdentifierExpr
+            |   NAT         # NatExpr
+            |   POINT       # DoubleExpr
+            |   expr '[' expr ']'   # ArrayExpr
+            |   expr '\''     # StopWatchExpr
+            |   '(' expr ')'  # ParenthesisExpr
+            |   expr '++'     # ExprIncrement
+            |   '++' expr     # IncrementExpr
+            |   expr '--'     # ExprDecrement
+            |   '--' expr     # DecrementExpr
+            |   expr
+                    //assign is '=' in guard channel
+                    assign=(ASSIGN | ':=' | '+=' | '-=' | '*=' | '/=' | '%=' | '|=' | '&amp;=' | '^=' | '&lt;&lt;=' | '&gt;&gt;=')
+                        expr  # AssignExpr
+            |   unary=('-' | '+' | '!' | 'not') expr  # UnaryExpr
+            |   expr binary=( '&lt;' | '&lt;=' | '==' | '!=' | '&gt;=' | '&gt;' //LESS is '<' in guard channel. Greater is '>' in guard channel
+                                   ) expr     # ComparisonExpr
+            |   expr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
+                                    |  '|' | '^' | '&lt;&lt;' | '&gt;&gt;' | '&amp;&amp;' | '||'
+                                    |  '&lt;?' | '&gt;?' | 'or' | 'and' | 'imply')
+                                    expr      #BinaryExpr
+            |   expr '?' expr ':' expr
+                                    # IfExpr
+            |   expr '.' IDENTIFIER   # DotExpr
+            |   expr '(' arguments ')'# FuncExpr
+            |   'forall' '(' IDENTIFIER ':' type ')' expr     # ForallExpr
+            |   'exists' '(' IDENTIFIER ':' type ')' expr     # ExistsExpr
+            |   'sum' '(' IDENTIFIER ':' type ')' expr        # SumExpr
+            |   'true'  # TrueExpr
+            |   'false' # FalseExpr
+            ;
+
+
+arguments   :   (expr  (',' expr)*)? ;
+
+variableDecl:   type variableID (',' variableID)* ';' ;
+
+type        :   prefix? typeId ;
+
+prefix      :   URGENT      # UrgentPrefix
+            |   'broadcast' # BroadcastPrefix
+            |   'meta'      # MetaPrefix
+            |   'const'     # ConstPrefix
+            ;
+
+typeId      :   IDENTIFIER  # IdentifierType
+            |   'int'       # IntType
+            |   'double'    # DoubleType
+            |   'clock'     # ClockType
+            |   'chan'      # ChanType
+            |   'bool'      # BoolType
+            |   'int' '[' expr ',' expr ']'     # IntDomainType
+            |   'scalar' '[' expr ']'           # ScalarType
+            |   'struct' '{' (fieldDecl)+ '}'   # StructType
+            ;
+
+fieldDecl   :   type varFieldDecl (',' varFieldDecl)* ';' ;
+
+varFieldDecl:   IDENTIFIER arrayDecl* ;
+
+arrayDecl   :   '[' expr ']'    # ArrayDeclExpr
+            |   '[' type ']'    # ArrayDeclType
+            ;
+
+variableID  :   IDENTIFIER arrayDecl* (ASSIGN initialiser )? ;
+
+initialiser :   expr                                        # InitialiserExpr
+            |   '{' initialiser (',' initialiser)* '}'      # InitialiserArray
+            ;
+
+//typeDecl    :   'typedef' type IDENTIFIER arrayDecl* (',' IDENTIFIER arrayDecl*)* ';' ;
+typeDecl    :   'typedef' type varFieldDecl (',' varFieldDecl)* ';' ;
+
+function    :   type IDENTIFIER '(' funcParameters ')' block ;
+
+funcParameters: (funcParameter (',' funcParameter)*)? ;
+
+//funcParameter:  type ('&amp;')? IDENTIFIER arrayDecl* ;
+funcParameter:  type ('&amp;')? varFieldDecl ;
+
+block       :   '{' decl_content statement* '}' ;
+
+statement   :   block           # StatementBlock
+            |   ';'             # StatementSemicolon
+            |   expr ';'        # StatementExpr
+            |   forLoop         # StatementFor
+            |   iteration       # StatementIteration
+            |   whileLoop       # StatementWhile
+            |   doWhile         # StatementDoWhile
+            |   ifStatement     # StatementIf
+            |   returnStatement # StatementReturn
+            ;
+
+forLoop     :   'for' '(' expr ';' expr ';' expr ')' statement ;
+
+iteration   :   'for' '(' IDENTIFIER ':' type ')' statement ;
+
+whileLoop  :   'while' '(' expr ')' statement ;
+
+doWhile    :   'do' statement 'while' '(' expr ')' ';' ;
+
+ifStatement:   'if' '(' expr ')' statement ('else' statement)? ;
+
+returnStatement: 'return' (expr)? ';' ;
+
+chanPriority:  'chan' 'priority' chanOrDef (chanSeparator chanOrDef)* ';' ;
+
+chanOrDef   :   (chanExpr | 'default' ) ;
+
+chanSeparator:  (',' | '&lt;') ;
+
+chanExpr    :   IDENTIFIER              # ChanIdentifier
+            |   chanExpr '[' expr ']'   # ChanArray
+            ;
+////////////////////////////////////////////////////////////////////////////////
 anything    :   chardata?
                 ((reference | CDATA | PI | COMMENT) chardata?)* ;
 
@@ -88,7 +213,7 @@ temp_content:   (name misc*)?
                 (init_loc misc*)
                 (transition misc*)*;
 
-parameter   :   '<' 'parameter' '>' anything '</' 'parameter' '>' ;
+parameter   :   OPEN_PARAMETER funcParameters CLOSE_PARAMETER ;
 
 coordinate  :   'x' EQUALS STRING 'y' EQUALS STRING ;
 
@@ -101,7 +226,7 @@ branchpoint :   '<' 'branchpoint' 'id' EQUALS STRING
 location    :   '<' 'location' 'id' EQUALS STRING
                     coordinate? '>' misc* (name misc*)?
                     (label_loc misc*)*
-                    ('<' ('urgent' | 'committed') '/>' misc*)?
+                    ('<' (URGENT_LOC | 'committed') '/>' misc*)?
 
                     '</' 'location' '>' ;
 
@@ -124,8 +249,8 @@ label_trans :   OPEN_GUARD guard_expr? CLOSE_GUARD # LabelTransGuard
 
 
 guard_expr  :   IDENTIFIER  # IdentifierGuard
-            |   NAT_GUARD   # NatGuard
-            |   DOUBLE_GUARD    # DoubleGuard
+            |   NAT   # NatGuard
+            |   POINT    # DoubleGuard
             |   guard_expr '[' guard_expr ']'   # ArrayGuard
             |   guard_expr '\''     # StopWatchGuard
             |   '(' guard_expr ')'  # ParenthesisGuard

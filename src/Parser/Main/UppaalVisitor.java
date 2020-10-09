@@ -62,8 +62,9 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     public String visitDeclaration(UppaalParser.DeclarationContext ctx) {
         String declaration = ctx.OPEN_DECLARATION().getText();
         declaration = declaration.concat(visit(ctx.decl_content()));
+        //.println(declaration);
         declaration = declaration.concat(ctx.CLOSE_DECLARATION().getText());
-        return ctx.getText();
+        return declaration;
     }
 
     @Override
@@ -141,13 +142,13 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitComparisonExpr(UppaalParser.ComparisonExprContext ctx) {
-        return visit(ctx.expr(0)).concat(ctx.binary.getText()).concat(visit(ctx.expr(1)));
+        return visit(ctx.expr(0)).concat(" ").concat(ctx.binary.getText()).concat(" ").concat(visit(ctx.expr(1)));
     }
 
 
     @Override
     public String visitBinaryExpr(UppaalParser.BinaryExprContext ctx) {
-        return visit(ctx.expr(0)).concat(ctx.binary.getText()).concat(visit(ctx.expr(1)));
+        return visit(ctx.expr(0)).concat(" ").concat(ctx.binary.getText()).concat(" ").concat(visit(ctx.expr(1)));
     }
 
     @Override
@@ -232,7 +233,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
             type = visit(ctx.prefix()).concat(" ");
         }
         type = type.concat(visit(ctx.typeId()));
-        return super.visitType(ctx);
+        return type;
     }
 
     @Override
@@ -332,7 +333,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         for(UppaalParser.ArrayDeclContext arrayDecl: arraysDecl){
             varField = varField.concat(visit(arrayDecl));
         }
-        return super.visitVarFieldDecl(ctx);
+        return varField;
     }
 
     @Override
@@ -428,6 +429,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
         for(UppaalParser.FuncParameterContext funcParameter: funcParameters){
             visitFunParameters = visitFunParameters.concat(separator).concat(visit(funcParameter));
+            separator = ", ";
         }
 
         return visitFunParameters;
@@ -443,7 +445,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
         funcParameter = funcParameter.concat(visit(ctx.varFieldDecl()));
 
-        return super.visitFuncParameter(ctx);
+        return funcParameter;
     }
 
     @Override
@@ -640,8 +642,6 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
             temp_content = temp_content.concat(visit(transition)).concat("\n");
         }
 
-        //temp_content = temp_content.concat(visit(ctx.init_loc()));
-
         return temp_content;
     }
 
@@ -666,9 +666,12 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     @Override
     public String visitParameter(UppaalParser.ParameterContext ctx) {
         String parameter = ctx.OPEN_PARAMETER().getText();
+
         parameter = parameter.concat(visit(ctx.funcParameters()));
+
         parameter = parameter.concat(ctx.CLOSE_PARAMETER().getText());
-        return ctx.getText();
+
+        return parameter;
     }
 
     @Override

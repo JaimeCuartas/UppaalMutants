@@ -46,9 +46,14 @@ OPEN_GUARD  :   '<' [ \t\r\n]*'label' [ \t\r\n]+ 'kind' [ \t\r\n]* '=' [ \t\r\n]
                 '"guard"' ( [ \t\r\n]* 'x' [ \t\r\n]* '=' [ \t\r\n]* '"' ('-')? DIGIT+ '"' [ \t\r\n]* Y [ \t\r\n]* '=' [ \t\r\n]* '"' ('-')? DIGIT+ '"')?
                 [ \t\r\n]* '>'          -> pushMode(EXPRESSIONS);
 
+OPEN_DECLARATION    :   '<' [ \t\r\n]* 'declaration' [ \t\r\n]* '>'
+                                        -> pushMode(EXPRESSIONS);
 
-    OPEN        :   '<'                     -> pushMode(INSIDE) ;
-    OPEN_SLASH  :   '</'                    -> pushMode(INSIDE) ;
+OPEN_PARAMETER      :   '<' [ \t\r\n]* 'parameter' [ \t\r\n]* '>'
+                                        -> pushMode(EXPRESSIONS);
+
+OPEN        :   '<'                     -> pushMode(INSIDE) ;
+OPEN_SLASH  :   '</'                    -> pushMode(INSIDE) ;
 XMLDeclOpen :   '<?xml' S               -> pushMode(INSIDE) ;
 SPECIAL_OPEN:   '<?' Name               -> more, pushMode(PROC_INSTR) ;
 
@@ -73,7 +78,7 @@ REF         :   'ref' ;
 ID          :   'id' ;
 X           :   'x' ;
 Y           :   'y' ;
-URGENT      :   'urgent' ;
+URGENT_LOC  :   'urgent' ;
 COMMITTED   :   'committed' ;
 LABEL       :   'label' ;
 KIND        :   'kind' ;
@@ -136,18 +141,40 @@ PI          :   '?>'                    -> popMode ; // close <?...?>
 IGNORE      :   .                       -> more ;
 
 
-// ----------------- Handle <GUARD> ---------------------
+// ----------------- Handle <EXPRESSIONS> ---------------------
 mode EXPRESSIONS;
 
-CLOSE_GUARD :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'    -> popMode ;
 
-GUARD_S     :   [ \t\r\n]               -> skip ;
+SLASH_COMMENT       :   '/*' .*? '*/'           -> skip ;
+LINE_COMMENT        :   '//' ~( '\n' )*         -> skip ;
+
+CLOSE_GUARD         :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'      -> popMode ;
+
+CLOSE_DECLARATION   :   '</' [ \t\r\n]* 'declaration' [ \t\r\n]* '>'  -> popMode ;
+
+CLOSE_PARAMETER     :   '</' [ \t\r\n]* 'parameter' [ \t\r\n]* '>'  -> popMode ;
+
+GUARD_S             :   [ \t\r\n]               -> skip ;
 
 
-NAT_GUARD           :   [0-9]+ ;
+NAT                 :   [0-9]+ ;
 
-DOUBLE_GUARD        :   ([0-9]+) '.' [0-9]+ ;
+POINT               :   ([0-9]+) '.' [0-9]+ ;
 
+//functions
+
+FOR                 :   'for' ;
+WHILE               :   'while' ;
+DO                  :   'do' ;
+IF                  :   'if' ;
+ELSE                :   'else' ;
+RETURN              :   'return' ;
+
+//priority
+PRIORITY            :   'priority' ;
+DEFAULT             :   'default' ;
+
+//expressions
 APOSTROPHE          :   '\'' ;
 
 LEFT_PARENTHESIS    :   '(' ;
@@ -158,7 +185,13 @@ LEFT_BRACKET        :   '[' ;
 
 RIGHT_BRACKET       :   ']' ;
 
+LEFT_BRACE          :   '{' ;
+
+RIGHT_BRACE         :   '}' ;
+
 COMMA               :   ',' ;
+
+SEMICOLON           :   ';' ;
 
 INCREMENT           :   '++' ;
 
@@ -226,8 +259,8 @@ IMPLY               :   'imply' ;
 
 //IF THEN ELSE
 
-IF                  :   '?' ;
-ELSE                :   ':' ;
+QUESTION            :   '?' ;
+COLON               :   ':' ;
 
 //Infix lookup operator to access process or structure type scope
 
@@ -245,15 +278,22 @@ SUM                 :   'sum' ;
 //---TYPES---
 
 //prefix
+URGENT              :   'urgent' ;
+BROADCAST           :   'broadcast' ;
 META                :   'meta' ;
 CONST               :   'const' ;
 
+//typeDef
+TYPEDEF             :   'typedef' ;
+
 //typeId
 INT                 :   'int' ;
+DOUBLE              :   'double' ;
 CLOCK               :   'clock' ;
 CHAN                :   'chan' ;
 BOOL                :   'bool' ;
 SCALAR              :   'scalar' ;
+STRUCT              :   'struct' ;
 
 //Boolean
 TRUE                :   'true' ;
