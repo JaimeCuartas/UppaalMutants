@@ -10,6 +10,10 @@
 
         chan requestBridge, requestDoor;
 
+int a[10][20];
+void f(){
+		int asd;
+		}
         broadcast chan deployAction, endDeployAction, retractAction, endRetractAction, openAction, endOpenAction, closeAction, endCloseAction; </declaration>
 	<template>
 		<name>Controller</name>

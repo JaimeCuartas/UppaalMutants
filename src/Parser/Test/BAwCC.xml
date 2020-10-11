@@ -25,6 +25,16 @@ const int TIRE_OUT = 0;
 // PROTOCOL CONFIGURATION END
 // **************************
 
+
+typedef scalar[3] s_t;
+int a[s_t];
+	struct
+	{
+	int a;
+	int b;
+	} s;
+
+
 bool overflow = false;
 
 typedef int[0,BUFFER_CAPACITY-1] BufferTc;

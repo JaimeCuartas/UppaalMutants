@@ -1,5 +1,8 @@
 // Generated from C:/Users/57310/Documents/Github/XMLGrammar/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.8
 package Parser.Antlr;
+
+    import java.util.HashMap;
+
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**

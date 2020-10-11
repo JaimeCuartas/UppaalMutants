@@ -10,6 +10,9 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import com.uppaal.engine.Parser;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Mutation {
     public static void main(String[] args) throws Exception {
@@ -31,7 +34,7 @@ public class Mutation {
             UppaalLexer lexer = new UppaalLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-            UppaalParser parser = new UppaalParser(tokens);
+            UppaalParser parser = new UppaalParser(tokens, 0);
             //parser.setBuildParseTree(false); // don't waste time bulding a tree
             //parser.model(); // parse
 
@@ -41,6 +44,7 @@ public class Mutation {
 
             System.out.println( "El número de mutaciones es: "+ parser.getNum() );
 
+            System.out.println(parser.getEnv().get("Global").isEmpty());
             /*
             // Create a generic parse tree walker that can trigger callbacks
             ParseTreeWalker walker = new ParseTreeWalker();
@@ -51,7 +55,7 @@ public class Mutation {
             System.out.println(); // print a \n after translation
 
 */          System.out.println(System.getProperty("user.dir"));
-            System.out.println(tree.toStringTree(parser));
+            //System.out.println(tree.toStringTree(parser));
 
             File myFile = new File("C:\\Users\\57310\\Documents\\Github\\XMLGrammar\\src\\Parser\\Test\\Mutaciones"+System.currentTimeMillis());
             myFile.mkdirs();

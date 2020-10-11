@@ -307,6 +307,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         for(UppaalParser.FieldDeclContext field: fields){
             struct = struct.concat(visit(field));
         }
+        struct = struct.concat("}");
         return struct;
     }
 
@@ -614,6 +615,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitTemp_content(UppaalParser.Temp_contentContext ctx) {
+
         String temp_content = "";
         if(ctx.name() != null){
             //print <name> ~[<&]+ </name>

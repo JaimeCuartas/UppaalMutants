@@ -30,8 +30,27 @@
 parser grammar UppaalParser;
 //check 275 page
 
+@parser::header {
+    import java.util.HashMap;
+}
+
 @parser::members { // add members to generated UppaalParser
     private int num=0;
+    //env will contain as key, "global" for global declaration and the name of each template
+    //env will contain as value, and array of string
+    //String[0] will contain the name of channel and String[1] will contain the dimensions of channel
+
+    private HashMap<String, ArrayList<String[]>> env = new HashMap<String, ArrayList<String[]>>();
+    private String currentEnv;
+    private boolean isFunctionEnv;
+
+
+    public UppaalParser(TokenStream input, int a){
+        this(input);
+        currentEnv = "Global";
+        env.put(currentEnv, new ArrayList<String[]>());
+        isFunctionEnv = false;
+    }
 
     public int getNum(){
         return this.num;
@@ -39,6 +58,10 @@ parser grammar UppaalParser;
     public void setNum(int num){
         this.num = num;
     }
+    public HashMap<String, ArrayList<String[]>> getEnv (){
+        return this.env;
+    }
+
 }
 options { tokenVocab=UppaalLexer; }
 
@@ -120,7 +143,26 @@ expr        :   IDENTIFIER  # IdentifierExpr
 
 arguments   :   (expr  (',' expr)*)? ;
 
-variableDecl:   type variableID (',' variableID)* ';' ;
+variableDecl:   (type variableID (',' variableID)* ';')
+                {
+                    if(!this.isFunctionEnv){
+                        System.out.println($ctx.type().typeId().getText());
+                        String typeId = $ctx.type().typeId().getText();
+
+                        if(typeId.equals("chan")){
+                            List<UppaalParser.VariableIDContext> variablesId = $ctx.variableID();
+
+                            for(UppaalParser.VariableIDContext variableId: variablesId){
+                                String chanId = variableId.IDENTIFIER().getText();
+                                String dimensions = variableId.arrayDecl().size();
+                                System.out.println("chan "+ chanId);
+
+                                System.out.println("dimensions "+ dimensions);
+                            }
+                        }
+                        //env.get(currentEnv).add();
+                    }
+                } ;
 
 type        :   prefix? typeId ;
 
@@ -149,7 +191,7 @@ arrayDecl   :   '[' expr ']'    # ArrayDeclExpr
             |   '[' type ']'    # ArrayDeclType
             ;
 
-variableID  :   IDENTIFIER arrayDecl* (ASSIGN initialiser )? ;
+variableID  :   IDENTIFIER (arrayDecl*) (ASSIGN initialiser )? ;
 
 initialiser :   expr                                        # InitialiserExpr
             |   '{' initialiser (',' initialiser)* '}'      # InitialiserArray
@@ -158,7 +200,12 @@ initialiser :   expr                                        # InitialiserExpr
 //typeDecl    :   'typedef' type IDENTIFIER arrayDecl* (',' IDENTIFIER arrayDecl*)* ';' ;
 typeDecl    :   'typedef' type varFieldDecl (',' varFieldDecl)* ';' ;
 
-function    :   type IDENTIFIER '(' funcParameters ')' block ;
+function    :   {
+                    this.isFunctionEnv = true;
+                } type IDENTIFIER '(' funcParameters ')' block
+                {
+                    this.isFunctionEnv = false;
+                } ;
 
 funcParameters: (funcParameter (',' funcParameter)*)? ;
 
@@ -205,7 +252,11 @@ anything    :   chardata?
 
 template    :   '<' 'template' '>' misc* temp_content  '</' 'template' '>' ;
 
-temp_content:   (name misc*)?
+temp_content:   ((name misc*)?)
+                {
+                    currentEnv = $ctx.name().anything().getText();
+                    env.put(currentEnv, new ArrayList<String[]>());
+                }
                 (parameter misc*)?
                 (declaration misc*)?
 
@@ -268,7 +319,7 @@ guard_expr  :   IDENTIFIER  # IdentifierGuard
                 {
 
                 this.num++;
-                //System.out.println ($binary.text);
+
                 }
                                    # ComparisonGuard
             |   guard_expr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
