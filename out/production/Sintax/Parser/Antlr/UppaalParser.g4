@@ -36,6 +36,19 @@ parser grammar UppaalParser;
 
 @parser::members { // add members to generated UppaalParser
     private int num=0;
+
+
+    //Number of controllable transitions (input actions <expr> "?")
+    //The purpose is to know how many transitions can be removed, each one will be a mutant
+
+    //TMI array will contain the number of transitions (in reading order)
+    //that has controllable transitions (input actions <expr> "?")
+    //TMI.get(0) will has the transition that should be removed, until TMI.get(n)
+    private ArrayList<Integer> tmi = new ArrayList<Integer>();
+
+    //Counter with the number of the current transition
+    private int currentTransition = 0;
+
     //env will contain as key, "global" for global declaration and the name of each template
     //env will contain as value, and array of string
     //String[0] will contain the name of channel and String[1] will contain the dimensions of channel
@@ -60,6 +73,9 @@ parser grammar UppaalParser;
     }
     public HashMap<String, ArrayList<String[]>> getEnv (){
         return this.env;
+    }
+    public ArrayList<Integer> getTmi(){
+        return this.tmi;
     }
 
 }
@@ -146,7 +162,7 @@ arguments   :   (expr  (',' expr)*)? ;
 variableDecl:   (type variableID (',' variableID)* ';')
                 {
                     if(!this.isFunctionEnv){
-                        System.out.println($ctx.type().typeId().getText());
+
                         String typeId = $ctx.type().typeId().getText();
 
                         if(typeId.equals("chan")){
@@ -154,10 +170,8 @@ variableDecl:   (type variableID (',' variableID)* ';')
 
                             for(UppaalParser.VariableIDContext variableId: variablesId){
                                 String chanId = variableId.IDENTIFIER().getText();
-                                String dimensions = variableId.arrayDecl().size();
-                                System.out.println("chan "+ chanId);
-
-                                System.out.println("dimensions "+ dimensions);
+                                String dimensions = Integer.toString(variableId.arrayDecl().size());
+                                env.get(currentEnv).add(new String[]{chanId, dimensions});
                             }
                         }
                         //env.get(currentEnv).add();
@@ -202,7 +216,8 @@ typeDecl    :   'typedef' type varFieldDecl (',' varFieldDecl)* ';' ;
 
 function    :   {
                     this.isFunctionEnv = true;
-                } type IDENTIFIER '(' funcParameters ')' block
+                }
+                type IDENTIFIER '(' funcParameters ')' block
                 {
                     this.isFunctionEnv = false;
                 } ;
@@ -288,6 +303,9 @@ name        :   '<' 'name'
                     '>' anything '</' 'name' '>' ;
 
 transition  :   '<' 'transition' '>'
+                {
+                    this.currentTransition++;
+                }
                 misc* (source misc*) (target misc*)
                 (label_trans misc*)*
                 (nail misc*)*
@@ -295,7 +313,12 @@ transition  :   '<' 'transition' '>'
 
 
 //Are equals to labels_loc but we can manipulate them differently
-label_trans :   OPEN_GUARD guard_expr? CLOSE_GUARD # LabelTransGuard
+label_trans :   OPEN_GUARD guard_expr? CLOSE_LABEL  # LabelTransGuard
+            |   OPEN_SYNC (expr '?')? CLOSE_LABEL
+                {
+                    this.tmi.add(this.currentTransition);
+                }                                   # LabelTransSyncInput
+            |   OPEN_SYNC (expr '!')? CLOSE_LABEL   # LabelTransSyncOutput
             |   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' # labelTrans;
 
 

@@ -42,7 +42,9 @@ public class Mutation {
             //parser.setBuildParseTree(true);
             ParseTree tree = parser.model();
 
-            System.out.println( "El número de mutaciones es: "+ parser.getNum() );
+            System.out.println( "El número de mutaciones Comparaciones Guard es: "+ parser.getNum() );
+
+            System.out.println( "El número de mutaciones TMI es: "+ parser.getTmi().size() );
 
             System.out.println(parser.getEnv().get("Global").isEmpty());
             /*
@@ -58,12 +60,15 @@ public class Mutation {
             //System.out.println(tree.toStringTree(parser));
 
             File myFile = new File("C:\\Users\\57310\\Documents\\Github\\XMLGrammar\\src\\Parser\\Test\\Mutaciones"+System.currentTimeMillis());
-            myFile.mkdirs();
 
+            if(!myFile.mkdirs()){
+                return;
+            }
+            /*
             for(int i=1; i<=parser.getNum(); i++){
                 int idMutant = i;
                 new Thread(()->{
-                    UppaalVisitor eval = new UppaalVisitor(idMutant);
+                    UppaalVisitor eval = new UppaalVisitor(idMutant, -1);
                     FileWriter myWriter = null;
                     try {
                         myWriter = new FileWriter(new File(myFile, Integer.toString(idMutant)+".xml"));
@@ -74,6 +79,23 @@ public class Mutation {
                         e.printStackTrace();
                     }
                 }).start();
+            }
+
+            */
+            for(int i: parser.getTmi()){
+                new Thread(()->{
+
+                    UppaalVisitor eval = new UppaalVisitor(-1, i);
+                    FileWriter myWriter = null;
+                    try {
+                        myWriter = new FileWriter(new File(myFile, "tmi"+ i +".xml"));
+                        myWriter.write(eval.visit(tree));
+                        myWriter.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+
             }
 /*
             UppaalVisitor eval = new UppaalVisitor(3);

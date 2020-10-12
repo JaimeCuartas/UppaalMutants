@@ -651,6 +651,20 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLabelTransGuard(UppaalParser.LabelTransGuardContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code LabelTransSyncInput}
+	 * labeled alternative in {@link UppaalParser#label_trans}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLabelTransSyncInput(UppaalParser.LabelTransSyncInputContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code LabelTransSyncOutput}
+	 * labeled alternative in {@link UppaalParser#label_trans}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLabelTransSyncOutput(UppaalParser.LabelTransSyncOutputContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code labelTrans}
 	 * labeled alternative in {@link UppaalParser#label_trans}.
 	 * @param ctx the parse tree

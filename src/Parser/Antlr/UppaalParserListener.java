@@ -1091,6 +1091,30 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitLabelTransGuard(UppaalParser.LabelTransGuardContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code LabelTransSyncInput}
+	 * labeled alternative in {@link UppaalParser#label_trans}.
+	 * @param ctx the parse tree
+	 */
+	void enterLabelTransSyncInput(UppaalParser.LabelTransSyncInputContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code LabelTransSyncInput}
+	 * labeled alternative in {@link UppaalParser#label_trans}.
+	 * @param ctx the parse tree
+	 */
+	void exitLabelTransSyncInput(UppaalParser.LabelTransSyncInputContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code LabelTransSyncOutput}
+	 * labeled alternative in {@link UppaalParser#label_trans}.
+	 * @param ctx the parse tree
+	 */
+	void enterLabelTransSyncOutput(UppaalParser.LabelTransSyncOutputContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code LabelTransSyncOutput}
+	 * labeled alternative in {@link UppaalParser#label_trans}.
+	 * @param ctx the parse tree
+	 */
+	void exitLabelTransSyncOutput(UppaalParser.LabelTransSyncOutputContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code labelTrans}
 	 * labeled alternative in {@link UppaalParser#label_trans}.
 	 * @param ctx the parse tree

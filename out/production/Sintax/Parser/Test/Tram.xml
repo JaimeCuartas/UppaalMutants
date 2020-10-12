@@ -9,11 +9,10 @@
         */
 
         chan requestBridge, requestDoor;
-chan jejejej[1][2];
+
 int a[10][20];
 void f(){
 		int asd;
-chan jo;
 		}
         broadcast chan deployAction, endDeployAction, retractAction, endRetractAction, openAction, endOpenAction, closeAction, endCloseAction; </declaration>
 	<template>

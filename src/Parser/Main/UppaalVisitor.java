@@ -12,11 +12,15 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     private String output;
     private final int idOperator;
     private int indexOperator;
+    private final int tmiOperator;
+    private int indexCurrentTransition;
 
-    public UppaalVisitor (int idOperator){
+    public UppaalVisitor (int idOperator, int tmiOperator){
         this.output = "";
         this.idOperator = idOperator;
         this.indexOperator = 0;
+        this.tmiOperator = tmiOperator;
+        this.indexCurrentTransition = 0;
     }
 
     @Override
@@ -615,7 +619,6 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitTemp_content(UppaalParser.Temp_contentContext ctx) {
-
         String temp_content = "";
         if(ctx.name() != null){
             //print <name> ~[<&]+ </name>
@@ -727,7 +730,13 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitTransition(UppaalParser.TransitionContext ctx) {
+        this.indexCurrentTransition++;
+
+        if(this.indexCurrentTransition==this.tmiOperator){
+            return "";
+        }
         String transition = "<transition>\n";
+
         transition = transition.concat(visit(ctx.source())).concat("\n");
         transition = transition.concat(visit(ctx.target())).concat("\n");
 
@@ -777,8 +786,27 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         if(ctx.guard_expr()!=null){
             label = label.concat(visit(ctx.guard_expr()));
         }
-
         label = label.concat("</label>");
+        return label;
+    }
+
+    @Override
+    public String visitLabelTransSyncInput(UppaalParser.LabelTransSyncInputContext ctx) {
+        String label = ctx.OPEN_SYNC().getText();
+        if(ctx.expr()!=null){
+            label = label.concat(visit(ctx.expr()));
+        }
+        label = label.concat("?</label>");
+        return label;
+    }
+
+    @Override
+    public String visitLabelTransSyncOutput(UppaalParser.LabelTransSyncOutputContext ctx) {
+        String label = ctx.OPEN_SYNC().getText();
+        if(ctx.expr()!=null){
+            label = label.concat(visit(ctx.expr()));
+        }
+        label = label.concat("!</label>");
         return label;
     }
 

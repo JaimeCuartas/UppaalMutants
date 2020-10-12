@@ -46,6 +46,10 @@ OPEN_GUARD  :   '<' [ \t\r\n]*'label' [ \t\r\n]+ 'kind' [ \t\r\n]* '=' [ \t\r\n]
                 '"guard"' ( [ \t\r\n]* 'x' [ \t\r\n]* '=' [ \t\r\n]* '"' ('-')? DIGIT+ '"' [ \t\r\n]* Y [ \t\r\n]* '=' [ \t\r\n]* '"' ('-')? DIGIT+ '"')?
                 [ \t\r\n]* '>'          -> pushMode(EXPRESSIONS);
 
+OPEN_SYNC  :   '<' [ \t\r\n]*'label' [ \t\r\n]+ 'kind' [ \t\r\n]* '=' [ \t\r\n]*
+                '"synchronisation"' ( [ \t\r\n]* 'x' [ \t\r\n]* '=' [ \t\r\n]* '"' ('-')? DIGIT+ '"' [ \t\r\n]* Y [ \t\r\n]* '=' [ \t\r\n]* '"' ('-')? DIGIT+ '"')?
+                [ \t\r\n]* '>'          -> pushMode(EXPRESSIONS);
+
 OPEN_DECLARATION    :   '<' [ \t\r\n]* 'declaration' [ \t\r\n]* '>'
                                         -> pushMode(EXPRESSIONS);
 
@@ -148,7 +152,7 @@ mode EXPRESSIONS;
 SLASH_COMMENT       :   '/*' .*? '*/'           -> skip ;
 LINE_COMMENT        :   '//' ~( '\n' )*         -> skip ;
 
-CLOSE_GUARD         :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'      -> popMode ;
+CLOSE_LABEL         :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'      -> popMode ;
 
 CLOSE_DECLARATION   :   '</' [ \t\r\n]* 'declaration' [ \t\r\n]* '>'  -> popMode ;
 
