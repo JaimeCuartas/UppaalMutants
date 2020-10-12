@@ -632,7 +632,6 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
             //print <declaration> ~[<&] </declaration>
             temp_content = temp_content.concat(visit(ctx.declaration())).concat("\n");
         }
-
         List<UppaalParser.LocationContext> locations = ctx.location();
 
         for(UppaalParser.LocationContext location: locations){

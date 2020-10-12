@@ -269,10 +269,25 @@ template    :   '<' 'template' '>' misc* temp_content  '</' 'template' '>' ;
 
 temp_content:   ((name misc*)?)
                 {
-                    currentEnv = $ctx.name().anything().getText();
-                    env.put(currentEnv, new ArrayList<String[]>());
+                    if($ctx.name()!=null){
+                        currentEnv = $ctx.name().anything().getText();
+                        env.put(currentEnv, new ArrayList<String[]>());
+                    }
                 }
-                (parameter misc*)?
+                ((parameter misc*)?)
+                {
+                    if($ctx.parameter()!=null){
+                        List<UppaalParser.FuncParameterContext> funcParameters = $ctx.parameter().funcParameters().funcParameter();
+                        for(UppaalParser.FuncParameterContext funcParameter: funcParameters){
+                            String typeId = funcParameter.type().typeId().getText();
+                            if(typeId.equals("chan")){
+                                String chanId = funcParameter.varFieldDecl().IDENTIFIER().getText();
+                                String dimensions = Integer.toString(funcParameter.varFieldDecl().arrayDecl().size());
+                                env.get(currentEnv).add(new String[]{chanId, dimensions});
+                            }
+                        }
+                    }
+                }
                 (declaration misc*)?
 
                 ((location misc*) | (branchpoint misc*))+
