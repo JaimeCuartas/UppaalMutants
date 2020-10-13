@@ -32,6 +32,7 @@ parser grammar UppaalParser;
 
 @parser::header {
     import java.util.HashMap;
+    import java.util.HashSet;
 }
 
 @parser::members { // add members to generated UppaalParser
@@ -57,6 +58,14 @@ parser grammar UppaalParser;
     private String currentEnv;
     private boolean isFunctionEnv;
 
+    //withoutOuputTrans is a <Key, Value> hashmap
+    //                       <name_of_template_Key, <key, value>>
+    //                       <name_of_template_key, <source_key, set_of_targets>
+    //withoutOutputTrans is a structure to save in each template the locations that does not have output actions (<expr> "!") synchro
+    //these will be candidates to mutatants
+    private HashMap<String, HashMap<String, HashSet<String>>> withoutOutputTrans = new HashMap<String, HashMap<String, HashSet<String>>>();
+    private String currentSource = "";
+    private String currentTarget = "";
 
     public UppaalParser(TokenStream input, int a){
         this(input);
@@ -76,6 +85,10 @@ parser grammar UppaalParser;
     }
     public ArrayList<Integer> getTmi(){
         return this.tmi;
+    }
+
+    public HashMap<String, HashMap<String, HashSet<String>>> getWithoutOutputTrans(){
+        return this.withoutOutputTrans;
     }
 
 }
@@ -267,11 +280,14 @@ anything    :   chardata?
 
 template    :   '<' 'template' '>' misc* temp_content  '</' 'template' '>' ;
 
-temp_content:   ((name misc*)?)
+temp_content
+locals[ArrayList<String> namesLocations = new ArrayList<String>()]
+            :   ((name misc*)?)
                 {
                     if($ctx.name()!=null){
                         currentEnv = $ctx.name().anything().getText();
                         env.put(currentEnv, new ArrayList<String[]>());
+                        withoutOutputTrans.put(currentEnv, new HashMap<String, HashSet<String>>());
                     }
                 }
                 ((parameter misc*)?)
@@ -290,9 +306,23 @@ temp_content:   ((name misc*)?)
                 }
                 (declaration misc*)?
 
-                ((location misc*) | (branchpoint misc*))+
+                (((location misc*) | (branchpoint misc*))+)
+                {
+                    List<UppaalParser.LocationContext> locations = $ctx.location();
+                    for(UppaalParser.LocationContext location: locations){
+                        $namesLocations.add(location.STRING().getText());
+                    }
+                    for(String locationSource: $namesLocations){
+                        HashSet<String> target = new HashSet<String>();
+                        for(String locationTarget: $namesLocations){
+                            target.add(locationTarget);
+                        }
+                        this.withoutOutputTrans.get(this.currentEnv).put(locationSource, target);
+                    }
+                }
                 (init_loc misc*)
-                (transition misc*)*;
+                ((transition misc*)*)
+                ;
 
 parameter   :   OPEN_PARAMETER funcParameters CLOSE_PARAMETER ;
 
@@ -333,7 +363,10 @@ label_trans :   OPEN_GUARD guard_expr? CLOSE_LABEL  # LabelTransGuard
                 {
                     this.tmi.add(this.currentTransition);
                 }                                   # LabelTransSyncInput
-            |   OPEN_SYNC (expr '!')? CLOSE_LABEL   # LabelTransSyncOutput
+            |   OPEN_SYNC (expr '!')? CLOSE_LABEL
+                {
+                    this.withoutOutputTrans.get(currentEnv).get(currentSource).remove(currentTarget);
+                }                                   # LabelTransSyncOutput
             |   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' # labelTrans;
 
 
@@ -385,9 +418,17 @@ guard_typeId
             |   'scalar' '[' guard_expr ']'                 # GuardTypeScalar
             ;
 
-source      :   '<' 'source' 'ref' EQUALS STRING '/>' ;
+source      :   ('<' 'source' 'ref' EQUALS STRING '/>')
+                {
+                    this.currentSource = $ctx.STRING().getText();
+                }
+                ;
 
-target      :   '<' 'target' 'ref' EQUALS STRING '/>' ;
+target      :   '<' 'target' 'ref' EQUALS STRING '/>'
+                {
+                    this.currentTarget = $ctx.STRING().getText();
+                }
+                ;
 
 nail        :   '<' 'nail' coordinate? '/>' ;
 

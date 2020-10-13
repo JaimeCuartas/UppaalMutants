@@ -9,31 +9,39 @@ import java.util.List;
 
 public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
-    private String output;
     private final int idOperator;
     private int indexOperator;
     private final int tmiOperator;
     private int indexCurrentTransition;
 
-    public UppaalVisitor (int idOperator, int tmiOperator){
-        this.output = "";
+    private final String templateTad;
+    private final String sourceTad;
+    private final String targetTad;
+    private final String outputTad;
+
+    public UppaalVisitor (int idOperator, int tmiOperator, String templateTad, String sourceTad, String targetTad, String outputTad){
+
         this.idOperator = idOperator;
         this.indexOperator = 0;
         this.tmiOperator = tmiOperator;
         this.indexCurrentTransition = 0;
+
+        this.templateTad = templateTad;
+        this.sourceTad = sourceTad;
+        this.targetTad = targetTad;
+        this.outputTad = outputTad;
     }
 
     @Override
     public String visitModel(UppaalParser.ModelContext ctx) {
-        this.output = this.output.concat("\n");
-        this.output= "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+        String model = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>\n";
         /*if(ctx.prolog()!=null){
             //this.output = this.output.concat(visit(ctx.prolog())).concat("\n");
             //this.output = this.output.concat("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
         }*/
-        this.output = this.output.concat(visit(ctx.nta()));
-        return this.output;
+        model = model.concat(visit(ctx.nta()));
+        return model;
     }
 
     @Override
@@ -620,9 +628,11 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     @Override
     public String visitTemp_content(UppaalParser.Temp_contentContext ctx) {
         String temp_content = "";
+        boolean addInput = false;
         if(ctx.name() != null){
             //print <name> ~[<&]+ </name>
             temp_content = temp_content.concat(visit(ctx.name())).concat("\n");
+            addInput = this.templateTad.equals(ctx.name().anything().getText());
         }
         if(ctx.parameter() != null){
             //print <parameter> ~[<&]+ </parameter>
@@ -640,6 +650,12 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
         temp_content = temp_content.concat(visit(ctx.init_loc())).concat("\n");
 
+        if(addInput){
+            temp_content = temp_content.concat("<transition>\n<source ref=").concat(this.sourceTad).concat("/>\n");
+            temp_content = temp_content.concat("<target ref=").concat(this.targetTad).concat("/>\n");
+            temp_content = temp_content.concat("<label kind=\"synchronisation\" x=\"0\" y=\"0\">").concat(this.outputTad).concat("</label>").concat("\n");
+            temp_content = temp_content.concat("</transition>\n");
+        }
         List<UppaalParser.TransitionContext> transitions = ctx.transition();
 
         for(UppaalParser.TransitionContext transition: transitions){

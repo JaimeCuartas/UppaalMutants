@@ -1,5 +1,6 @@
 package Parser.Main;
 import Parser.Antlr.*;
+import com.uppaal.model.core2.Template;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -10,9 +11,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import com.uppaal.engine.Parser;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Mutation {
     public static void main(String[] args) throws Exception {
@@ -46,7 +45,14 @@ public class Mutation {
 
             System.out.println( "El número de mutaciones TMI es: "+ parser.getTmi().size() );
 
-            System.out.println(parser.getEnv().get("Global").isEmpty());
+            System.out.println(parser.getEnv());
+            System.out.println("Globales"+parser.getEnv().get("Global"));
+
+            System.out.println("Globales "+parser.getEnv().get("Global").isEmpty());
+
+
+
+            //System.out.println(parser.getWithoutOutputTrans());
             /*
             // Create a generic parse tree walker that can trigger callbacks
             ParseTreeWalker walker = new ParseTreeWalker();
@@ -64,11 +70,11 @@ public class Mutation {
             if(!myFile.mkdirs()){
                 return;
             }
-            /*
+
             for(int i=1; i<=parser.getNum(); i++){
                 int idMutant = i;
                 new Thread(()->{
-                    UppaalVisitor eval = new UppaalVisitor(idMutant, -1);
+                    UppaalVisitor eval = new UppaalVisitor(idMutant, -1, "", "", "", "");
                     FileWriter myWriter = null;
                     try {
                         myWriter = new FileWriter(new File(myFile, Integer.toString(idMutant)+".xml"));
@@ -81,11 +87,11 @@ public class Mutation {
                 }).start();
             }
 
-            */
+
             for(int i: parser.getTmi()){
                 new Thread(()->{
 
-                    UppaalVisitor eval = new UppaalVisitor(-1, i);
+                    UppaalVisitor eval = new UppaalVisitor(-1, i, "", "", "", "");
                     FileWriter myWriter = null;
                     try {
                         myWriter = new FileWriter(new File(myFile, "tmi"+ i +".xml"));
@@ -97,6 +103,54 @@ public class Mutation {
                 }).start();
 
             }
+
+            for(String template: parser.getWithoutOutputTrans().keySet()){
+                String outputEnv = "";
+                if(!parser.getEnv().get("Global").isEmpty()){
+                    outputEnv = "Global";
+                }
+                else if(!parser.getEnv().get(template).isEmpty()){
+                    outputEnv = template;
+                }
+                else{
+                    continue;
+                }
+                for(String source: parser.getWithoutOutputTrans().get(template).keySet()){
+                    HashSet<String> targets = parser.getWithoutOutputTrans().get(template).get(source);
+
+                    if(targets.isEmpty()){
+                        continue;
+                    }
+
+                    Iterator<String> iterTargets = targets.iterator();
+                    int randomTarget = new Random().nextInt(targets.size());
+                    for (int i = 0; i < randomTarget; i++) {
+                        iterTargets.next();
+                    }
+
+                    String target = iterTargets.next();
+
+                    int chanPicked = new Random().nextInt(parser.getEnv().get(outputEnv).size());
+                    String chan = parser.getEnv().get(outputEnv).get(chanPicked)[0];
+                    String dimensions = parser.getEnv().get(outputEnv).get(chanPicked)[1];
+                    String output = chan.concat("[0]".repeat(Integer.parseInt(dimensions))).concat("!");
+
+                    new Thread(()->{
+                        UppaalVisitor eval = new UppaalVisitor(-1, -1, template, source, target, output);
+                        FileWriter myWriter = null;
+                        try {
+                            myWriter = new FileWriter(new File(myFile, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                            myWriter.write(eval.visit(tree));
+                            myWriter.close();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }).start();
+
+                }
+            }
+
 /*
             UppaalVisitor eval = new UppaalVisitor(3);
             System.out.println(eval.visit(tree));
