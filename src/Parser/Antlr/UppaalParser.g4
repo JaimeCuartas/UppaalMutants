@@ -361,10 +361,15 @@ transition  :   '<' 'transition' '>'
 label_trans :   OPEN_GUARD guard_expr? CLOSE_LABEL  # LabelTransGuard
             |   OPEN_SYNC (expr '?')? CLOSE_LABEL
                 {
+                    //Add to tmi array to remove transition on tmi mutants
                     this.tmi.add(this.currentTransition);
+                    //If has a synchro input remove from possible transition to make an output on tad mutants
+                    this.withoutOutputTrans.get(currentEnv).get(currentSource).remove(currentTarget);
                 }                                   # LabelTransSyncInput
             |   OPEN_SYNC (expr '!')? CLOSE_LABEL
                 {
+
+                    //If has a synchro input remove from possible transition to make an output on tad mutants
                     this.withoutOutputTrans.get(currentEnv).get(currentSource).remove(currentTarget);
                 }                                   # LabelTransSyncOutput
             |   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' # labelTrans;
