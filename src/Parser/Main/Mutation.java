@@ -74,7 +74,7 @@ public class Mutation {
             for(int i=1; i<=parser.getNum(); i++){
                 int idMutant = i;
                 new Thread(()->{
-                    UppaalVisitor eval = new UppaalVisitor(idMutant, -1, "", "", "", "");
+                    UppaalVisitor eval = new UppaalVisitor(idMutant, -1, "", "", "", "", "");
                     FileWriter myWriter = null;
                     try {
                         myWriter = new FileWriter(new File(myFile, Integer.toString(idMutant)+".xml"));
@@ -91,7 +91,7 @@ public class Mutation {
             for(int i: parser.getTmi()){
                 new Thread(()->{
 
-                    UppaalVisitor eval = new UppaalVisitor(-1, i, "", "", "", "");
+                    UppaalVisitor eval = new UppaalVisitor(-1, i, "", "", "", "", "");
                     FileWriter myWriter = null;
                     try {
                         myWriter = new FileWriter(new File(myFile, "tmi"+ i +".xml"));
@@ -136,7 +136,7 @@ public class Mutation {
                     String output = chan.concat("[0]".repeat(Integer.parseInt(dimensions))).concat("!");
 
                     new Thread(()->{
-                        UppaalVisitor eval = new UppaalVisitor(-1, -1, template, source, target, output);
+                        UppaalVisitor eval = new UppaalVisitor(-1, -1, template, source, target, output, "");
                         FileWriter myWriter = null;
                         try {
                             myWriter = new FileWriter(new File(myFile, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
@@ -154,10 +154,10 @@ public class Mutation {
             for(String template: parser.getLocationsSmi().keySet()){
                 for(String idLocation: parser.getLocationsSmi().get(template)){
                     new Thread(()->{
-                        UppaalVisitor eval = new UppaalVisitor(-1, -1, template, source, target, output);
+                        UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", idLocation);
                         FileWriter myWriter = null;
                         try {
-                            myWriter = new FileWriter(new File(myFile, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                            myWriter = new FileWriter(new File(myFile, "smi".concat(template).concat((idLocation).replace("\"", "")).concat(".xml")));
                             myWriter.write(eval.visit(tree));
                             myWriter.close();
 

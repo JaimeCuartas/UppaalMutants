@@ -19,7 +19,9 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     private final String targetTad;
     private final String outputTad;
 
-    public UppaalVisitor (int idOperator, int tmiOperator, String templateTad, String sourceTad, String targetTad, String outputTad){
+    private final String locationSmi;
+
+    public UppaalVisitor (int idOperator, int tmiOperator, String templateTad, String sourceTad, String targetTad, String outputTad, String locationSmi){
 
         this.idOperator = idOperator;
         this.indexOperator = 0;
@@ -30,6 +32,8 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         this.sourceTad = sourceTad;
         this.targetTad = targetTad;
         this.outputTad = outputTad;
+
+        this.locationSmi = locationSmi;
     }
 
     @Override
@@ -696,6 +700,10 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitLocation(UppaalParser.LocationContext ctx) {
+        if(ctx.STRING().getText().equals(this.locationSmi)){
+            return "";
+        }
+
         String location = "<location id=".concat(ctx.STRING().getText());
         if(ctx.coordinate()!=null){
             location = location.concat(visit(ctx.coordinate()));
@@ -748,6 +756,12 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         this.indexCurrentTransition++;
 
         if(this.indexCurrentTransition==this.tmiOperator){
+            return "";
+        }
+        if(this.locationSmi.equals(ctx.source().STRING().getText())){
+            return "";
+        }
+        if(this.locationSmi.equals(ctx.target().STRING().getText())){
             return "";
         }
         String transition = "<transition>\n";
