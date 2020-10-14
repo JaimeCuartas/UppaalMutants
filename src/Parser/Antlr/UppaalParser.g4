@@ -58,14 +58,20 @@ parser grammar UppaalParser;
     private String currentEnv;
     private boolean isFunctionEnv;
 
-    //withoutOuputTrans is a <Key, Value> hashmap
-    //                       <name_of_template_Key, <key, value>>
-    //                       <name_of_template_key, <source_key, set_of_targets>
-    //withoutOutputTrans is a structure to save in each template the locations that does not have output actions (<expr> "!") synchro
+    //transitionsTad is a <Key, Value> hashmap
+    //                    <name_of_template_Key, <key, value>>
+    //                    <name_of_template_key, <source_key, set_of_targets>
+    //transitionsTad is a structure to save in each template the locations that does not have output actions (<expr> "!") synchro
     //these will be candidates to mutatants
-    private HashMap<String, HashMap<String, HashSet<String>>> withoutOutputTrans = new HashMap<String, HashMap<String, HashSet<String>>>();
+    private HashMap<String, HashMap<String, HashSet<String>>> transitionsTad = new HashMap<String, HashMap<String, HashSet<String>>>();
     private String currentSource = "";
     private String currentTarget = "";
+
+    //locationsSmi is a <Key, Value > hashmap
+    //                  <name_of_template_Key, <value>>
+    //                  <name_of_template_Key, <set_of_locations>>
+    private HashMap<String, HashSet<String>> locationsSmi = new HashMap<String, HashSet<String>>();
+    private String initLocationId = "";
 
     public UppaalParser(TokenStream input, int a){
         this(input);
@@ -87,8 +93,12 @@ parser grammar UppaalParser;
         return this.tmi;
     }
 
-    public HashMap<String, HashMap<String, HashSet<String>>> getWithoutOutputTrans(){
-        return this.withoutOutputTrans;
+    public HashMap<String, HashMap<String, HashSet<String>>> getTransitionsTad(){
+        return this.transitionsTad;
+    }
+
+    public HashMap<String, HashSet<String>> getLocationsSmi(){
+        return this.locationsSmi;
     }
 
 }
@@ -287,7 +297,8 @@ locals[ArrayList<String> namesLocations = new ArrayList<String>()]
                     if($ctx.name()!=null){
                         currentEnv = $ctx.name().anything().getText();
                         env.put(currentEnv, new ArrayList<String[]>());
-                        withoutOutputTrans.put(currentEnv, new HashMap<String, HashSet<String>>());
+                        transitionsTad.put(currentEnv, new HashMap<String, HashSet<String>>());
+                        locationsSmi.put(currentEnv, new HashSet<String>());
                     }
                 }
                 ((parameter misc*)?)
@@ -317,11 +328,15 @@ locals[ArrayList<String> namesLocations = new ArrayList<String>()]
                         for(String locationTarget: $namesLocations){
                             target.add(locationTarget);
                         }
-                        this.withoutOutputTrans.get(this.currentEnv).put(locationSource, target);
+                        this.transitionsTad.get(this.currentEnv).put(locationSource, target);
                     }
+
                 }
                 (init_loc misc*)
-                ((transition misc*)*)
+                {
+                    this.initLocationId=$ctx.init_loc().STRING().getText();
+                }
+                (transition misc*)*
                 ;
 
 parameter   :   OPEN_PARAMETER funcParameters CLOSE_PARAMETER ;
@@ -363,14 +378,20 @@ label_trans :   OPEN_GUARD guard_expr? CLOSE_LABEL  # LabelTransGuard
                 {
                     //Add to tmi array to remove transition on tmi mutants
                     this.tmi.add(this.currentTransition);
+
                     //If has a synchro input remove from possible transition to make an output on tad mutants
-                    this.withoutOutputTrans.get(currentEnv).get(currentSource).remove(currentTarget);
+                    this.transitionsTad.get(currentEnv).get(currentSource).remove(currentTarget);
+
+                    //if it has at least one incoming action, then a mutant will be created without the target location
+                    if(!this.initLocationId.equals(this.currentTarget)){
+                        this.locationsSmi.get(this.currentEnv).add(this.currentTarget);
+                    }
                 }                                   # LabelTransSyncInput
             |   OPEN_SYNC (expr '!')? CLOSE_LABEL
                 {
 
                     //If has a synchro input remove from possible transition to make an output on tad mutants
-                    this.withoutOutputTrans.get(currentEnv).get(currentSource).remove(currentTarget);
+                    this.transitionsTad.get(currentEnv).get(currentSource).remove(currentTarget);
                 }                                   # LabelTransSyncOutput
             |   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' # labelTrans;
 

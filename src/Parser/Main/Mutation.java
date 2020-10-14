@@ -52,7 +52,7 @@ public class Mutation {
 
 
 
-            //System.out.println(parser.getWithoutOutputTrans());
+            //System.out.println(parser.getTransitionsTad());
             /*
             // Create a generic parse tree walker that can trigger callbacks
             ParseTreeWalker walker = new ParseTreeWalker();
@@ -104,7 +104,7 @@ public class Mutation {
 
             }
 
-            for(String template: parser.getWithoutOutputTrans().keySet()){
+            for(String template: parser.getTransitionsTad().keySet()){
                 String outputEnv = "";
                 if(!parser.getEnv().get("Global").isEmpty()){
                     outputEnv = "Global";
@@ -115,8 +115,8 @@ public class Mutation {
                 else{
                     continue;
                 }
-                for(String source: parser.getWithoutOutputTrans().get(template).keySet()){
-                    HashSet<String> targets = parser.getWithoutOutputTrans().get(template).get(source);
+                for(String source: parser.getTransitionsTad().get(template).keySet()){
+                    HashSet<String> targets = parser.getTransitionsTad().get(template).get(source);
 
                     if(targets.isEmpty()){
                         continue;
@@ -151,6 +151,24 @@ public class Mutation {
                 }
             }
 
+            for(String template: parser.getLocationsSmi().keySet()){
+                for(String idLocation: parser.getLocationsSmi().get(template)){
+                    new Thread(()->{
+                        UppaalVisitor eval = new UppaalVisitor(-1, -1, template, source, target, output);
+                        FileWriter myWriter = null;
+                        try {
+                            myWriter = new FileWriter(new File(myFile, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                            myWriter.write(eval.visit(tree));
+                            myWriter.close();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }).start();
+                }
+            }
+
+            //System.out.println(parser.getLocationsSmi());
 /*
             UppaalVisitor eval = new UppaalVisitor(3);
             System.out.println(eval.visit(tree));
