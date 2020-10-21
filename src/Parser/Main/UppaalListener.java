@@ -1,5 +1,5 @@
 package Parser.Main;
-
+/*
 import Parser.Antlr.UppaalParser;
 import Parser.Antlr.UppaalParserBaseListener;
 
@@ -37,3 +37,4 @@ public class UppaalListener extends UppaalParserBaseListener {
 
     }
 }
+*/
