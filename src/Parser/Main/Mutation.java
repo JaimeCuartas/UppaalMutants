@@ -45,10 +45,10 @@ public class Mutation {
 
             System.out.println( "El número de mutaciones TMI es: "+ parser.getTmi().size() );
 
-            System.out.println(parser.getEnv());
-            System.out.println("Globales"+parser.getEnv().get("Global"));
+            System.out.println(parser.getChannelEnv());
+            System.out.println("Globales"+parser.getChannelEnv().get("Global"));
 
-            System.out.println("Globales "+parser.getEnv().get("Global").isEmpty());
+            System.out.println("Globales "+parser.getChannelEnv().get("Global").isEmpty());
 
 
 
@@ -106,10 +106,10 @@ public class Mutation {
 
             for(String template: parser.getTransitionsTad().keySet()){
                 String outputEnv = "";
-                if(!parser.getEnv().get("Global").isEmpty()){
+                if(!parser.getChannelEnv().get("Global").isEmpty()){
                     outputEnv = "Global";
                 }
-                else if(!parser.getEnv().get(template).isEmpty()){
+                else if(!parser.getChannelEnv().get(template).isEmpty()){
                     outputEnv = template;
                 }
                 else{
@@ -130,9 +130,9 @@ public class Mutation {
 
                     String target = iterTargets.next();
 
-                    int chanPicked = new Random().nextInt(parser.getEnv().get(outputEnv).size());
-                    String chan = parser.getEnv().get(outputEnv).get(chanPicked)[0];
-                    String dimensions = parser.getEnv().get(outputEnv).get(chanPicked)[1];
+                    int chanPicked = new Random().nextInt(parser.getChannelEnv().get(outputEnv).size());
+                    String chan = parser.getChannelEnv().get(outputEnv).get(chanPicked)[0];
+                    String dimensions = parser.getChannelEnv().get(outputEnv).get(chanPicked)[1];
                     String output = chan.concat("[0]".repeat(Integer.parseInt(dimensions))).concat("!");
 
                     new Thread(()->{

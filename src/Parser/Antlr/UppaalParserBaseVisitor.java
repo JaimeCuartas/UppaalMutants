@@ -91,7 +91,7 @@ public class UppaalParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> impl
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitDecl_content(UppaalParser.Decl_contentContext ctx) { return visitChildren(ctx); }
+	@Override public T visitDeclContent(UppaalParser.DeclContentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -630,7 +630,7 @@ public class UppaalParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> impl
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitTemp_content(UppaalParser.Temp_contentContext ctx) { return visitChildren(ctx); }
+	@Override public T visitTempContent(UppaalParser.TempContentContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -651,7 +651,7 @@ public class UppaalParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> impl
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitInit_loc(UppaalParser.Init_locContext ctx) { return visitChildren(ctx); }
+	@Override public T visitInitLoc(UppaalParser.InitLocContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -672,7 +672,7 @@ public class UppaalParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> impl
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitLabel_loc(UppaalParser.Label_locContext ctx) { return visitChildren(ctx); }
+	@Override public T visitLabelLoc(UppaalParser.LabelLocContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -875,14 +875,14 @@ public class UppaalParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> impl
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitGuard_arguments(UppaalParser.Guard_argumentsContext ctx) { return visitChildren(ctx); }
+	@Override public T visitGuardArguments(UppaalParser.GuardArgumentsContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitGuard_type(UppaalParser.Guard_typeContext ctx) { return visitChildren(ctx); }
+	@Override public T visitGuardType(UppaalParser.GuardTypeContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

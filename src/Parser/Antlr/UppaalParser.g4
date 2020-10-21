@@ -54,7 +54,8 @@ parser grammar UppaalParser;
     //env will contain as value, and array of string
     //String[0] will contain the name of channel and String[1] will contain the dimensions of channel
 
-    private HashMap<String, ArrayList<String[]>> env = new HashMap<String, ArrayList<String[]>>();
+    private HashMap<String, ArrayList<String[]>> channelEnv = new HashMap<String, ArrayList<String[]>>();
+    private HashMap<String, ArrayList<String>> clockEnv = new HashMap<String, ArrayList<String>>();
     private String currentEnv;
     private boolean isFunctionEnv;
 
@@ -76,7 +77,8 @@ parser grammar UppaalParser;
     public UppaalParser(TokenStream input, int a){
         this(input);
         currentEnv = "Global";
-        env.put(currentEnv, new ArrayList<String[]>());
+        channelEnv.put(currentEnv, new ArrayList<String[]>());
+        clockEnv.put(currentEnv, new ArrayList<String>());
         isFunctionEnv = false;
     }
 
@@ -86,8 +88,11 @@ parser grammar UppaalParser;
     public void setNum(int num){
         this.num = num;
     }
-    public HashMap<String, ArrayList<String[]>> getEnv (){
-        return this.env;
+    public HashMap<String, ArrayList<String[]>> getChannelEnv (){
+        return this.channelEnv;
+    }
+    public HashMap<String, ArrayList<String>> getClockEnv (){
+        return this.clockEnv;
     }
     public ArrayList<Integer> getTmi(){
         return this.tmi;
@@ -137,9 +142,9 @@ nta         :   '<' 'nta' '>' misc*
 
 //declaration :   '<' 'declaration' '>' anything '</' 'declaration' '>' ;
 
-declaration :   OPEN_DECLARATION decl_content CLOSE_DECLARATION;
+declaration :   OPEN_DECLARATION declContent CLOSE_DECLARATION;
 
-decl_content:   declarations* ;
+declContent:   declarations* ;
 
 declarations:   variableDecl    # VariableDeclaration
             |   typeDecl        # typeDeclaration
@@ -194,7 +199,14 @@ variableDecl:   (type variableID (',' variableID)* ';')
                             for(UppaalParser.VariableIDContext variableId: variablesId){
                                 String chanId = variableId.IDENTIFIER().getText();
                                 String dimensions = Integer.toString(variableId.arrayDecl().size());
-                                env.get(currentEnv).add(new String[]{chanId, dimensions});
+                                channelEnv.get(currentEnv).add(new String[]{chanId, dimensions});
+                            }
+                        }
+                        else if(typeId.equals("clock")){
+                            List<UppaalParser.VariableIDContext> variablesId = $ctx.variableID();
+                            for(UppaalParser.VariableIDContext variableId: variablesId){
+                                String clockId = variableId.IDENTIFIER().getText();
+                                clockEnv.get(currentEnv).add(clockId);
                             }
                         }
                         //env.get(currentEnv).add();
@@ -250,7 +262,7 @@ funcParameters: (funcParameter (',' funcParameter)*)? ;
 //funcParameter:  type ('&amp;')? IDENTIFIER arrayDecl* ;
 funcParameter:  type ('&amp;')? varFieldDecl ;
 
-block       :   '{' decl_content statement* '}' ;
+block       :   '{' declContent statement* '}' ;
 
 statement   :   block           # StatementBlock
             |   ';'             # StatementSemicolon
@@ -288,15 +300,16 @@ chanExpr    :   IDENTIFIER              # ChanIdentifier
 anything    :   chardata?
                 ((reference | CDATA | PI | COMMENT) chardata?)* ;
 
-template    :   '<' 'template' '>' misc* temp_content  '</' 'template' '>' ;
+template    :   '<' 'template' '>' misc* tempContent  '</' 'template' '>' ;
 
-temp_content
+tempContent
 locals[ArrayList<String> namesLocations = new ArrayList<String>()]
             :   ((name misc*)?)
                 {
                     if($ctx.name()!=null){
                         currentEnv = $ctx.name().anything().getText();
-                        env.put(currentEnv, new ArrayList<String[]>());
+                        channelEnv.put(currentEnv, new ArrayList<String[]>());
+                        clockEnv.put(currentEnv, new ArrayList<String>());
                         transitionsTad.put(currentEnv, new HashMap<String, HashSet<String>>());
                         locationsSmi.put(currentEnv, new HashSet<String>());
                     }
@@ -310,7 +323,11 @@ locals[ArrayList<String> namesLocations = new ArrayList<String>()]
                             if(typeId.equals("chan")){
                                 String chanId = funcParameter.varFieldDecl().IDENTIFIER().getText();
                                 String dimensions = Integer.toString(funcParameter.varFieldDecl().arrayDecl().size());
-                                env.get(currentEnv).add(new String[]{chanId, dimensions});
+                                channelEnv.get(currentEnv).add(new String[]{chanId, dimensions});
+                            }
+                            else if (typeId.equals("clock")){
+                                String clockId = funcParameter.varFieldDecl().IDENTIFIER().getText();
+                                clockEnv.get(currentEnv).add(clockId);
                             }
                         }
                     }
@@ -332,9 +349,9 @@ locals[ArrayList<String> namesLocations = new ArrayList<String>()]
                     }
 
                 }
-                (init_loc misc*)
+                (initLoc misc*)
                 {
-                    this.initLocationId=$ctx.init_loc().STRING().getText();
+                    this.initLocationId=$ctx.initLoc().STRING().getText();
                 }
                 (transition misc*)*
                 ;
@@ -343,7 +360,7 @@ parameter   :   OPEN_PARAMETER funcParameters CLOSE_PARAMETER ;
 
 coordinate  :   'x' EQUALS STRING 'y' EQUALS STRING ;
 
-init_loc    :   '<' 'init' 'ref' EQUALS STRING '/>' ;
+initLoc    :   '<' 'init' 'ref' EQUALS STRING '/>' ;
 
 branchpoint :   '<' 'branchpoint' 'id' EQUALS STRING
                     coordinate? '>' misc*
@@ -351,12 +368,12 @@ branchpoint :   '<' 'branchpoint' 'id' EQUALS STRING
 
 location    :   '<' 'location' 'id' EQUALS STRING
                     coordinate? '>' misc* (name misc*)?
-                    (label_loc misc*)*
+                    (labelLoc misc*)*
                     ('<' (URGENT_LOC | 'committed') '/>' misc*)?
 
                     '</' 'location' '>' ;
 
-label_loc   :   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' ;
+labelLoc   :   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' ;
 
 name        :   '<' 'name'
                     coordinate?
@@ -367,13 +384,14 @@ transition  :   '<' 'transition' '>'
                     this.currentTransition++;
                 }
                 misc* (source misc*) (target misc*)
-                (label_trans misc*)*
+                (labelTransition misc*)*
                 (nail misc*)*
                 '</' 'transition' '>' ;
 
 
 //Are equals to labels_loc but we can manipulate them differently
-label_trans :   OPEN_GUARD guard_expr? CLOSE_LABEL  # LabelTransGuard
+labelTransition
+            :   OPEN_GUARD guardExpr? CLOSE_LABEL  # LabelTransGuard
             |   OPEN_SYNC (expr '?')? CLOSE_LABEL
                 {
                     //Add to tmi array to remove transition on tmi mutants
@@ -396,52 +414,52 @@ label_trans :   OPEN_GUARD guard_expr? CLOSE_LABEL  # LabelTransGuard
             |   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' # labelTrans;
 
 
-guard_expr  :   IDENTIFIER  # IdentifierGuard
+guardExpr  :   IDENTIFIER  # IdentifierGuard
             |   NAT   # NatGuard
             |   POINT    # DoubleGuard
-            |   guard_expr '[' guard_expr ']'   # ArrayGuard
-            |   guard_expr '\''     # StopWatchGuard
-            |   '(' guard_expr ')'  # ParenthesisGuard
-            |   guard_expr '++'     # GuardIncrement
-            |   '++' guard_expr     # IncrementGuard
-            |   guard_expr '--'     # GuardDecrement
-            |   '--' guard_expr     # DecrementGuard
-            |   guard_expr
+            |   guardExpr '[' guardExpr ']'   # ArrayGuard
+            |   guardExpr '\''     # StopWatchGuard
+            |   '(' guardExpr ')'  # ParenthesisGuard
+            |   guardExpr '++'     # GuardIncrement
+            |   '++' guardExpr     # IncrementGuard
+            |   guardExpr '--'     # GuardDecrement
+            |   '--' guardExpr     # DecrementGuard
+            |   guardExpr
                     //assign is '=' in guard channel
                     assign=(ASSIGN | ':=' | '+=' | '-=' | '*=' | '/=' | '%=' | '|=' | '&amp;=' | '^=' | '&lt;&lt;=' | '&gt;&gt;=')
-                        guard_expr  # AssignGuard
-            |   unary=('-' | '+' | '!' | 'not') guard_expr  # UnaryGuard
-            |   guard_expr binary=( '&lt;' | '&lt;=' | '==' | '!=' | '&gt;=' | '&gt;' //LESS is '<' in guard channel. Greater is '>' in guard channel
-                                   ) guard_expr
+                        guardExpr  # AssignGuard
+            |   unary=('-' | '+' | '!' | 'not') guardExpr  # UnaryGuard
+            |   guardExpr binary=( '&lt;' | '&lt;=' | '==' | '!=' | '&gt;=' | '&gt;' //LESS is '<' in guard channel. Greater is '>' in guard channel
+                                   ) guardExpr
                 {
 
                 this.num++;
 
                 }
                                    # ComparisonGuard
-            |   guard_expr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
+            |   guardExpr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
                                     |  '|' | '^' | '&lt;&lt;' | '&gt;&gt;' | '&amp;&amp;' | '||'
                                     |  '&lt;?' | '&gt;?' | 'or' | 'and' | 'imply')
-                                    guard_expr   #BinaryGuard
-            |   guard_expr '?' guard_expr ':' guard_expr
+                                    guardExpr   #BinaryGuard
+            |   guardExpr '?' guardExpr ':' guardExpr
                                     # IfGuard
-            |   guard_expr '.' IDENTIFIER   # DotGuard
-            |   guard_expr '(' guard_arguments ')'# FuncGuard
-            |   'forall' '(' IDENTIFIER ':' guard_type ')' guard_expr     # ForallGuard
-            |   'exists' '(' IDENTIFIER ':' guard_type ')' guard_expr     # ExistsGuard
-            |   'sum' '(' IDENTIFIER ':' guard_type ')' guard_expr        # SumGuard
+            |   guardExpr '.' IDENTIFIER   # DotGuard
+            |   guardExpr '(' guardArguments ')'# FuncGuard
+            |   'forall' '(' IDENTIFIER ':' guardType ')' guardExpr     # ForallGuard
+            |   'exists' '(' IDENTIFIER ':' guardType ')' guardExpr     # ExistsGuard
+            |   'sum' '(' IDENTIFIER ':' guardType ')' guardExpr        # SumGuard
             |   'true'  # TrueGuard
             |   'false' # FalseGuard
             ;
 
-guard_arguments   :   (guard_expr  (',' guard_expr)*)? ;
+guardArguments   :   (guardExpr  (',' guardExpr)*)? ;
 
-guard_type        :   ('meta' | 'const')? guard_typeId ;
+guardType        :   ('meta' | 'const')? guardTypeId ;
 
-guard_typeId
+guardTypeId
             :   'int'                                       # GuardTypeInt
-            |   'int' '[' guard_expr ',' guard_expr ']'     # GuardTypeIntDomain
-            |   'scalar' '[' guard_expr ']'                 # GuardTypeScalar
+            |   'int' '[' guardExpr ',' guardExpr ']'     # GuardTypeIntDomain
+            |   'scalar' '[' guardExpr ']'                 # GuardTypeScalar
             ;
 
 source      :   ('<' 'source' 'ref' EQUALS STRING '/>')
@@ -469,4 +487,4 @@ formula     :   '<' 'formula' '>' anything '</' 'formula' '>' ;
 comment     :   '<' 'comment' '>' anything '</' 'comment' '>' ;
 
 
-//guard_expr  :   IDENTIFIER misc*;
+//guardExpr  :   IDENTIFIER misc*;

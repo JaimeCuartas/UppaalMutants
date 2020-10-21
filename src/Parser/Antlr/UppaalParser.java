@@ -46,7 +46,7 @@ public class UppaalParser extends Parser {
 	public static final int
 		RULE_model = 0, RULE_prolog = 1, RULE_content = 2, RULE_element = 3, RULE_reference = 4, 
 		RULE_attribute = 5, RULE_chardata = 6, RULE_misc = 7, RULE_nta = 8, RULE_declaration = 9, 
-		RULE_decl_content = 10, RULE_declarations = 11, RULE_expr = 12, RULE_arguments = 13, 
+		RULE_declContent = 10, RULE_declarations = 11, RULE_expr = 12, RULE_arguments = 13, 
 		RULE_variableDecl = 14, RULE_type = 15, RULE_prefix = 16, RULE_typeId = 17, 
 		RULE_fieldDecl = 18, RULE_varFieldDecl = 19, RULE_arrayDecl = 20, RULE_variableID = 21, 
 		RULE_initialiser = 22, RULE_typeDecl = 23, RULE_function = 24, RULE_funcParameters = 25, 
@@ -54,25 +54,25 @@ public class UppaalParser extends Parser {
 		RULE_iteration = 30, RULE_whileLoop = 31, RULE_doWhile = 32, RULE_ifStatement = 33, 
 		RULE_returnStatement = 34, RULE_chanPriority = 35, RULE_chanOrDef = 36, 
 		RULE_chanSeparator = 37, RULE_chanExpr = 38, RULE_anything = 39, RULE_template = 40, 
-		RULE_temp_content = 41, RULE_parameter = 42, RULE_coordinate = 43, RULE_init_loc = 44, 
-		RULE_branchpoint = 45, RULE_location = 46, RULE_label_loc = 47, RULE_name = 48, 
-		RULE_transition = 49, RULE_label_trans = 50, RULE_guard_expr = 51, RULE_guard_arguments = 52, 
-		RULE_guard_type = 53, RULE_guard_typeId = 54, RULE_source = 55, RULE_target = 56, 
-		RULE_nail = 57, RULE_system = 58, RULE_queries = 59, RULE_query = 60, 
-		RULE_formula = 61, RULE_comment = 62;
+		RULE_tempContent = 41, RULE_parameter = 42, RULE_coordinate = 43, RULE_initLoc = 44, 
+		RULE_branchpoint = 45, RULE_location = 46, RULE_labelLoc = 47, RULE_name = 48, 
+		RULE_transition = 49, RULE_labelTransition = 50, RULE_guardExpr = 51, 
+		RULE_guardArguments = 52, RULE_guardType = 53, RULE_guardTypeId = 54, 
+		RULE_source = 55, RULE_target = 56, RULE_nail = 57, RULE_system = 58, 
+		RULE_queries = 59, RULE_query = 60, RULE_formula = 61, RULE_comment = 62;
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"model", "prolog", "content", "element", "reference", "attribute", "chardata", 
-			"misc", "nta", "declaration", "decl_content", "declarations", "expr", 
+			"misc", "nta", "declaration", "declContent", "declarations", "expr", 
 			"arguments", "variableDecl", "type", "prefix", "typeId", "fieldDecl", 
 			"varFieldDecl", "arrayDecl", "variableID", "initialiser", "typeDecl", 
 			"function", "funcParameters", "funcParameter", "block", "statement", 
 			"forLoop", "iteration", "whileLoop", "doWhile", "ifStatement", "returnStatement", 
 			"chanPriority", "chanOrDef", "chanSeparator", "chanExpr", "anything", 
-			"template", "temp_content", "parameter", "coordinate", "init_loc", "branchpoint", 
-			"location", "label_loc", "name", "transition", "label_trans", "guard_expr", 
-			"guard_arguments", "guard_type", "guard_typeId", "source", "target", 
-			"nail", "system", "queries", "query", "formula", "comment"
+			"template", "tempContent", "parameter", "coordinate", "initLoc", "branchpoint", 
+			"location", "labelLoc", "name", "transition", "labelTransition", "guardExpr", 
+			"guardArguments", "guardType", "guardTypeId", "source", "target", "nail", 
+			"system", "queries", "query", "formula", "comment"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -188,7 +188,8 @@ public class UppaalParser extends Parser {
 	    //env will contain as value, and array of string
 	    //String[0] will contain the name of channel and String[1] will contain the dimensions of channel
 
-	    private HashMap<String, ArrayList<String[]>> env = new HashMap<String, ArrayList<String[]>>();
+	    private HashMap<String, ArrayList<String[]>> channelEnv = new HashMap<String, ArrayList<String[]>>();
+	    private HashMap<String, ArrayList<String>> clockEnv = new HashMap<String, ArrayList<String>>();
 	    private String currentEnv;
 	    private boolean isFunctionEnv;
 
@@ -210,7 +211,8 @@ public class UppaalParser extends Parser {
 	    public UppaalParser(TokenStream input, int a){
 	        this(input);
 	        currentEnv = "Global";
-	        env.put(currentEnv, new ArrayList<String[]>());
+	        channelEnv.put(currentEnv, new ArrayList<String[]>());
+	        clockEnv.put(currentEnv, new ArrayList<String>());
 	        isFunctionEnv = false;
 	    }
 
@@ -220,8 +222,11 @@ public class UppaalParser extends Parser {
 	    public void setNum(int num){
 	        this.num = num;
 	    }
-	    public HashMap<String, ArrayList<String[]>> getEnv (){
-	        return this.env;
+	    public HashMap<String, ArrayList<String[]>> getChannelEnv (){
+	        return this.channelEnv;
+	    }
+	    public HashMap<String, ArrayList<String>> getClockEnv (){
+	        return this.clockEnv;
 	    }
 	    public ArrayList<Integer> getTmi(){
 	        return this.tmi;
@@ -1052,8 +1057,8 @@ public class UppaalParser extends Parser {
 
 	public static class DeclarationContext extends ParserRuleContext {
 		public TerminalNode OPEN_DECLARATION() { return getToken(UppaalParser.OPEN_DECLARATION, 0); }
-		public Decl_contentContext decl_content() {
-			return getRuleContext(Decl_contentContext.class,0);
+		public DeclContentContext declContent() {
+			return getRuleContext(DeclContentContext.class,0);
 		}
 		public TerminalNode CLOSE_DECLARATION() { return getToken(UppaalParser.CLOSE_DECLARATION, 0); }
 		public DeclarationContext(ParserRuleContext parent, int invokingState) {
@@ -1084,7 +1089,7 @@ public class UppaalParser extends Parser {
 			setState(251);
 			match(OPEN_DECLARATION);
 			setState(252);
-			decl_content();
+			declContent();
 			setState(253);
 			match(CLOSE_DECLARATION);
 			}
@@ -1100,35 +1105,35 @@ public class UppaalParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Decl_contentContext extends ParserRuleContext {
+	public static class DeclContentContext extends ParserRuleContext {
 		public List<DeclarationsContext> declarations() {
 			return getRuleContexts(DeclarationsContext.class);
 		}
 		public DeclarationsContext declarations(int i) {
 			return getRuleContext(DeclarationsContext.class,i);
 		}
-		public Decl_contentContext(ParserRuleContext parent, int invokingState) {
+		public DeclContentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_decl_content; }
+		@Override public int getRuleIndex() { return RULE_declContent; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterDecl_content(this);
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterDeclContent(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitDecl_content(this);
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitDeclContent(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitDecl_content(this);
+			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitDeclContent(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final Decl_contentContext decl_content() throws RecognitionException {
-		Decl_contentContext _localctx = new Decl_contentContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_decl_content);
+	public final DeclContentContext declContent() throws RecognitionException {
+		DeclContentContext _localctx = new DeclContentContext(_ctx, getState());
+		enterRule(_localctx, 20, RULE_declContent);
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
@@ -2344,7 +2349,14 @@ public class UppaalParser extends Parser {
 			                            for(UppaalParser.VariableIDContext variableId: variablesId){
 			                                String chanId = variableId.IDENTIFIER().getText();
 			                                String dimensions = Integer.toString(variableId.arrayDecl().size());
-			                                env.get(currentEnv).add(new String[]{chanId, dimensions});
+			                                channelEnv.get(currentEnv).add(new String[]{chanId, dimensions});
+			                            }
+			                        }
+			                        else if(typeId.equals("clock")){
+			                            List<UppaalParser.VariableIDContext> variablesId = _localctx.variableID();
+			                            for(UppaalParser.VariableIDContext variableId: variablesId){
+			                                String clockId = variableId.IDENTIFIER().getText();
+			                                clockEnv.get(currentEnv).add(clockId);
 			                            }
 			                        }
 			                        //env.get(currentEnv).add();
@@ -3606,8 +3618,8 @@ public class UppaalParser extends Parser {
 
 	public static class BlockContext extends ParserRuleContext {
 		public TerminalNode LEFT_BRACE() { return getToken(UppaalParser.LEFT_BRACE, 0); }
-		public Decl_contentContext decl_content() {
-			return getRuleContext(Decl_contentContext.class,0);
+		public DeclContentContext declContent() {
+			return getRuleContext(DeclContentContext.class,0);
 		}
 		public TerminalNode RIGHT_BRACE() { return getToken(UppaalParser.RIGHT_BRACE, 0); }
 		public List<StatementContext> statement() {
@@ -3645,7 +3657,7 @@ public class UppaalParser extends Parser {
 			setState(501);
 			match(LEFT_BRACE);
 			setState(502);
-			decl_content();
+			declContent();
 			setState(506);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -4788,8 +4800,8 @@ public class UppaalParser extends Parser {
 		public TerminalNode CLOSE(int i) {
 			return getToken(UppaalParser.CLOSE, i);
 		}
-		public Temp_contentContext temp_content() {
-			return getRuleContext(Temp_contentContext.class,0);
+		public TempContentContext tempContent() {
+			return getRuleContext(TempContentContext.class,0);
 		}
 		public TerminalNode OPEN_SLASH() { return getToken(UppaalParser.OPEN_SLASH, 0); }
 		public List<MiscContext> misc() {
@@ -4845,7 +4857,7 @@ public class UppaalParser extends Parser {
 				_la = _input.LA(1);
 			}
 			setState(629);
-			temp_content();
+			tempContent();
 			setState(630);
 			match(OPEN_SLASH);
 			setState(631);
@@ -4865,10 +4877,10 @@ public class UppaalParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Temp_contentContext extends ParserRuleContext {
+	public static class TempContentContext extends ParserRuleContext {
 		public ArrayList<String> namesLocations = new ArrayList<String>();
-		public Init_locContext init_loc() {
-			return getRuleContext(Init_locContext.class,0);
+		public InitLocContext initLoc() {
+			return getRuleContext(InitLocContext.class,0);
 		}
 		public DeclarationContext declaration() {
 			return getRuleContext(DeclarationContext.class,0);
@@ -4903,28 +4915,28 @@ public class UppaalParser extends Parser {
 		public BranchpointContext branchpoint(int i) {
 			return getRuleContext(BranchpointContext.class,i);
 		}
-		public Temp_contentContext(ParserRuleContext parent, int invokingState) {
+		public TempContentContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_temp_content; }
+		@Override public int getRuleIndex() { return RULE_tempContent; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterTemp_content(this);
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterTempContent(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitTemp_content(this);
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitTempContent(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitTemp_content(this);
+			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitTempContent(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final Temp_contentContext temp_content() throws RecognitionException {
-		Temp_contentContext _localctx = new Temp_contentContext(_ctx, getState());
-		enterRule(_localctx, 82, RULE_temp_content);
+	public final TempContentContext tempContent() throws RecognitionException {
+		TempContentContext _localctx = new TempContentContext(_ctx, getState());
+		enterRule(_localctx, 82, RULE_tempContent);
 		int _la;
 		try {
 			int _alt;
@@ -4959,7 +4971,8 @@ public class UppaalParser extends Parser {
 
 			                    if(_localctx.name()!=null){
 			                        currentEnv = _localctx.name().anything().getText();
-			                        env.put(currentEnv, new ArrayList<String[]>());
+			                        channelEnv.put(currentEnv, new ArrayList<String[]>());
+			                        clockEnv.put(currentEnv, new ArrayList<String>());
 			                        transitionsTad.put(currentEnv, new HashMap<String, HashSet<String>>());
 			                        locationsSmi.put(currentEnv, new HashSet<String>());
 			                    }
@@ -4998,7 +5011,11 @@ public class UppaalParser extends Parser {
 			                            if(typeId.equals("chan")){
 			                                String chanId = funcParameter.varFieldDecl().IDENTIFIER().getText();
 			                                String dimensions = Integer.toString(funcParameter.varFieldDecl().arrayDecl().size());
-			                                env.get(currentEnv).add(new String[]{chanId, dimensions});
+			                                channelEnv.get(currentEnv).add(new String[]{chanId, dimensions});
+			                            }
+			                            else if (typeId.equals("clock")){
+			                                String clockId = funcParameter.varFieldDecl().IDENTIFIER().getText();
+			                                clockEnv.get(currentEnv).add(clockId);
 			                            }
 			                        }
 			                    }
@@ -5109,7 +5126,7 @@ public class UppaalParser extends Parser {
 			                
 			{
 			setState(682);
-			init_loc();
+			initLoc();
 			setState(686);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
@@ -5126,7 +5143,7 @@ public class UppaalParser extends Parser {
 			}
 			}
 
-			                    this.initLocationId=_localctx.init_loc().STRING().getText();
+			                    this.initLocationId=_localctx.initLoc().STRING().getText();
 			                
 			setState(699);
 			_errHandler.sync(this);
@@ -5280,35 +5297,35 @@ public class UppaalParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Init_locContext extends ParserRuleContext {
+	public static class InitLocContext extends ParserRuleContext {
 		public TerminalNode OPEN() { return getToken(UppaalParser.OPEN, 0); }
 		public TerminalNode INIT() { return getToken(UppaalParser.INIT, 0); }
 		public TerminalNode REF() { return getToken(UppaalParser.REF, 0); }
 		public TerminalNode EQUALS() { return getToken(UppaalParser.EQUALS, 0); }
 		public TerminalNode STRING() { return getToken(UppaalParser.STRING, 0); }
 		public TerminalNode SLASH_CLOSE() { return getToken(UppaalParser.SLASH_CLOSE, 0); }
-		public Init_locContext(ParserRuleContext parent, int invokingState) {
+		public InitLocContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_init_loc; }
+		@Override public int getRuleIndex() { return RULE_initLoc; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterInit_loc(this);
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterInitLoc(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitInit_loc(this);
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitInitLoc(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitInit_loc(this);
+			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitInitLoc(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final Init_locContext init_loc() throws RecognitionException {
-		Init_locContext _localctx = new Init_locContext(_ctx, getState());
-		enterRule(_localctx, 88, RULE_init_loc);
+	public final InitLocContext initLoc() throws RecognitionException {
+		InitLocContext _localctx = new InitLocContext(_ctx, getState());
+		enterRule(_localctx, 88, RULE_initLoc);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -5470,11 +5487,11 @@ public class UppaalParser extends Parser {
 		public NameContext name() {
 			return getRuleContext(NameContext.class,0);
 		}
-		public List<Label_locContext> label_loc() {
-			return getRuleContexts(Label_locContext.class);
+		public List<LabelLocContext> labelLoc() {
+			return getRuleContexts(LabelLocContext.class);
 		}
-		public Label_locContext label_loc(int i) {
-			return getRuleContext(Label_locContext.class,i);
+		public LabelLocContext labelLoc(int i) {
+			return getRuleContext(LabelLocContext.class,i);
 		}
 		public TerminalNode SLASH_CLOSE() { return getToken(UppaalParser.SLASH_CLOSE, 0); }
 		public TerminalNode URGENT_LOC() { return getToken(UppaalParser.URGENT_LOC, 0); }
@@ -5574,7 +5591,7 @@ public class UppaalParser extends Parser {
 					{
 					{
 					setState(763);
-					label_loc();
+					labelLoc();
 					setState(767);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
@@ -5651,7 +5668,7 @@ public class UppaalParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Label_locContext extends ParserRuleContext {
+	public static class LabelLocContext extends ParserRuleContext {
 		public TerminalNode OPEN() { return getToken(UppaalParser.OPEN, 0); }
 		public List<TerminalNode> LABEL() { return getTokens(UppaalParser.LABEL); }
 		public TerminalNode LABEL(int i) {
@@ -5671,28 +5688,28 @@ public class UppaalParser extends Parser {
 		public CoordinateContext coordinate() {
 			return getRuleContext(CoordinateContext.class,0);
 		}
-		public Label_locContext(ParserRuleContext parent, int invokingState) {
+		public LabelLocContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_label_loc; }
+		@Override public int getRuleIndex() { return RULE_labelLoc; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterLabel_loc(this);
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterLabelLoc(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitLabel_loc(this);
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitLabelLoc(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitLabel_loc(this);
+			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitLabelLoc(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final Label_locContext label_loc() throws RecognitionException {
-		Label_locContext _localctx = new Label_locContext(_ctx, getState());
-		enterRule(_localctx, 94, RULE_label_loc);
+	public final LabelLocContext labelLoc() throws RecognitionException {
+		LabelLocContext _localctx = new LabelLocContext(_ctx, getState());
+		enterRule(_localctx, 94, RULE_labelLoc);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -5843,11 +5860,11 @@ public class UppaalParser extends Parser {
 		public MiscContext misc(int i) {
 			return getRuleContext(MiscContext.class,i);
 		}
-		public List<Label_transContext> label_trans() {
-			return getRuleContexts(Label_transContext.class);
+		public List<LabelTransitionContext> labelTransition() {
+			return getRuleContexts(LabelTransitionContext.class);
 		}
-		public Label_transContext label_trans(int i) {
-			return getRuleContext(Label_transContext.class,i);
+		public LabelTransitionContext labelTransition(int i) {
+			return getRuleContext(LabelTransitionContext.class,i);
 		}
 		public List<NailContext> nail() {
 			return getRuleContexts(NailContext.class);
@@ -5949,7 +5966,7 @@ public class UppaalParser extends Parser {
 					{
 					{
 					setState(839);
-					label_trans();
+					labelTransition();
 					setState(843);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
@@ -6018,25 +6035,25 @@ public class UppaalParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Label_transContext extends ParserRuleContext {
-		public Label_transContext(ParserRuleContext parent, int invokingState) {
+	public static class LabelTransitionContext extends ParserRuleContext {
+		public LabelTransitionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_label_trans; }
+		@Override public int getRuleIndex() { return RULE_labelTransition; }
 	 
-		public Label_transContext() { }
-		public void copyFrom(Label_transContext ctx) {
+		public LabelTransitionContext() { }
+		public void copyFrom(LabelTransitionContext ctx) {
 			super.copyFrom(ctx);
 		}
 	}
-	public static class LabelTransSyncOutputContext extends Label_transContext {
+	public static class LabelTransSyncOutputContext extends LabelTransitionContext {
 		public TerminalNode OPEN_SYNC() { return getToken(UppaalParser.OPEN_SYNC, 0); }
 		public TerminalNode CLOSE_LABEL() { return getToken(UppaalParser.CLOSE_LABEL, 0); }
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
 		public TerminalNode EXCLAMATION() { return getToken(UppaalParser.EXCLAMATION, 0); }
-		public LabelTransSyncOutputContext(Label_transContext ctx) { copyFrom(ctx); }
+		public LabelTransSyncOutputContext(LabelTransitionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterLabelTransSyncOutput(this);
@@ -6051,13 +6068,13 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class LabelTransGuardContext extends Label_transContext {
+	public static class LabelTransGuardContext extends LabelTransitionContext {
 		public TerminalNode OPEN_GUARD() { return getToken(UppaalParser.OPEN_GUARD, 0); }
 		public TerminalNode CLOSE_LABEL() { return getToken(UppaalParser.CLOSE_LABEL, 0); }
-		public Guard_exprContext guard_expr() {
-			return getRuleContext(Guard_exprContext.class,0);
+		public GuardExprContext guardExpr() {
+			return getRuleContext(GuardExprContext.class,0);
 		}
-		public LabelTransGuardContext(Label_transContext ctx) { copyFrom(ctx); }
+		public LabelTransGuardContext(LabelTransitionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterLabelTransGuard(this);
@@ -6072,7 +6089,7 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class LabelTransContext extends Label_transContext {
+	public static class LabelTransContext extends LabelTransitionContext {
 		public TerminalNode OPEN() { return getToken(UppaalParser.OPEN, 0); }
 		public List<TerminalNode> LABEL() { return getTokens(UppaalParser.LABEL); }
 		public TerminalNode LABEL(int i) {
@@ -6092,7 +6109,7 @@ public class UppaalParser extends Parser {
 		public CoordinateContext coordinate() {
 			return getRuleContext(CoordinateContext.class,0);
 		}
-		public LabelTransContext(Label_transContext ctx) { copyFrom(ctx); }
+		public LabelTransContext(LabelTransitionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterLabelTrans(this);
@@ -6107,14 +6124,14 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class LabelTransSyncInputContext extends Label_transContext {
+	public static class LabelTransSyncInputContext extends LabelTransitionContext {
 		public TerminalNode OPEN_SYNC() { return getToken(UppaalParser.OPEN_SYNC, 0); }
 		public TerminalNode CLOSE_LABEL() { return getToken(UppaalParser.CLOSE_LABEL, 0); }
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
 		public TerminalNode QUESTION() { return getToken(UppaalParser.QUESTION, 0); }
-		public LabelTransSyncInputContext(Label_transContext ctx) { copyFrom(ctx); }
+		public LabelTransSyncInputContext(LabelTransitionContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterLabelTransSyncInput(this);
@@ -6130,9 +6147,9 @@ public class UppaalParser extends Parser {
 		}
 	}
 
-	public final Label_transContext label_trans() throws RecognitionException {
-		Label_transContext _localctx = new Label_transContext(_ctx, getState());
-		enterRule(_localctx, 100, RULE_label_trans);
+	public final LabelTransitionContext labelTransition() throws RecognitionException {
+		LabelTransitionContext _localctx = new LabelTransitionContext(_ctx, getState());
+		enterRule(_localctx, 100, RULE_labelTransition);
 		int _la;
 		try {
 			setState(902);
@@ -6150,7 +6167,7 @@ public class UppaalParser extends Parser {
 				if (((((_la - 54)) & ~0x3f) == 0 && ((1L << (_la - 54)) & ((1L << (NAT - 54)) | (1L << (POINT - 54)) | (1L << (LEFT_PARENTHESIS - 54)) | (1L << (INCREMENT - 54)) | (1L << (DECREMENT - 54)) | (1L << (ADD - 54)) | (1L << (SUB - 54)) | (1L << (EXCLAMATION - 54)) | (1L << (NOT - 54)) | (1L << (FORALL - 54)) | (1L << (EXISTS - 54)) | (1L << (SUM - 54)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (TRUE - 130)) | (1L << (FALSE - 130)) | (1L << (IDENTIFIER - 130)))) != 0)) {
 					{
 					setState(868);
-					guard_expr(0);
+					guardExpr(0);
 					}
 				}
 
@@ -6268,30 +6285,30 @@ public class UppaalParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Guard_exprContext extends ParserRuleContext {
-		public Guard_exprContext(ParserRuleContext parent, int invokingState) {
+	public static class GuardExprContext extends ParserRuleContext {
+		public GuardExprContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_guard_expr; }
+		@Override public int getRuleIndex() { return RULE_guardExpr; }
 	 
-		public Guard_exprContext() { }
-		public void copyFrom(Guard_exprContext ctx) {
+		public GuardExprContext() { }
+		public void copyFrom(GuardExprContext ctx) {
 			super.copyFrom(ctx);
 		}
 	}
-	public static class SumGuardContext extends Guard_exprContext {
+	public static class SumGuardContext extends GuardExprContext {
 		public TerminalNode SUM() { return getToken(UppaalParser.SUM, 0); }
 		public TerminalNode LEFT_PARENTHESIS() { return getToken(UppaalParser.LEFT_PARENTHESIS, 0); }
 		public TerminalNode IDENTIFIER() { return getToken(UppaalParser.IDENTIFIER, 0); }
 		public TerminalNode COLON() { return getToken(UppaalParser.COLON, 0); }
-		public Guard_typeContext guard_type() {
-			return getRuleContext(Guard_typeContext.class,0);
+		public GuardTypeContext guardType() {
+			return getRuleContext(GuardTypeContext.class,0);
 		}
 		public TerminalNode RIGHT_PARENTHESIS() { return getToken(UppaalParser.RIGHT_PARENTHESIS, 0); }
-		public Guard_exprContext guard_expr() {
-			return getRuleContext(Guard_exprContext.class,0);
+		public GuardExprContext guardExpr() {
+			return getRuleContext(GuardExprContext.class,0);
 		}
-		public SumGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public SumGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterSumGuard(this);
@@ -6306,13 +6323,13 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class ParenthesisGuardContext extends Guard_exprContext {
+	public static class ParenthesisGuardContext extends GuardExprContext {
 		public TerminalNode LEFT_PARENTHESIS() { return getToken(UppaalParser.LEFT_PARENTHESIS, 0); }
-		public Guard_exprContext guard_expr() {
-			return getRuleContext(Guard_exprContext.class,0);
+		public GuardExprContext guardExpr() {
+			return getRuleContext(GuardExprContext.class,0);
 		}
 		public TerminalNode RIGHT_PARENTHESIS() { return getToken(UppaalParser.RIGHT_PARENTHESIS, 0); }
-		public ParenthesisGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public ParenthesisGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterParenthesisGuard(this);
@@ -6327,9 +6344,9 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class FalseGuardContext extends Guard_exprContext {
+	public static class FalseGuardContext extends GuardExprContext {
 		public TerminalNode FALSE() { return getToken(UppaalParser.FALSE, 0); }
-		public FalseGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public FalseGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterFalseGuard(this);
@@ -6344,13 +6361,13 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class AssignGuardContext extends Guard_exprContext {
+	public static class AssignGuardContext extends GuardExprContext {
 		public Token assign;
-		public List<Guard_exprContext> guard_expr() {
-			return getRuleContexts(Guard_exprContext.class);
+		public List<GuardExprContext> guardExpr() {
+			return getRuleContexts(GuardExprContext.class);
 		}
-		public Guard_exprContext guard_expr(int i) {
-			return getRuleContext(Guard_exprContext.class,i);
+		public GuardExprContext guardExpr(int i) {
+			return getRuleContext(GuardExprContext.class,i);
 		}
 		public TerminalNode ASSIGN() { return getToken(UppaalParser.ASSIGN, 0); }
 		public TerminalNode ASSIGN_COLON() { return getToken(UppaalParser.ASSIGN_COLON, 0); }
@@ -6364,7 +6381,7 @@ public class UppaalParser extends Parser {
 		public TerminalNode ASSIGN_XOR() { return getToken(UppaalParser.ASSIGN_XOR, 0); }
 		public TerminalNode ASSIGN_LSHIFT() { return getToken(UppaalParser.ASSIGN_LSHIFT, 0); }
 		public TerminalNode ASSIGN_RSHIFT() { return getToken(UppaalParser.ASSIGN_RSHIFT, 0); }
-		public AssignGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public AssignGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterAssignGuard(this);
@@ -6379,13 +6396,13 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class DotGuardContext extends Guard_exprContext {
-		public Guard_exprContext guard_expr() {
-			return getRuleContext(Guard_exprContext.class,0);
+	public static class DotGuardContext extends GuardExprContext {
+		public GuardExprContext guardExpr() {
+			return getRuleContext(GuardExprContext.class,0);
 		}
 		public TerminalNode LOOKUP_OP() { return getToken(UppaalParser.LOOKUP_OP, 0); }
 		public TerminalNode IDENTIFIER() { return getToken(UppaalParser.IDENTIFIER, 0); }
-		public DotGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public DotGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterDotGuard(this);
@@ -6400,12 +6417,12 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class DecrementGuardContext extends Guard_exprContext {
+	public static class DecrementGuardContext extends GuardExprContext {
 		public TerminalNode DECREMENT() { return getToken(UppaalParser.DECREMENT, 0); }
-		public Guard_exprContext guard_expr() {
-			return getRuleContext(Guard_exprContext.class,0);
+		public GuardExprContext guardExpr() {
+			return getRuleContext(GuardExprContext.class,0);
 		}
-		public DecrementGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public DecrementGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterDecrementGuard(this);
@@ -6420,16 +6437,16 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class UnaryGuardContext extends Guard_exprContext {
+	public static class UnaryGuardContext extends GuardExprContext {
 		public Token unary;
-		public Guard_exprContext guard_expr() {
-			return getRuleContext(Guard_exprContext.class,0);
+		public GuardExprContext guardExpr() {
+			return getRuleContext(GuardExprContext.class,0);
 		}
 		public TerminalNode SUB() { return getToken(UppaalParser.SUB, 0); }
 		public TerminalNode ADD() { return getToken(UppaalParser.ADD, 0); }
 		public TerminalNode EXCLAMATION() { return getToken(UppaalParser.EXCLAMATION, 0); }
 		public TerminalNode NOT() { return getToken(UppaalParser.NOT, 0); }
-		public UnaryGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public UnaryGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterUnaryGuard(this);
@@ -6444,13 +6461,13 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class ComparisonGuardContext extends Guard_exprContext {
+	public static class ComparisonGuardContext extends GuardExprContext {
 		public Token binary;
-		public List<Guard_exprContext> guard_expr() {
-			return getRuleContexts(Guard_exprContext.class);
+		public List<GuardExprContext> guardExpr() {
+			return getRuleContexts(GuardExprContext.class);
 		}
-		public Guard_exprContext guard_expr(int i) {
-			return getRuleContext(Guard_exprContext.class,i);
+		public GuardExprContext guardExpr(int i) {
+			return getRuleContext(GuardExprContext.class,i);
 		}
 		public TerminalNode LESS() { return getToken(UppaalParser.LESS, 0); }
 		public TerminalNode LESSEQ() { return getToken(UppaalParser.LESSEQ, 0); }
@@ -6458,7 +6475,7 @@ public class UppaalParser extends Parser {
 		public TerminalNode DIFFERENT() { return getToken(UppaalParser.DIFFERENT, 0); }
 		public TerminalNode GREATEREQ() { return getToken(UppaalParser.GREATEREQ, 0); }
 		public TerminalNode GREATER() { return getToken(UppaalParser.GREATER, 0); }
-		public ComparisonGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public ComparisonGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterComparisonGuard(this);
@@ -6473,9 +6490,9 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class IdentifierGuardContext extends Guard_exprContext {
+	public static class IdentifierGuardContext extends GuardExprContext {
 		public TerminalNode IDENTIFIER() { return getToken(UppaalParser.IDENTIFIER, 0); }
-		public IdentifierGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public IdentifierGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterIdentifierGuard(this);
@@ -6490,13 +6507,13 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class BinaryGuardContext extends Guard_exprContext {
+	public static class BinaryGuardContext extends GuardExprContext {
 		public Token binary;
-		public List<Guard_exprContext> guard_expr() {
-			return getRuleContexts(Guard_exprContext.class);
+		public List<GuardExprContext> guardExpr() {
+			return getRuleContexts(GuardExprContext.class);
 		}
-		public Guard_exprContext guard_expr(int i) {
-			return getRuleContext(Guard_exprContext.class,i);
+		public GuardExprContext guardExpr(int i) {
+			return getRuleContext(GuardExprContext.class,i);
 		}
 		public TerminalNode ADD() { return getToken(UppaalParser.ADD, 0); }
 		public TerminalNode SUB() { return getToken(UppaalParser.SUB, 0); }
@@ -6515,7 +6532,7 @@ public class UppaalParser extends Parser {
 		public TerminalNode OR() { return getToken(UppaalParser.OR, 0); }
 		public TerminalNode AND() { return getToken(UppaalParser.AND, 0); }
 		public TerminalNode IMPLY() { return getToken(UppaalParser.IMPLY, 0); }
-		public BinaryGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public BinaryGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterBinaryGuard(this);
@@ -6530,9 +6547,9 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class NatGuardContext extends Guard_exprContext {
+	public static class NatGuardContext extends GuardExprContext {
 		public TerminalNode NAT() { return getToken(UppaalParser.NAT, 0); }
-		public NatGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public NatGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterNatGuard(this);
@@ -6547,19 +6564,19 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class ExistsGuardContext extends Guard_exprContext {
+	public static class ExistsGuardContext extends GuardExprContext {
 		public TerminalNode EXISTS() { return getToken(UppaalParser.EXISTS, 0); }
 		public TerminalNode LEFT_PARENTHESIS() { return getToken(UppaalParser.LEFT_PARENTHESIS, 0); }
 		public TerminalNode IDENTIFIER() { return getToken(UppaalParser.IDENTIFIER, 0); }
 		public TerminalNode COLON() { return getToken(UppaalParser.COLON, 0); }
-		public Guard_typeContext guard_type() {
-			return getRuleContext(Guard_typeContext.class,0);
+		public GuardTypeContext guardType() {
+			return getRuleContext(GuardTypeContext.class,0);
 		}
 		public TerminalNode RIGHT_PARENTHESIS() { return getToken(UppaalParser.RIGHT_PARENTHESIS, 0); }
-		public Guard_exprContext guard_expr() {
-			return getRuleContext(Guard_exprContext.class,0);
+		public GuardExprContext guardExpr() {
+			return getRuleContext(GuardExprContext.class,0);
 		}
-		public ExistsGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public ExistsGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterExistsGuard(this);
@@ -6574,12 +6591,12 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class StopWatchGuardContext extends Guard_exprContext {
-		public Guard_exprContext guard_expr() {
-			return getRuleContext(Guard_exprContext.class,0);
+	public static class StopWatchGuardContext extends GuardExprContext {
+		public GuardExprContext guardExpr() {
+			return getRuleContext(GuardExprContext.class,0);
 		}
 		public TerminalNode APOSTROPHE() { return getToken(UppaalParser.APOSTROPHE, 0); }
-		public StopWatchGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public StopWatchGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterStopWatchGuard(this);
@@ -6594,16 +6611,16 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class ArrayGuardContext extends Guard_exprContext {
-		public List<Guard_exprContext> guard_expr() {
-			return getRuleContexts(Guard_exprContext.class);
+	public static class ArrayGuardContext extends GuardExprContext {
+		public List<GuardExprContext> guardExpr() {
+			return getRuleContexts(GuardExprContext.class);
 		}
-		public Guard_exprContext guard_expr(int i) {
-			return getRuleContext(Guard_exprContext.class,i);
+		public GuardExprContext guardExpr(int i) {
+			return getRuleContext(GuardExprContext.class,i);
 		}
 		public TerminalNode LEFT_BRACKET() { return getToken(UppaalParser.LEFT_BRACKET, 0); }
 		public TerminalNode RIGHT_BRACKET() { return getToken(UppaalParser.RIGHT_BRACKET, 0); }
-		public ArrayGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public ArrayGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterArrayGuard(this);
@@ -6618,19 +6635,19 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class ForallGuardContext extends Guard_exprContext {
+	public static class ForallGuardContext extends GuardExprContext {
 		public TerminalNode FORALL() { return getToken(UppaalParser.FORALL, 0); }
 		public TerminalNode LEFT_PARENTHESIS() { return getToken(UppaalParser.LEFT_PARENTHESIS, 0); }
 		public TerminalNode IDENTIFIER() { return getToken(UppaalParser.IDENTIFIER, 0); }
 		public TerminalNode COLON() { return getToken(UppaalParser.COLON, 0); }
-		public Guard_typeContext guard_type() {
-			return getRuleContext(Guard_typeContext.class,0);
+		public GuardTypeContext guardType() {
+			return getRuleContext(GuardTypeContext.class,0);
 		}
 		public TerminalNode RIGHT_PARENTHESIS() { return getToken(UppaalParser.RIGHT_PARENTHESIS, 0); }
-		public Guard_exprContext guard_expr() {
-			return getRuleContext(Guard_exprContext.class,0);
+		public GuardExprContext guardExpr() {
+			return getRuleContext(GuardExprContext.class,0);
 		}
-		public ForallGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public ForallGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterForallGuard(this);
@@ -6645,12 +6662,12 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class GuardDecrementContext extends Guard_exprContext {
-		public Guard_exprContext guard_expr() {
-			return getRuleContext(Guard_exprContext.class,0);
+	public static class GuardDecrementContext extends GuardExprContext {
+		public GuardExprContext guardExpr() {
+			return getRuleContext(GuardExprContext.class,0);
 		}
 		public TerminalNode DECREMENT() { return getToken(UppaalParser.DECREMENT, 0); }
-		public GuardDecrementContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public GuardDecrementContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterGuardDecrement(this);
@@ -6665,9 +6682,9 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class TrueGuardContext extends Guard_exprContext {
+	public static class TrueGuardContext extends GuardExprContext {
 		public TerminalNode TRUE() { return getToken(UppaalParser.TRUE, 0); }
-		public TrueGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public TrueGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterTrueGuard(this);
@@ -6682,16 +6699,16 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class IfGuardContext extends Guard_exprContext {
-		public List<Guard_exprContext> guard_expr() {
-			return getRuleContexts(Guard_exprContext.class);
+	public static class IfGuardContext extends GuardExprContext {
+		public List<GuardExprContext> guardExpr() {
+			return getRuleContexts(GuardExprContext.class);
 		}
-		public Guard_exprContext guard_expr(int i) {
-			return getRuleContext(Guard_exprContext.class,i);
+		public GuardExprContext guardExpr(int i) {
+			return getRuleContext(GuardExprContext.class,i);
 		}
 		public TerminalNode QUESTION() { return getToken(UppaalParser.QUESTION, 0); }
 		public TerminalNode COLON() { return getToken(UppaalParser.COLON, 0); }
-		public IfGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public IfGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterIfGuard(this);
@@ -6706,16 +6723,16 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class FuncGuardContext extends Guard_exprContext {
-		public Guard_exprContext guard_expr() {
-			return getRuleContext(Guard_exprContext.class,0);
+	public static class FuncGuardContext extends GuardExprContext {
+		public GuardExprContext guardExpr() {
+			return getRuleContext(GuardExprContext.class,0);
 		}
 		public TerminalNode LEFT_PARENTHESIS() { return getToken(UppaalParser.LEFT_PARENTHESIS, 0); }
-		public Guard_argumentsContext guard_arguments() {
-			return getRuleContext(Guard_argumentsContext.class,0);
+		public GuardArgumentsContext guardArguments() {
+			return getRuleContext(GuardArgumentsContext.class,0);
 		}
 		public TerminalNode RIGHT_PARENTHESIS() { return getToken(UppaalParser.RIGHT_PARENTHESIS, 0); }
-		public FuncGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public FuncGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterFuncGuard(this);
@@ -6730,12 +6747,12 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class IncrementGuardContext extends Guard_exprContext {
+	public static class IncrementGuardContext extends GuardExprContext {
 		public TerminalNode INCREMENT() { return getToken(UppaalParser.INCREMENT, 0); }
-		public Guard_exprContext guard_expr() {
-			return getRuleContext(Guard_exprContext.class,0);
+		public GuardExprContext guardExpr() {
+			return getRuleContext(GuardExprContext.class,0);
 		}
-		public IncrementGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public IncrementGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterIncrementGuard(this);
@@ -6750,9 +6767,9 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class DoubleGuardContext extends Guard_exprContext {
+	public static class DoubleGuardContext extends GuardExprContext {
 		public TerminalNode POINT() { return getToken(UppaalParser.POINT, 0); }
-		public DoubleGuardContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public DoubleGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterDoubleGuard(this);
@@ -6767,12 +6784,12 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class GuardIncrementContext extends Guard_exprContext {
-		public Guard_exprContext guard_expr() {
-			return getRuleContext(Guard_exprContext.class,0);
+	public static class GuardIncrementContext extends GuardExprContext {
+		public GuardExprContext guardExpr() {
+			return getRuleContext(GuardExprContext.class,0);
 		}
 		public TerminalNode INCREMENT() { return getToken(UppaalParser.INCREMENT, 0); }
-		public GuardIncrementContext(Guard_exprContext ctx) { copyFrom(ctx); }
+		public GuardIncrementContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterGuardIncrement(this);
@@ -6788,17 +6805,17 @@ public class UppaalParser extends Parser {
 		}
 	}
 
-	public final Guard_exprContext guard_expr() throws RecognitionException {
-		return guard_expr(0);
+	public final GuardExprContext guardExpr() throws RecognitionException {
+		return guardExpr(0);
 	}
 
-	private Guard_exprContext guard_expr(int _p) throws RecognitionException {
+	private GuardExprContext guardExpr(int _p) throws RecognitionException {
 		ParserRuleContext _parentctx = _ctx;
 		int _parentState = getState();
-		Guard_exprContext _localctx = new Guard_exprContext(_ctx, _parentState);
-		Guard_exprContext _prevctx = _localctx;
+		GuardExprContext _localctx = new GuardExprContext(_ctx, _parentState);
+		GuardExprContext _prevctx = _localctx;
 		int _startState = 102;
-		enterRecursionRule(_localctx, 102, RULE_guard_expr, _p);
+		enterRecursionRule(_localctx, 102, RULE_guardExpr, _p);
 		int _la;
 		try {
 			int _alt;
@@ -6843,7 +6860,7 @@ public class UppaalParser extends Parser {
 				setState(908);
 				match(LEFT_PARENTHESIS);
 				setState(909);
-				guard_expr(0);
+				guardExpr(0);
 				setState(910);
 				match(RIGHT_PARENTHESIS);
 				}
@@ -6856,7 +6873,7 @@ public class UppaalParser extends Parser {
 				setState(912);
 				match(INCREMENT);
 				setState(913);
-				guard_expr(15);
+				guardExpr(15);
 				}
 				break;
 			case DECREMENT:
@@ -6867,7 +6884,7 @@ public class UppaalParser extends Parser {
 				setState(914);
 				match(DECREMENT);
 				setState(915);
-				guard_expr(13);
+				guardExpr(13);
 				}
 				break;
 			case ADD:
@@ -6890,7 +6907,7 @@ public class UppaalParser extends Parser {
 					consume();
 				}
 				setState(917);
-				guard_expr(11);
+				guardExpr(11);
 				}
 				break;
 			case FORALL:
@@ -6907,11 +6924,11 @@ public class UppaalParser extends Parser {
 				setState(921);
 				match(COLON);
 				setState(922);
-				guard_type();
+				guardType();
 				setState(923);
 				match(RIGHT_PARENTHESIS);
 				setState(924);
-				guard_expr(5);
+				guardExpr(5);
 				}
 				break;
 			case EXISTS:
@@ -6928,11 +6945,11 @@ public class UppaalParser extends Parser {
 				setState(929);
 				match(COLON);
 				setState(930);
-				guard_type();
+				guardType();
 				setState(931);
 				match(RIGHT_PARENTHESIS);
 				setState(932);
-				guard_expr(4);
+				guardExpr(4);
 				}
 				break;
 			case SUM:
@@ -6949,11 +6966,11 @@ public class UppaalParser extends Parser {
 				setState(937);
 				match(COLON);
 				setState(938);
-				guard_type();
+				guardType();
 				setState(939);
 				match(RIGHT_PARENTHESIS);
 				setState(940);
-				guard_expr(3);
+				guardExpr(3);
 				}
 				break;
 			case TRUE:
@@ -6991,8 +7008,8 @@ public class UppaalParser extends Parser {
 					switch ( getInterpreter().adaptivePredict(_input,91,_ctx) ) {
 					case 1:
 						{
-						_localctx = new AssignGuardContext(new Guard_exprContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
+						_localctx = new AssignGuardContext(new GuardExprContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_guardExpr);
 						setState(946);
 						if (!(precpred(_ctx, 12))) throw new FailedPredicateException(this, "precpred(_ctx, 12)");
 						setState(947);
@@ -7007,13 +7024,13 @@ public class UppaalParser extends Parser {
 							consume();
 						}
 						setState(948);
-						guard_expr(13);
+						guardExpr(13);
 						}
 						break;
 					case 2:
 						{
-						_localctx = new ComparisonGuardContext(new Guard_exprContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
+						_localctx = new ComparisonGuardContext(new GuardExprContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_guardExpr);
 						setState(949);
 						if (!(precpred(_ctx, 10))) throw new FailedPredicateException(this, "precpred(_ctx, 10)");
 						setState(950);
@@ -7028,7 +7045,7 @@ public class UppaalParser extends Parser {
 							consume();
 						}
 						setState(951);
-						guard_expr(11);
+						guardExpr(11);
 
 
 						                          this.num++;
@@ -7038,8 +7055,8 @@ public class UppaalParser extends Parser {
 						break;
 					case 3:
 						{
-						_localctx = new BinaryGuardContext(new Guard_exprContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
+						_localctx = new BinaryGuardContext(new GuardExprContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_guardExpr);
 						setState(954);
 						if (!(precpred(_ctx, 9))) throw new FailedPredicateException(this, "precpred(_ctx, 9)");
 						setState(955);
@@ -7054,43 +7071,43 @@ public class UppaalParser extends Parser {
 							consume();
 						}
 						setState(956);
-						guard_expr(10);
+						guardExpr(10);
 						}
 						break;
 					case 4:
 						{
-						_localctx = new IfGuardContext(new Guard_exprContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
+						_localctx = new IfGuardContext(new GuardExprContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_guardExpr);
 						setState(957);
 						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
 						setState(958);
 						match(QUESTION);
 						setState(959);
-						guard_expr(0);
+						guardExpr(0);
 						setState(960);
 						match(COLON);
 						setState(961);
-						guard_expr(9);
+						guardExpr(9);
 						}
 						break;
 					case 5:
 						{
-						_localctx = new ArrayGuardContext(new Guard_exprContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
+						_localctx = new ArrayGuardContext(new GuardExprContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_guardExpr);
 						setState(963);
 						if (!(precpred(_ctx, 19))) throw new FailedPredicateException(this, "precpred(_ctx, 19)");
 						setState(964);
 						match(LEFT_BRACKET);
 						setState(965);
-						guard_expr(0);
+						guardExpr(0);
 						setState(966);
 						match(RIGHT_BRACKET);
 						}
 						break;
 					case 6:
 						{
-						_localctx = new StopWatchGuardContext(new Guard_exprContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
+						_localctx = new StopWatchGuardContext(new GuardExprContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_guardExpr);
 						setState(968);
 						if (!(precpred(_ctx, 18))) throw new FailedPredicateException(this, "precpred(_ctx, 18)");
 						setState(969);
@@ -7099,8 +7116,8 @@ public class UppaalParser extends Parser {
 						break;
 					case 7:
 						{
-						_localctx = new GuardIncrementContext(new Guard_exprContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
+						_localctx = new GuardIncrementContext(new GuardExprContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_guardExpr);
 						setState(970);
 						if (!(precpred(_ctx, 16))) throw new FailedPredicateException(this, "precpred(_ctx, 16)");
 						setState(971);
@@ -7109,8 +7126,8 @@ public class UppaalParser extends Parser {
 						break;
 					case 8:
 						{
-						_localctx = new GuardDecrementContext(new Guard_exprContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
+						_localctx = new GuardDecrementContext(new GuardExprContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_guardExpr);
 						setState(972);
 						if (!(precpred(_ctx, 14))) throw new FailedPredicateException(this, "precpred(_ctx, 14)");
 						setState(973);
@@ -7119,8 +7136,8 @@ public class UppaalParser extends Parser {
 						break;
 					case 9:
 						{
-						_localctx = new DotGuardContext(new Guard_exprContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
+						_localctx = new DotGuardContext(new GuardExprContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_guardExpr);
 						setState(974);
 						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
 						setState(975);
@@ -7131,14 +7148,14 @@ public class UppaalParser extends Parser {
 						break;
 					case 10:
 						{
-						_localctx = new FuncGuardContext(new Guard_exprContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_guard_expr);
+						_localctx = new FuncGuardContext(new GuardExprContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_guardExpr);
 						setState(977);
 						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
 						setState(978);
 						match(LEFT_PARENTHESIS);
 						setState(979);
-						guard_arguments();
+						guardArguments();
 						setState(980);
 						match(RIGHT_PARENTHESIS);
 						}
@@ -7163,39 +7180,39 @@ public class UppaalParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Guard_argumentsContext extends ParserRuleContext {
-		public List<Guard_exprContext> guard_expr() {
-			return getRuleContexts(Guard_exprContext.class);
+	public static class GuardArgumentsContext extends ParserRuleContext {
+		public List<GuardExprContext> guardExpr() {
+			return getRuleContexts(GuardExprContext.class);
 		}
-		public Guard_exprContext guard_expr(int i) {
-			return getRuleContext(Guard_exprContext.class,i);
+		public GuardExprContext guardExpr(int i) {
+			return getRuleContext(GuardExprContext.class,i);
 		}
 		public List<TerminalNode> COMMA() { return getTokens(UppaalParser.COMMA); }
 		public TerminalNode COMMA(int i) {
 			return getToken(UppaalParser.COMMA, i);
 		}
-		public Guard_argumentsContext(ParserRuleContext parent, int invokingState) {
+		public GuardArgumentsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_guard_arguments; }
+		@Override public int getRuleIndex() { return RULE_guardArguments; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterGuard_arguments(this);
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterGuardArguments(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitGuard_arguments(this);
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitGuardArguments(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitGuard_arguments(this);
+			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitGuardArguments(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final Guard_argumentsContext guard_arguments() throws RecognitionException {
-		Guard_argumentsContext _localctx = new Guard_argumentsContext(_ctx, getState());
-		enterRule(_localctx, 104, RULE_guard_arguments);
+	public final GuardArgumentsContext guardArguments() throws RecognitionException {
+		GuardArgumentsContext _localctx = new GuardArgumentsContext(_ctx, getState());
+		enterRule(_localctx, 104, RULE_guardArguments);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -7206,7 +7223,7 @@ public class UppaalParser extends Parser {
 			if (((((_la - 54)) & ~0x3f) == 0 && ((1L << (_la - 54)) & ((1L << (NAT - 54)) | (1L << (POINT - 54)) | (1L << (LEFT_PARENTHESIS - 54)) | (1L << (INCREMENT - 54)) | (1L << (DECREMENT - 54)) | (1L << (ADD - 54)) | (1L << (SUB - 54)) | (1L << (EXCLAMATION - 54)) | (1L << (NOT - 54)) | (1L << (FORALL - 54)) | (1L << (EXISTS - 54)) | (1L << (SUM - 54)))) != 0) || ((((_la - 130)) & ~0x3f) == 0 && ((1L << (_la - 130)) & ((1L << (TRUE - 130)) | (1L << (FALSE - 130)) | (1L << (IDENTIFIER - 130)))) != 0)) {
 				{
 				setState(987);
-				guard_expr(0);
+				guardExpr(0);
 				setState(992);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
@@ -7216,7 +7233,7 @@ public class UppaalParser extends Parser {
 					setState(988);
 					match(COMMA);
 					setState(989);
-					guard_expr(0);
+					guardExpr(0);
 					}
 					}
 					setState(994);
@@ -7239,34 +7256,34 @@ public class UppaalParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Guard_typeContext extends ParserRuleContext {
-		public Guard_typeIdContext guard_typeId() {
-			return getRuleContext(Guard_typeIdContext.class,0);
+	public static class GuardTypeContext extends ParserRuleContext {
+		public GuardTypeIdContext guardTypeId() {
+			return getRuleContext(GuardTypeIdContext.class,0);
 		}
 		public TerminalNode META() { return getToken(UppaalParser.META, 0); }
 		public TerminalNode CONST() { return getToken(UppaalParser.CONST, 0); }
-		public Guard_typeContext(ParserRuleContext parent, int invokingState) {
+		public GuardTypeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_guard_type; }
+		@Override public int getRuleIndex() { return RULE_guardType; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterGuard_type(this);
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterGuardType(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitGuard_type(this);
+			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).exitGuardType(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitGuard_type(this);
+			if ( visitor instanceof UppaalParserVisitor ) return ((UppaalParserVisitor<? extends T>)visitor).visitGuardType(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final Guard_typeContext guard_type() throws RecognitionException {
-		Guard_typeContext _localctx = new Guard_typeContext(_ctx, getState());
-		enterRule(_localctx, 106, RULE_guard_type);
+	public final GuardTypeContext guardType() throws RecognitionException {
+		GuardTypeContext _localctx = new GuardTypeContext(_ctx, getState());
+		enterRule(_localctx, 106, RULE_guardType);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -7290,7 +7307,7 @@ public class UppaalParser extends Parser {
 			}
 
 			setState(1000);
-			guard_typeId();
+			guardTypeId();
 			}
 		}
 		catch (RecognitionException re) {
@@ -7304,29 +7321,29 @@ public class UppaalParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Guard_typeIdContext extends ParserRuleContext {
-		public Guard_typeIdContext(ParserRuleContext parent, int invokingState) {
+	public static class GuardTypeIdContext extends ParserRuleContext {
+		public GuardTypeIdContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_guard_typeId; }
+		@Override public int getRuleIndex() { return RULE_guardTypeId; }
 	 
-		public Guard_typeIdContext() { }
-		public void copyFrom(Guard_typeIdContext ctx) {
+		public GuardTypeIdContext() { }
+		public void copyFrom(GuardTypeIdContext ctx) {
 			super.copyFrom(ctx);
 		}
 	}
-	public static class GuardTypeIntDomainContext extends Guard_typeIdContext {
+	public static class GuardTypeIntDomainContext extends GuardTypeIdContext {
 		public TerminalNode INT() { return getToken(UppaalParser.INT, 0); }
 		public TerminalNode LEFT_BRACKET() { return getToken(UppaalParser.LEFT_BRACKET, 0); }
-		public List<Guard_exprContext> guard_expr() {
-			return getRuleContexts(Guard_exprContext.class);
+		public List<GuardExprContext> guardExpr() {
+			return getRuleContexts(GuardExprContext.class);
 		}
-		public Guard_exprContext guard_expr(int i) {
-			return getRuleContext(Guard_exprContext.class,i);
+		public GuardExprContext guardExpr(int i) {
+			return getRuleContext(GuardExprContext.class,i);
 		}
 		public TerminalNode COMMA() { return getToken(UppaalParser.COMMA, 0); }
 		public TerminalNode RIGHT_BRACKET() { return getToken(UppaalParser.RIGHT_BRACKET, 0); }
-		public GuardTypeIntDomainContext(Guard_typeIdContext ctx) { copyFrom(ctx); }
+		public GuardTypeIntDomainContext(GuardTypeIdContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterGuardTypeIntDomain(this);
@@ -7341,14 +7358,14 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class GuardTypeScalarContext extends Guard_typeIdContext {
+	public static class GuardTypeScalarContext extends GuardTypeIdContext {
 		public TerminalNode SCALAR() { return getToken(UppaalParser.SCALAR, 0); }
 		public TerminalNode LEFT_BRACKET() { return getToken(UppaalParser.LEFT_BRACKET, 0); }
-		public Guard_exprContext guard_expr() {
-			return getRuleContext(Guard_exprContext.class,0);
+		public GuardExprContext guardExpr() {
+			return getRuleContext(GuardExprContext.class,0);
 		}
 		public TerminalNode RIGHT_BRACKET() { return getToken(UppaalParser.RIGHT_BRACKET, 0); }
-		public GuardTypeScalarContext(Guard_typeIdContext ctx) { copyFrom(ctx); }
+		public GuardTypeScalarContext(GuardTypeIdContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterGuardTypeScalar(this);
@@ -7363,9 +7380,9 @@ public class UppaalParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class GuardTypeIntContext extends Guard_typeIdContext {
+	public static class GuardTypeIntContext extends GuardTypeIdContext {
 		public TerminalNode INT() { return getToken(UppaalParser.INT, 0); }
-		public GuardTypeIntContext(Guard_typeIdContext ctx) { copyFrom(ctx); }
+		public GuardTypeIntContext(GuardTypeIdContext ctx) { copyFrom(ctx); }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
 			if ( listener instanceof UppaalParserListener ) ((UppaalParserListener)listener).enterGuardTypeInt(this);
@@ -7381,9 +7398,9 @@ public class UppaalParser extends Parser {
 		}
 	}
 
-	public final Guard_typeIdContext guard_typeId() throws RecognitionException {
-		Guard_typeIdContext _localctx = new Guard_typeIdContext(_ctx, getState());
-		enterRule(_localctx, 108, RULE_guard_typeId);
+	public final GuardTypeIdContext guardTypeId() throws RecognitionException {
+		GuardTypeIdContext _localctx = new GuardTypeIdContext(_ctx, getState());
+		enterRule(_localctx, 108, RULE_guardTypeId);
 		try {
 			setState(1015);
 			_errHandler.sync(this);
@@ -7405,11 +7422,11 @@ public class UppaalParser extends Parser {
 				setState(1004);
 				match(LEFT_BRACKET);
 				setState(1005);
-				guard_expr(0);
+				guardExpr(0);
 				setState(1006);
 				match(COMMA);
 				setState(1007);
-				guard_expr(0);
+				guardExpr(0);
 				setState(1008);
 				match(RIGHT_BRACKET);
 				}
@@ -7423,7 +7440,7 @@ public class UppaalParser extends Parser {
 				setState(1011);
 				match(LEFT_BRACKET);
 				setState(1012);
-				guard_expr(0);
+				guardExpr(0);
 				setState(1013);
 				match(RIGHT_BRACKET);
 				}
@@ -8082,7 +8099,7 @@ public class UppaalParser extends Parser {
 		case 38:
 			return chanExpr_sempred((ChanExprContext)_localctx, predIndex);
 		case 51:
-			return guard_expr_sempred((Guard_exprContext)_localctx, predIndex);
+			return guardExpr_sempred((GuardExprContext)_localctx, predIndex);
 		}
 		return true;
 	}
@@ -8118,7 +8135,7 @@ public class UppaalParser extends Parser {
 		}
 		return true;
 	}
-	private boolean guard_expr_sempred(Guard_exprContext _localctx, int predIndex) {
+	private boolean guardExpr_sempred(GuardExprContext _localctx, int predIndex) {
 		switch (predIndex) {
 		case 11:
 			return precpred(_ctx, 12);

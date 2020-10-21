@@ -77,23 +77,23 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     @Override
     public String visitDeclaration(UppaalParser.DeclarationContext ctx) {
         String declaration = ctx.OPEN_DECLARATION().getText();
-        declaration = declaration.concat(visit(ctx.decl_content()));
+        declaration = declaration.concat(visit(ctx.declContent()));
         //.println(declaration);
         declaration = declaration.concat(ctx.CLOSE_DECLARATION().getText());
         return declaration;
     }
 
     @Override
-    public String visitDecl_content(UppaalParser.Decl_contentContext ctx) {
-        String decl_content = "";
+    public String visitDeclContent(UppaalParser.DeclContentContext ctx) {
+        String declContent = "";
 
         List<UppaalParser.DeclarationsContext> declarations = ctx.declarations();
 
         for(UppaalParser.DeclarationsContext declaration: declarations){
-            decl_content = decl_content.concat(visit(declaration)).concat("\n");
+            declContent = declContent.concat(visit(declaration)).concat("\n");
         }
 
-        return decl_content;
+        return declContent;
     }
 
     @Override
@@ -468,7 +468,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     @Override
     public String visitBlock(UppaalParser.BlockContext ctx) {
         String block = "{\n";
-        block = block.concat(visit(ctx.decl_content()));
+        block = block.concat(visit(ctx.declContent()));
 
         List<UppaalParser.StatementContext> statements = ctx.statement();
 
@@ -624,49 +624,49 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     @Override
     public String visitTemplate(UppaalParser.TemplateContext ctx) {
         String template = "<template>\n";
-        template = template.concat(visit(ctx.temp_content()));
+        template = template.concat(visit(ctx.tempContent()));
         template = template.concat("</template>");
         return template;
     }
 
     @Override
-    public String visitTemp_content(UppaalParser.Temp_contentContext ctx) {
-        String temp_content = "";
+    public String visitTempContent(UppaalParser.TempContentContext ctx) {
+        String tempContent = "";
         boolean addInput = false;
         if(ctx.name() != null){
             //print <name> ~[<&]+ </name>
-            temp_content = temp_content.concat(visit(ctx.name())).concat("\n");
+            tempContent = tempContent.concat(visit(ctx.name())).concat("\n");
             addInput = this.templateTad.equals(ctx.name().anything().getText());
         }
         if(ctx.parameter() != null){
             //print <parameter> ~[<&]+ </parameter>
-            temp_content = temp_content.concat(visit(ctx.parameter())).concat("\n");
+            tempContent = tempContent.concat(visit(ctx.parameter())).concat("\n");
         }
         if(ctx.declaration() != null){
             //print <declaration> ~[<&] </declaration>
-            temp_content = temp_content.concat(visit(ctx.declaration())).concat("\n");
+            tempContent = tempContent.concat(visit(ctx.declaration())).concat("\n");
         }
         List<UppaalParser.LocationContext> locations = ctx.location();
 
         for(UppaalParser.LocationContext location: locations){
-            temp_content = temp_content.concat(visit(location)).concat("\n");
+            tempContent = tempContent.concat(visit(location)).concat("\n");
         }
 
-        temp_content = temp_content.concat(visit(ctx.init_loc())).concat("\n");
+        tempContent = tempContent.concat(visit(ctx.initLoc())).concat("\n");
 
         if(addInput){
-            temp_content = temp_content.concat("<transition>\n<source ref=").concat(this.sourceTad).concat("/>\n");
-            temp_content = temp_content.concat("<target ref=").concat(this.targetTad).concat("/>\n");
-            temp_content = temp_content.concat("<label kind=\"synchronisation\" x=\"0\" y=\"0\">").concat(this.outputTad).concat("</label>").concat("\n");
-            temp_content = temp_content.concat("</transition>\n");
+            tempContent = tempContent.concat("<transition>\n<source ref=").concat(this.sourceTad).concat("/>\n");
+            tempContent = tempContent.concat("<target ref=").concat(this.targetTad).concat("/>\n");
+            tempContent = tempContent.concat("<label kind=\"synchronisation\" x=\"0\" y=\"0\">").concat(this.outputTad).concat("</label>").concat("\n");
+            tempContent = tempContent.concat("</transition>\n");
         }
         List<UppaalParser.TransitionContext> transitions = ctx.transition();
 
         for(UppaalParser.TransitionContext transition: transitions){
-            temp_content = temp_content.concat(visit(transition)).concat("\n");
+            tempContent = tempContent.concat(visit(transition)).concat("\n");
         }
 
-        return temp_content;
+        return tempContent;
     }
 
     @Override
@@ -713,8 +713,8 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
             location = location.concat(visit(ctx.name())).concat("\n");
         }
 
-        List<UppaalParser.Label_locContext> labelLocs = ctx.label_loc();
-        for(UppaalParser.Label_locContext labelLoc: labelLocs){
+        List<UppaalParser.LabelLocContext> labelLocs = ctx.labelLoc();
+        for(UppaalParser.LabelLocContext labelLoc: labelLocs){
             location = location.concat(visit(labelLoc)).concat("\n");
         }
 
@@ -729,7 +729,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     }
 
     @Override
-    public String visitLabel_loc(UppaalParser.Label_locContext ctx) {
+    public String visitLabelLoc(UppaalParser.LabelLocContext ctx) {
         String labelLoc = "<label kind=";
         labelLoc = labelLoc.concat(ctx.STRING().getText());
 
@@ -745,7 +745,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     }
 
     @Override
-    public String visitInit_loc(UppaalParser.Init_locContext ctx) {
+    public String visitInitLoc(UppaalParser.InitLocContext ctx) {
         String initLoc = "<init ref=";
         initLoc = initLoc.concat(ctx.STRING().getText()).concat("/>");
         return initLoc;
@@ -769,8 +769,8 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         transition = transition.concat(visit(ctx.source())).concat("\n");
         transition = transition.concat(visit(ctx.target())).concat("\n");
 
-        List<UppaalParser.Label_transContext> labels = ctx.label_trans();
-        for(UppaalParser.Label_transContext label: labels){
+        List<UppaalParser.LabelTransitionContext> labels = ctx.labelTransition();
+        for(UppaalParser.LabelTransitionContext label: labels){
             transition = transition.concat(visit(label)).concat("\n");
         }
 
@@ -812,8 +812,8 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     @Override
     public String visitLabelTransGuard(UppaalParser.LabelTransGuardContext ctx) {
         String label = ctx.OPEN_GUARD().getText();
-        if(ctx.guard_expr()!=null){
-            label = label.concat(visit(ctx.guard_expr()));
+        if(ctx.guardExpr()!=null){
+            label = label.concat(visit(ctx.guardExpr()));
         }
         label = label.concat("</label>");
         return label;
@@ -856,61 +856,61 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitArrayGuard(UppaalParser.ArrayGuardContext ctx) {
-        return visit(ctx.guard_expr(0)).concat("[").concat(visit(ctx.guard_expr(1))).concat("]");
+        return visit(ctx.guardExpr(0)).concat("[").concat(visit(ctx.guardExpr(1))).concat("]");
     }
 
     @Override
     public String visitStopWatchGuard(UppaalParser.StopWatchGuardContext ctx) {
-        return visit(ctx.guard_expr()).concat("'");
+        return visit(ctx.guardExpr()).concat("'");
     }
 
     @Override
     public String visitParenthesisGuard(UppaalParser.ParenthesisGuardContext ctx) {
         String guard = "(";
-        guard = guard.concat(visit(ctx.guard_expr())).concat(")");
+        guard = guard.concat(visit(ctx.guardExpr())).concat(")");
         return guard;
     }
 
     @Override
     public String visitGuardIncrement(UppaalParser.GuardIncrementContext ctx) {
-        return visit(ctx.guard_expr()).concat("++");
+        return visit(ctx.guardExpr()).concat("++");
     }
 
     @Override
     public String visitIncrementGuard(UppaalParser.IncrementGuardContext ctx) {
-        return ("++").concat(visit(ctx.guard_expr()));
+        return ("++").concat(visit(ctx.guardExpr()));
     }
 
     @Override
     public String visitGuardDecrement(UppaalParser.GuardDecrementContext ctx) {
-        return visit(ctx.guard_expr()).concat("--");
+        return visit(ctx.guardExpr()).concat("--");
     }
 
     @Override
     public String visitDecrementGuard(UppaalParser.DecrementGuardContext ctx) {
-        return ("--").concat(visit(ctx.guard_expr()));
+        return ("--").concat(visit(ctx.guardExpr()));
     }
 
     @Override
     public String visitAssignGuard(UppaalParser.AssignGuardContext ctx) {
-        String assign = visit(ctx.guard_expr(0));
+        String assign = visit(ctx.guardExpr(0));
         assign = assign.concat(ctx.assign.getText());
-        assign = assign.concat(visit(ctx.guard_expr(1)));
+        assign = assign.concat(visit(ctx.guardExpr(1)));
         return assign;
     }
 
     @Override
     public String visitUnaryGuard(UppaalParser.UnaryGuardContext ctx) {
-        return ctx.unary.getText().concat(visit(ctx.guard_expr()));
+        return ctx.unary.getText().concat(visit(ctx.guardExpr()));
     }
 
     @Override
     public String visitComparisonGuard(UppaalParser.ComparisonGuardContext ctx) {
-        String guard = visit(ctx.guard_expr(0));
+        String guard = visit(ctx.guardExpr(0));
         this.indexOperator++;
         if(this.idOperator!=this.indexOperator){
             guard = guard.concat(" ").concat(ctx.binary.getText()).concat(" ");
-            guard = guard.concat(visit(ctx.guard_expr(1)));
+            guard = guard.concat(visit(ctx.guardExpr(1)));
             return guard;
         }
         switch (ctx.binary.getType()){
@@ -933,46 +933,46 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
                 guard = guard.concat(" == ");
                 break;
         }
-        guard = guard.concat(visit(ctx.guard_expr(1)));
+        guard = guard.concat(visit(ctx.guardExpr(1)));
         return guard;
     }
 
     @Override
     public String visitBinaryGuard(UppaalParser.BinaryGuardContext ctx) {
-        String guard = visit(ctx.guard_expr(0));
+        String guard = visit(ctx.guardExpr(0));
         guard = guard.concat(" ").concat(ctx.binary.getText()).concat(" ");
-        guard = guard.concat(visit(ctx.guard_expr(1)));
+        guard = guard.concat(visit(ctx.guardExpr(1)));
         return guard;
     }
 
     @Override
     public String visitIfGuard(UppaalParser.IfGuardContext ctx) {
-        return visit(ctx.guard_expr(0)).concat(" ? ").concat(visit(ctx.guard_expr(1))).concat(" : ").concat(visit(ctx.guard_expr(2)));
+        return visit(ctx.guardExpr(0)).concat(" ? ").concat(visit(ctx.guardExpr(1))).concat(" : ").concat(visit(ctx.guardExpr(2)));
     }
 
     @Override
     public String visitDotGuard(UppaalParser.DotGuardContext ctx) {
-        return visit(ctx.guard_expr()).concat(".").concat(ctx.IDENTIFIER().getText());
+        return visit(ctx.guardExpr()).concat(".").concat(ctx.IDENTIFIER().getText());
     }
 
     @Override
     public String visitFuncGuard(UppaalParser.FuncGuardContext ctx) {
-        return visit(ctx.guard_expr()).concat("(").concat(visit(ctx.guard_arguments())).concat(")");
+        return visit(ctx.guardExpr()).concat("(").concat(visit(ctx.guardArguments())).concat(")");
     }
 
     @Override
     public String visitForallGuard(UppaalParser.ForallGuardContext ctx) {
-        return ("forall(").concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.guard_type())).concat(")").concat(visit(ctx.guard_expr()));
+        return ("forall(").concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.guardType())).concat(")").concat(visit(ctx.guardExpr()));
     }
 
     @Override
     public String visitExistsGuard(UppaalParser.ExistsGuardContext ctx) {
-        return ("exists(").concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.guard_type())).concat(")").concat(visit(ctx.guard_expr()));
+        return ("exists(").concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.guardType())).concat(")").concat(visit(ctx.guardExpr()));
     }
 
     @Override
     public String visitSumGuard(UppaalParser.SumGuardContext ctx) {
-        return ("sum(").concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.guard_type())).concat(")").concat(visit(ctx.guard_expr()));
+        return ("sum(").concat(ctx.IDENTIFIER().getText()).concat(":").concat(visit(ctx.guardType())).concat(")").concat(visit(ctx.guardExpr()));
     }
 
     @Override
@@ -988,13 +988,13 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
 
     @Override
-    public String visitGuard_arguments(UppaalParser.Guard_argumentsContext ctx) {
+    public String visitGuardArguments(UppaalParser.GuardArgumentsContext ctx) {
         String arguments = "";
 
-        List<UppaalParser.Guard_exprContext> expressions = ctx.guard_expr();
+        List<UppaalParser.GuardExprContext> expressions = ctx.guardExpr();
 
         String separator = "";
-        for(UppaalParser.Guard_exprContext expr: expressions){
+        for(UppaalParser.GuardExprContext expr: expressions){
             arguments = arguments.concat(separator).concat(visit(expr));
             separator = ", ";
         }
@@ -1002,7 +1002,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     }
 
     @Override
-    public String visitGuard_type(UppaalParser.Guard_typeContext ctx) {
+    public String visitGuardType(UppaalParser.GuardTypeContext ctx) {
         String type = "";
         if(ctx.META() != null){
             type = "meta ";
@@ -1010,7 +1010,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         if(ctx.CONST() != null){
             type = "const ";
         }
-        return type.concat(visit(ctx.guard_typeId()));
+        return type.concat(visit(ctx.guardTypeId()));
     }
 
     @Override
@@ -1020,12 +1020,12 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitGuardTypeIntDomain(UppaalParser.GuardTypeIntDomainContext ctx) {
-        return ("int[").concat(visit(ctx.guard_expr(0))).concat(", ").concat(visit(ctx.guard_expr(1))).concat("]");
+        return ("int[").concat(visit(ctx.guardExpr(0))).concat(", ").concat(visit(ctx.guardExpr(1))).concat("]");
     }
 
     @Override
     public String visitGuardTypeScalar(UppaalParser.GuardTypeScalarContext ctx) {
-        return ("scalar[").concat(visit(ctx.guard_expr())).concat("]");
+        return ("scalar[").concat(visit(ctx.guardExpr())).concat("]");
     }
 
     @Override

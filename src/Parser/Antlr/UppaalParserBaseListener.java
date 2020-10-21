@@ -140,13 +140,13 @@ public class UppaalParserBaseListener implements UppaalParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDecl_content(UppaalParser.Decl_contentContext ctx) { }
+	@Override public void enterDeclContent(UppaalParser.DeclContentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitDecl_content(UppaalParser.Decl_contentContext ctx) { }
+	@Override public void exitDeclContent(UppaalParser.DeclContentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1064,13 +1064,13 @@ public class UppaalParserBaseListener implements UppaalParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTemp_content(UppaalParser.Temp_contentContext ctx) { }
+	@Override public void enterTempContent(UppaalParser.TempContentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTemp_content(UppaalParser.Temp_contentContext ctx) { }
+	@Override public void exitTempContent(UppaalParser.TempContentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1100,13 +1100,13 @@ public class UppaalParserBaseListener implements UppaalParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInit_loc(UppaalParser.Init_locContext ctx) { }
+	@Override public void enterInitLoc(UppaalParser.InitLocContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitInit_loc(UppaalParser.Init_locContext ctx) { }
+	@Override public void exitInitLoc(UppaalParser.InitLocContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1136,13 +1136,13 @@ public class UppaalParserBaseListener implements UppaalParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLabel_loc(UppaalParser.Label_locContext ctx) { }
+	@Override public void enterLabelLoc(UppaalParser.LabelLocContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitLabel_loc(UppaalParser.Label_locContext ctx) { }
+	@Override public void exitLabelLoc(UppaalParser.LabelLocContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1484,25 +1484,25 @@ public class UppaalParserBaseListener implements UppaalParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGuard_arguments(UppaalParser.Guard_argumentsContext ctx) { }
+	@Override public void enterGuardArguments(UppaalParser.GuardArgumentsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGuard_arguments(UppaalParser.Guard_argumentsContext ctx) { }
+	@Override public void exitGuardArguments(UppaalParser.GuardArgumentsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterGuard_type(UppaalParser.Guard_typeContext ctx) { }
+	@Override public void enterGuardType(UppaalParser.GuardTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitGuard_type(UppaalParser.Guard_typeContext ctx) { }
+	@Override public void exitGuardType(UppaalParser.GuardTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
