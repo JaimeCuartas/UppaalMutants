@@ -161,12 +161,14 @@ public class Mutation {
                             myWriter.write(eval.visit(tree));
                             myWriter.close();
 
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }).start();
                 }
             }
+
 
             //System.out.println(parser.getLocationsSmi());
 /*
