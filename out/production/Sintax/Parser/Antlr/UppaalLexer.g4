@@ -150,7 +150,7 @@ mode EXPRESSIONS;
 
 
 SLASH_COMMENT       :   '/*' .*? '*/'           -> skip ;
-LINE_COMMENT        :   '//' ~( '\n' )*         -> skip ;
+LINE_COMMENT        :   '//' ~( '<'|'\n' )*         -> skip ;
 
 CLOSE_LABEL         :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'      -> popMode ;
 

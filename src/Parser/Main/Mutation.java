@@ -70,7 +70,7 @@ public class Mutation {
             if(!myFile.mkdirs()){
                 return;
             }
-
+/*
             for(int i=1; i<=parser.getNum(); i++){
                 int idMutant = i;
                 new Thread(()->{
@@ -167,6 +167,24 @@ public class Mutation {
                         }
                     }).start();
                 }
+            }
+
+ */
+            for(int i=1; i<=parser.getNumCxl(); i++){
+                int idCxl = i;
+                new Thread(()->{
+
+                    UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", "", idCxl);
+                    FileWriter myWriter = null;
+                    try {
+                        myWriter = new FileWriter(new File(myFile, "cxl"+ idCxl +".xml"));
+                        myWriter.write(eval.visit(tree));
+                        myWriter.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+
             }
 
 

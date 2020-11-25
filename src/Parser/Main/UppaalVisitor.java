@@ -21,7 +21,13 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     private final String locationSmi;
 
-    public UppaalVisitor (int idOperator, int tmiOperator, String templateTad, String sourceTad, String targetTad, String outputTad, String locationSmi){
+    private final int idCxlOperator;
+    private boolean isControllable = false;
+    private boolean isClockLeft = false;
+    private boolean isClockRight = false;
+
+    public UppaalVisitor (int idOperator, int tmiOperator, String templateTad, String sourceTad, String targetTad, String outputTad, String locationSmi,
+                          int idCxlOperator){
 
         this.idOperator = idOperator;
         this.indexOperator = 0;
@@ -33,6 +39,8 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         this.targetTad = targetTad;
         this.outputTad = outputTad;
 
+        this.idCxlOperator = idCxlOperator;
+
         this.locationSmi = locationSmi;
     }
 
@@ -40,10 +48,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     public String visitModel(UppaalParser.ModelContext ctx) {
         String model = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                 "<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>\n";
-        /*if(ctx.prolog()!=null){
-            //this.output = this.output.concat(visit(ctx.prolog())).concat("\n");
-            //this.output = this.output.concat("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-        }*/
+
         model = model.concat(visit(ctx.nta()));
         return model;
     }
@@ -646,10 +651,15 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
             //print <declaration> ~[<&] </declaration>
             tempContent = tempContent.concat(visit(ctx.declaration())).concat("\n");
         }
-        List<UppaalParser.LocationContext> locations = ctx.location();
 
+        List<UppaalParser.LocationContext> locations = ctx.location();
         for(UppaalParser.LocationContext location: locations){
             tempContent = tempContent.concat(visit(location)).concat("\n");
+        }
+
+        List<UppaalParser.BranchpointContext> branchpoints = ctx.branchpoint();
+        for(UppaalParser.BranchpointContext branchpoint: branchpoints){
+            tempContent = tempContent.concat(visit(branchpoint)).concat("\n");
         }
 
         tempContent = tempContent.concat(visit(ctx.initLoc())).concat("\n");
@@ -745,6 +755,21 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     }
 
     @Override
+    public String visitBranchpoint(UppaalParser.BranchpointContext ctx) {
+        String branchpoint = "<branchpoint id=";
+        branchpoint = branchpoint.concat(ctx.STRING().getText());
+
+        if(ctx.coordinate()!=null){
+            branchpoint = branchpoint.concat(visit(ctx.coordinate()));
+        }
+
+        branchpoint = branchpoint.concat(">");
+
+        branchpoint = branchpoint.concat(" </branchpoint>");
+        return branchpoint;
+    }
+
+    @Override
     public String visitInitLoc(UppaalParser.InitLocContext ctx) {
         String initLoc = "<init ref=";
         initLoc = initLoc.concat(ctx.STRING().getText()).concat("/>");
@@ -769,8 +794,23 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         transition = transition.concat(visit(ctx.source())).concat("\n");
         transition = transition.concat(visit(ctx.target())).concat("\n");
 
-        List<UppaalParser.LabelTransitionContext> labels = ctx.labelTransition();
-        for(UppaalParser.LabelTransitionContext label: labels){
+        List<UppaalParser.LabelTransSyncInputContext> labelsInput = ctx.labelTransSyncInput();
+        for(UppaalParser.LabelTransSyncInputContext label: labelsInput){
+            transition = transition.concat(visit(label)).concat("\n");
+        }
+
+        List<UppaalParser.LabelTransSyncOutputContext> labelsOutput = ctx.labelTransSyncOutput();
+        for(UppaalParser.LabelTransSyncOutputContext label: labelsOutput){
+            transition = transition.concat(visit(label)).concat("\n");
+        }
+
+        List<UppaalParser.LabelTransGuardContext> labelsGuard = ctx.labelTransGuard();
+        for(UppaalParser.LabelTransGuardContext label: labelsGuard){
+            transition = transition.concat(visit(label)).concat("\n");
+        }
+
+        List<UppaalParser.LabelTransContext> labelsTrans = ctx.labelTrans();
+        for(UppaalParser.LabelTransContext label: labelsTrans){
             transition = transition.concat(visit(label)).concat("\n");
         }
 

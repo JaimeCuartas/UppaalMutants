@@ -85,9 +85,9 @@ parser grammar UppaalParser;
     private int clockGreaterNum = 0;
     private int clockEqualNum = 0;
 
-    //Constant eXchange L operator increases the constant of a clock constraint;
-    //CXS Constant eXchange S operator decreases the constant of a clock constraint.
+    //CXL Constant eXchange L operator increases the constant of a clock constraint.
     private int numCxl = 0;
+    //CXS Constant eXchange S operator decreases the constant of a clock constraint.
     private int numCxs = 0;
 
     public UppaalParser(TokenStream input, int a){
@@ -122,6 +122,12 @@ parser grammar UppaalParser;
         return this.locationsSmi;
     }
 
+    public int getNumCxl(){
+        return this.numCxl;
+    }
+    public int getNumCxs(){
+        return this.numCxs;
+    }
 }
 options { tokenVocab=UppaalLexer; }
 
@@ -400,46 +406,61 @@ transition  :   '<' 'transition' '>'
                     this.currentTransition++;
                 }
                 misc* (source misc*) (target misc*)
-                (labelTransition misc*)*
+                (   labelTrans misc*
+                 |  labelTransGuard  misc*
+                 |  labelTransSyncInput misc*
+                 |  labelTransSyncOutput misc*)*
                 (nail misc*)*
                 '</' 'transition' '>'
                 {
+                    if(this.isControllable){
+                        // It is an input transition '?'
+                        // clock >= num  --Mute to-> clock >= num+1
+                        this.numCxl += this.clockGreaterNum;
+                        // clock <= num  --Mute to-> clock <= num-1
+                        this.numCxs += this.clockLessNum;
+                    }
+                    else{
+                        // It is an output transition '!'
+                        // clock <= num  --Mute to-> clock <= num+1
+                        this.numCxl += this.clockLessNum;
+                        // clock <= num  --Mute to-> clock <= num-1
+                        this.numCxs += this.clockGreaterNum;
+                    }
                     this.isControllable = false;
+                    this.clockGreaterNum = 0;
+                    this.clockLessNum = 0;
                     this.isClockLeft = false;
                     this.isClockRight = false;
                 }
                 ;
 
+labelTransGuard: OPEN_GUARD guardExpr? CLOSE_LABEL ;
+labelTransSyncInput : (OPEN_SYNC (expr '?')? CLOSE_LABEL)
+                     {
+                         //flag to know if a transition is controllable (<expr> '?')
+                         this.isControllable = true;
 
-//Are equals to labels_loc but we can manipulate them differently
-labelTransition
-            :   OPEN_GUARD guardExpr? CLOSE_LABEL  # LabelTransGuard
-            |   OPEN_SYNC (expr '?')? CLOSE_LABEL
-                {
-                    //flag to know if a transition is controllable (<expr> '?')
-                    this.isControllable = true;
+                         //Add to tmi array to remove transition on tmi mutants
+                         this.tmi.add(this.currentTransition);
 
-                    //Add to tmi array to remove transition on tmi mutants
-                    this.tmi.add(this.currentTransition);
+                         //If has a synchro input remove from possible transition to make an output on tad mutants
+                         //due to a transition can not has two synchro labels
+                         this.transitionsTad.get(currentEnv).get(currentSource).remove(currentTarget);
 
-                    //If has a synchro input remove from possible transition to make an output on tad mutants
-                    //due to a transition can not has two synchro labels
-                    this.transitionsTad.get(currentEnv).get(currentSource).remove(currentTarget);
+                         //if it has at least one incoming action, then a mutant will be created without the target location
+                         if(!this.initLocationId.equals(this.currentTarget)){
+                             this.locationsSmi.get(this.currentEnv).add(this.currentTarget);
+                         }
+                     } ;
+labelTransSyncOutput: (OPEN_SYNC (expr '!')? CLOSE_LABEL)
+                    {
 
-                    //if it has at least one incoming action, then a mutant will be created without the target location
-                    if(!this.initLocationId.equals(this.currentTarget)){
-                        this.locationsSmi.get(this.currentEnv).add(this.currentTarget);
-                    }
-                }                                   # LabelTransSyncInput
-            |   OPEN_SYNC (expr '!')? CLOSE_LABEL
-                {
-
-                    //If has a synchro input remove from possible transition to make an output on tad mutants
-                    //due to a transition can not has two synchro labels
-                    this.transitionsTad.get(currentEnv).get(currentSource).remove(currentTarget);
-                }                                   # LabelTransSyncOutput
-            |   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' # labelTrans;
-
+                        //If has a synchro input remove from possible transition to make an output on tad mutants
+                        //due to a transition can not has two synchro labels
+                        this.transitionsTad.get(currentEnv).get(currentSource).remove(currentTarget);
+                    } ;
+labelTrans: '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' ;
 
 guardExpr
 //locals[boolean isClockId = false, boolean isClockIdAux= false]
@@ -514,8 +535,7 @@ guardExpr
                         }
                     }
                 }
-
-                                   # ComparisonGuard
+                # ComparisonGuard
             |   guardExpr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
                                     |  '|' | '^' | '&lt;&lt;' | '&gt;&gt;' | '&amp;&amp;' | '||'
                                     |  '&lt;?' | '&gt;?' | 'or' | 'and' | 'imply')
