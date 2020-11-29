@@ -186,7 +186,7 @@ public class UppaalParser extends Parser {
 	    //Counter with the number of the current transition
 	    private int currentTransition = 0;
 
-	    //env will contain as key, "global" for global declaration and the name of each template
+	    //env will contain as key, "Global" for global declaration and the name of each template
 	    //env will contain as value, and array of string
 	    //String[0] will contain the name of channel and String[1] will contain the dimensions of channel
 
@@ -6142,7 +6142,7 @@ public class UppaalParser extends Parser {
 			                        // It is an output transition '!'
 			                        // clock <= num  --Mute to-> clock <= num+1
 			                        this.numCxl += this.clockLessNum;
-			                        // clock <= num  --Mute to-> clock <= num-1
+			                        // clock >= num  --Mute to-> clock >= num-1
 			                        this.numCxs += this.clockGreaterNum;
 			                    }
 			                    this.isControllable = false;
@@ -7011,8 +7011,10 @@ public class UppaalParser extends Parser {
 				match(IDENTIFIER);
 
 				                this.isClockRight |= this.clockEnv.get(this.currentEnv).contains(_localctx.getText());
+				                this.isClockRight |= this.clockEnv.get("Global").contains(_localctx.getText());
+				                System.out.println("imprime el ambiente nombre: "+this.currentEnv);
 				                if(this.isClockRight){
-				                    System.out.println(_localctx.getText());
+				                    System.out.println("eSOIEJFAPOIESJFAS");
 				                }
 				            
 				}
@@ -7237,41 +7239,34 @@ public class UppaalParser extends Parser {
 						                              String operator = ((ComparisonGuardContext) _localctx).binary.getText();
 						                              System.out.println("Inicia guard");
 						                              System.out.println(_localctx.getText());
-						                              System.out.println("Final guard");
+						                              System.out.println("Final guard" + this.isClockLeft);
 						                              if(this.isClockLeft ^ this.isClockRight){
 						                                  if(this.isClockLeft){
 						                                      if(operator.equals("&lt;") ||operator.equals("&lt;=")){
 						                                          this.clockLessNum++;
-						                                          System.out.println ("ESSSTO ES MENOR QUE " + _localctx.getText());
-
 						                                      }
 						                                      if(operator.equals("&gt;") ||operator.equals("&gt;=")){
 						                                          this.clockGreaterNum++;
-
-						                                          System.out.println ("ESSSTO ES MAYOR QUE " + _localctx.getText());
 						                                      }
 						                                      if(operator.equals("==")){
 						                                          this.clockEqualNum++;
-
-						                                          System.out.println ("ESSSTO ES IGUAL QUE " + _localctx.getText());
 						                                      }
 						                                  }
 						                                  //then this.isClockRight is true
 						                                  else {
 						                                      if(operator.equals("&gt;") ||operator.equals("&gt;=")){
 						                                          this.clockLessNum++;
-						                                          System.out.println ("ESSSTO ES MAYOR QUE " + _localctx.getText());
 						                                      }
 						                                      if(operator.equals("&lt;") ||operator.equals("&lt;=")){
 						                                          this.clockGreaterNum++;
-						                                          System.out.println ("ESSSTO ES MENOR QUE " + _localctx.getText());
 						                                      }
 						                                      if(operator.equals("==")){
 						                                          this.clockEqualNum++;
-						                                          System.out.println ("ESSSTO ES IGUAL QUE " + _localctx.getText());
 						                                      }
 						                                  }
 						                              }
+						                              this.isClockLeft = false;
+						                              this.isClockRight = false;
 						                          
 						}
 						break;

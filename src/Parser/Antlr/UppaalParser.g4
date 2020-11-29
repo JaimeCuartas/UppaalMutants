@@ -50,7 +50,7 @@ parser grammar UppaalParser;
     //Counter with the number of the current transition
     private int currentTransition = 0;
 
-    //env will contain as key, "global" for global declaration and the name of each template
+    //env will contain as key, "Global" for global declaration and the name of each template
     //env will contain as value, and array of string
     //String[0] will contain the name of channel and String[1] will contain the dimensions of channel
 
@@ -424,7 +424,7 @@ transition  :   '<' 'transition' '>'
                         // It is an output transition '!'
                         // clock <= num  --Mute to-> clock <= num+1
                         this.numCxl += this.clockLessNum;
-                        // clock <= num  --Mute to-> clock <= num-1
+                        // clock >= num  --Mute to-> clock >= num-1
                         this.numCxs += this.clockGreaterNum;
                     }
                     this.isControllable = false;
@@ -467,8 +467,10 @@ guardExpr
             :   IDENTIFIER
             {
                 this.isClockRight |= this.clockEnv.get(this.currentEnv).contains($ctx.getText());
+                this.isClockRight |= this.clockEnv.get("Global").contains($ctx.getText());
+                System.out.println("imprime el ambiente nombre: "+this.currentEnv);
                 if(this.isClockRight){
-                    System.out.println($ctx.getText());
+                    System.out.println("eSOIEJFAPOIESJFAS");
                 }
             }
             # IdentifierGuard
@@ -499,41 +501,34 @@ guardExpr
                     String operator = ((ComparisonGuardContext) _localctx).binary.getText();
                     System.out.println("Inicia guard");
                     System.out.println($ctx.getText());
-                    System.out.println("Final guard");
+                    System.out.println("Final guard" + this.isClockLeft);
                     if(this.isClockLeft ^ this.isClockRight){
                         if(this.isClockLeft){
                             if(operator.equals("&lt;") ||operator.equals("&lt;=")){
                                 this.clockLessNum++;
-                                System.out.println ("ESSSTO ES MENOR QUE " + $ctx.getText());
-
                             }
                             if(operator.equals("&gt;") ||operator.equals("&gt;=")){
                                 this.clockGreaterNum++;
-
-                                System.out.println ("ESSSTO ES MAYOR QUE " + $ctx.getText());
                             }
                             if(operator.equals("==")){
                                 this.clockEqualNum++;
-
-                                System.out.println ("ESSSTO ES IGUAL QUE " + $ctx.getText());
                             }
                         }
                         //then this.isClockRight is true
                         else {
                             if(operator.equals("&gt;") ||operator.equals("&gt;=")){
                                 this.clockLessNum++;
-                                System.out.println ("ESSSTO ES MAYOR QUE " + $ctx.getText());
                             }
                             if(operator.equals("&lt;") ||operator.equals("&lt;=")){
                                 this.clockGreaterNum++;
-                                System.out.println ("ESSSTO ES MENOR QUE " + $ctx.getText());
                             }
                             if(operator.equals("==")){
                                 this.clockEqualNum++;
-                                System.out.println ("ESSSTO ES IGUAL QUE " + $ctx.getText());
                             }
                         }
                     }
+                    this.isClockLeft = false;
+                    this.isClockRight = false;
                 }
                 # ComparisonGuard
             |   guardExpr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'

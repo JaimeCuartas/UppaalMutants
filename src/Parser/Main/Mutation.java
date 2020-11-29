@@ -170,14 +170,32 @@ public class Mutation {
             }
 
  */
+            System.out.println("Este es el cxl:"+parser.getNumCxl());
             for(int i=1; i<=parser.getNumCxl(); i++){
                 int idCxl = i;
                 new Thread(()->{
 
-                    UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", "", idCxl);
+                    UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", "", parser.getClockEnv(), idCxl, -1);
                     FileWriter myWriter = null;
                     try {
                         myWriter = new FileWriter(new File(myFile, "cxl"+ idCxl +".xml"));
+                        myWriter.write(eval.visit(tree));
+                        myWriter.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+
+            }
+            System.out.println("Este es el cxl:"+parser.getNumCxs());
+            for(int i=1; i<=parser.getNumCxs(); i++){
+                int idCxs = i;
+                new Thread(()->{
+
+                    UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", "", parser.getClockEnv(), -1, idCxs);
+                    FileWriter myWriter = null;
+                    try {
+                        myWriter = new FileWriter(new File(myFile, "cxs"+ idCxs +".xml"));
                         myWriter.write(eval.visit(tree));
                         myWriter.close();
                     } catch (IOException e) {
