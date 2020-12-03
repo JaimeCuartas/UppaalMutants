@@ -7012,10 +7012,7 @@ public class UppaalParser extends Parser {
 
 				                this.isClockRight |= this.clockEnv.get(this.currentEnv).contains(_localctx.getText());
 				                this.isClockRight |= this.clockEnv.get("Global").contains(_localctx.getText());
-				                System.out.println("imprime el ambiente nombre: "+this.currentEnv);
-				                if(this.isClockRight){
-				                    System.out.println("eSOIEJFAPOIESJFAS");
-				                }
+
 				            
 				}
 				break;
@@ -7237,9 +7234,7 @@ public class UppaalParser extends Parser {
 						guardExpr(11);
 
 						                              String operator = ((ComparisonGuardContext) _localctx).binary.getText();
-						                              System.out.println("Inicia guard");
-						                              System.out.println(_localctx.getText());
-						                              System.out.println("Final guard" + this.isClockLeft);
+
 						                              if(this.isClockLeft ^ this.isClockRight){
 						                                  if(this.isClockLeft){
 						                                      if(operator.equals("&lt;") ||operator.equals("&lt;=")){

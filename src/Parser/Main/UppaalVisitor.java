@@ -993,9 +993,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         }*/
         String operator = ctx.binary.getText();
         String guardRight = visit(ctx.guardExpr(1));
-        System.out.println("izquierda" +this.isClockLeft);
-        System.out.println("derecha" + this.isClockRight);
-        System.out.println(this.clockEnv);
+
         if(this.isClockLeft ^ this.isClockRight){
             if(this.isControllable){
                 if(this.isClockLeft){

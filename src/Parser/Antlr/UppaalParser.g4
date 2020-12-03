@@ -468,10 +468,7 @@ guardExpr
             {
                 this.isClockRight |= this.clockEnv.get(this.currentEnv).contains($ctx.getText());
                 this.isClockRight |= this.clockEnv.get("Global").contains($ctx.getText());
-                System.out.println("imprime el ambiente nombre: "+this.currentEnv);
-                if(this.isClockRight){
-                    System.out.println("eSOIEJFAPOIESJFAS");
-                }
+
             }
             # IdentifierGuard
             |   NAT   # NatGuard
@@ -499,9 +496,7 @@ guardExpr
                 guardExpr
                 {
                     String operator = ((ComparisonGuardContext) _localctx).binary.getText();
-                    System.out.println("Inicia guard");
-                    System.out.println($ctx.getText());
-                    System.out.println("Final guard" + this.isClockLeft);
+
                     if(this.isClockLeft ^ this.isClockRight){
                         if(this.isClockLeft){
                             if(operator.equals("&lt;") ||operator.equals("&lt;=")){

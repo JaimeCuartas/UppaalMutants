@@ -13,7 +13,64 @@ import com.uppaal.engine.Parser;
 import java.io.*;
 import java.util.*;
 
+//////////////////////////////////////////////////////////////////////
+import com.uppaal.engine.CannotEvaluateException;
+import com.uppaal.engine.Engine;
+import com.uppaal.engine.EngineException;
+import com.uppaal.engine.EngineStub;
+import com.uppaal.engine.Problem;
+import com.uppaal.engine.QueryFeedback;
+import com.uppaal.engine.QueryResult;
+import com.uppaal.model.io2.XMLWriter;
+import com.uppaal.model.core2.Data2D;
+import com.uppaal.model.core2.DataSet2D;
+import com.uppaal.model.core2.Document;
+import com.uppaal.model.core2.Edge;
+import com.uppaal.model.core2.Location;
+import com.uppaal.model.core2.Property;
+import com.uppaal.model.core2.PrototypeDocument;
+import com.uppaal.model.core2.Query;
+import com.uppaal.model.core2.QueryData;
+import com.uppaal.model.core2.Template;
+import com.uppaal.model.system.SystemEdge;
+import com.uppaal.model.system.SystemLocation;
+import com.uppaal.model.system.symbolic.SymbolicState;
+import com.uppaal.model.system.symbolic.SymbolicTransition;
+import com.uppaal.model.system.symbolic.SymbolicTrace;
+import com.uppaal.model.system.concrete.ConcreteTrace;
+import com.uppaal.model.system.UppaalSystem;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.awt.geom.Point2D;
+
+//////////////////////////////////////////////////////////////////////
+
+
 public class Mutation {
+
+
+    public static Engine connectToEngine() throws EngineException, IOException
+    {
+
+        String os = System.getProperty("os.name");
+        String here = System.getProperty("user.dir");
+        String path = null;
+        if ("Linux".equals(os)) {
+            path = here+"/bin-Linux/server";
+        } else {
+            path = "C:\\Users\\57310\\Desktop\\uppaal-4.1.24\\bin-Windows\\server.exe";
+        }
+        Engine engine = new Engine();
+        engine.setServerPath(path);
+        engine.connect();
+        return engine;
+    }
+
     public static void main(String[] args) throws Exception {
 
         try{
@@ -40,7 +97,7 @@ public class Mutation {
             //parser.reset();
             //parser.setBuildParseTree(true);
             ParseTree tree = parser.model();
-
+/*
             System.out.println( "El número de mutaciones Comparaciones Guard es: "+ parser.getNum() );
 
             System.out.println( "El número de mutaciones TMI es: "+ parser.getTmi().size() );
@@ -50,7 +107,7 @@ public class Mutation {
 
             System.out.println("Globales "+parser.getChannelEnv().get("Global").isEmpty());
 
-
+*/
 
             //System.out.println(parser.getTransitionsTad());
             /*
@@ -62,9 +119,9 @@ public class Mutation {
 
             System.out.println(); // print a \n after translation
 
-*/          System.out.println(System.getProperty("user.dir"));
+*/
             //System.out.println(tree.toStringTree(parser));
-
+            //System.out.println(System.getProperty("user.dir"));
             File myFile = new File("C:\\Users\\57310\\Documents\\Github\\XMLGrammar\\src\\Parser\\Test\\Mutaciones"+System.currentTimeMillis());
 
             if(!myFile.mkdirs()){
@@ -170,6 +227,8 @@ public class Mutation {
             }
 
  */
+
+            
             System.out.println("Este es el cxl:"+parser.getNumCxl());
             for(int i=1; i<=parser.getNumCxl(); i++){
                 int idCxl = i;
@@ -187,7 +246,7 @@ public class Mutation {
                 }).start();
 
             }
-            System.out.println("Este es el cxl:"+parser.getNumCxs());
+            System.out.println("Este es el cxs:"+parser.getNumCxs());
             for(int i=1; i<=parser.getNumCxs(); i++){
                 int idCxs = i;
                 new Thread(()->{
@@ -204,6 +263,8 @@ public class Mutation {
                 }).start();
 
             }
+
+
 
 
             //System.out.println(parser.getLocationsSmi());

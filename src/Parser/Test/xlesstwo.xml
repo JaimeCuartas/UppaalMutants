@@ -16,7 +16,7 @@ broadcast chan canal;</declaration>
 		<transition>
 			<source ref="id0"/>
 			<target ref="id1"/>
-			<label kind="guard" x="18" y="-34">x&gt;2</label>
+			<label kind="guard" x="18" y="-34">(x&gt;2) and (x&gt;4)</label>
 			<label kind="synchronisation" x="42" y="-25">canal!</label>
 		</transition>
 	</template>
