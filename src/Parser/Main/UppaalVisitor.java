@@ -29,12 +29,14 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     private int indexCxl;
     private final int idCxsOperator;
     private int indexCxs;
+    private int indexCcn;
+    private final int idCcnOperator;
     private boolean isControllable = false;
     private boolean isClockLeft = false;
     private boolean isClockRight = false;
 
     public UppaalVisitor (int idOperator, int tmiOperator, String templateTad, String sourceTad, String targetTad, String outputTad, String locationSmi,
-                          HashMap<String, HashSet<String>> clockEnv, int idCxlOperator, int idCxsOperator){
+                          HashMap<String, HashSet<String>> clockEnv, int idCxlOperator, int idCxsOperator, int idCcnOperator){
 
         this.idOperator = idOperator;
         this.indexOperator = 0;
@@ -51,8 +53,10 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         this.clockEnv = clockEnv;
         this.idCxlOperator = idCxlOperator;
         this.idCxsOperator = idCxsOperator;
+        this.idCcnOperator = idCcnOperator;
         this.indexCxl = 0;
         this.indexCxs = 0;
+        this.indexCcn = 0;
     }
 
     @Override
@@ -1067,6 +1071,40 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
                     }
                 }
 
+            }
+            if(!operator.equals("==") && !operator.equals("!=")){
+                this.indexCcn++;
+                if(this.indexCcn==this.idCcnOperator) {
+
+                    switch (ctx.binary.getType()) {
+                        case UppaalParser.GREATER:
+                            guardLeft = guardLeft.concat(" &lt;= ");
+                            break;
+                        case UppaalParser.GREATEREQ:
+                            guardLeft = guardLeft.concat(" &lt; ");
+                            break;
+                        case UppaalParser.LESS:
+                            guardLeft = guardLeft.concat(" &gt;= ");
+                            break;
+                        case UppaalParser.LESSEQ:
+                            guardLeft = guardLeft.concat(" &gt; ");
+                            break;
+                        /*
+                        case UppaalParser.COMPARE:
+                            guardLeft = guardLeft.concat(" != ");
+                            break;
+                        case UppaalParser.DIFFERENT:
+                            guardLeft = guardLeft.concat(" == ");
+                            break;
+
+                         */
+                    }
+                    guardLeft = guardLeft.concat(visit(ctx.guardExpr(1)));
+
+                    this.isClockLeft = false;
+                    this.isClockRight = false;
+                    return guardLeft;
+                }
             }
         }
         this.isClockLeft = false;

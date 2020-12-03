@@ -143,12 +143,12 @@ public class Mutation {
                     }
                 }).start();
             }
-
+*/
 
             for(int i: parser.getTmi()){
                 new Thread(()->{
 
-                    UppaalVisitor eval = new UppaalVisitor(-1, i, "", "", "", "", "");
+                    UppaalVisitor eval = new UppaalVisitor(-1, i, "", "", "", "", "", parser.getClockEnv(), -1, -1, -1);
                     FileWriter myWriter = null;
                     try {
                         myWriter = new FileWriter(new File(myFile, "tmi"+ i +".xml"));
@@ -193,7 +193,7 @@ public class Mutation {
                     String output = chan.concat("[0]".repeat(Integer.parseInt(dimensions))).concat("!");
 
                     new Thread(()->{
-                        UppaalVisitor eval = new UppaalVisitor(-1, -1, template, source, target, output, "");
+                        UppaalVisitor eval = new UppaalVisitor(-1, -1, template, source, target, output, "", parser.getClockEnv(), -1,-1,-1);
                         FileWriter myWriter = null;
                         try {
                             myWriter = new FileWriter(new File(myFile, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
@@ -211,7 +211,7 @@ public class Mutation {
             for(String template: parser.getLocationsSmi().keySet()){
                 for(String idLocation: parser.getLocationsSmi().get(template)){
                     new Thread(()->{
-                        UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", idLocation);
+                        UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", idLocation, parser.getClockEnv(), -1,-1,-1);
                         FileWriter myWriter = null;
                         try {
                             myWriter = new FileWriter(new File(myFile, "smi".concat(template).concat((idLocation).replace("\"", "")).concat(".xml")));
@@ -226,7 +226,7 @@ public class Mutation {
                 }
             }
 
- */
+
 
             
             System.out.println("Este es el cxl:"+parser.getNumCxl());
@@ -234,7 +234,7 @@ public class Mutation {
                 int idCxl = i;
                 new Thread(()->{
 
-                    UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", "", parser.getClockEnv(), idCxl, -1);
+                    UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", "", parser.getClockEnv(), idCxl, -1, -1);
                     FileWriter myWriter = null;
                     try {
                         myWriter = new FileWriter(new File(myFile, "cxl"+ idCxl +".xml"));
@@ -251,10 +251,27 @@ public class Mutation {
                 int idCxs = i;
                 new Thread(()->{
 
-                    UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", "", parser.getClockEnv(), -1, idCxs);
+                    UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", "", parser.getClockEnv(), -1, idCxs, -1);
                     FileWriter myWriter = null;
                     try {
                         myWriter = new FileWriter(new File(myFile, "cxs"+ idCxs +".xml"));
+                        myWriter.write(eval.visit(tree));
+                        myWriter.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+
+            }
+            System.out.println("Este es el ccn:"+parser.getNumCcn());
+            for(int i=1; i<=parser.getNumCcn(); i++){
+                int idCcn = i;
+                new Thread(()->{
+
+                    UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", "", parser.getClockEnv(), -1, -1, idCcn);
+                    FileWriter myWriter = null;
+                    try {
+                        myWriter = new FileWriter(new File(myFile, "ccn"+ idCcn +".xml"));
                         myWriter.write(eval.visit(tree));
                         myWriter.close();
                     } catch (IOException e) {

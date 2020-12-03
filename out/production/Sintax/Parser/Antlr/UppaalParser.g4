@@ -84,11 +84,14 @@ parser grammar UppaalParser;
     private int clockLessNum = 0;
     private int clockGreaterNum = 0;
     private int clockEqualNum = 0;
+    private int clockDifferentNum = 0;
 
     //CXL Constant eXchange L operator increases the constant of a clock constraint.
     private int numCxl = 0;
     //CXS Constant eXchange S operator decreases the constant of a clock constraint.
     private int numCxs = 0;
+    //CCN Clock Constraint Negation operator negates a clock constraint.
+    private int numCcn = 0;
 
     public UppaalParser(TokenStream input, int a){
         this(input);
@@ -127,6 +130,9 @@ parser grammar UppaalParser;
     }
     public int getNumCxs(){
         return this.numCxs;
+    }
+    public int getNumCcn(){
+        return this.numCcn;
     }
 }
 options { tokenVocab=UppaalLexer; }
@@ -427,9 +433,12 @@ transition  :   '<' 'transition' '>'
                         // clock >= num  --Mute to-> clock >= num-1
                         this.numCxs += this.clockGreaterNum;
                     }
+                    this.numCcn += this.clockGreaterNum + this.clockLessNum;
                     this.isControllable = false;
                     this.clockGreaterNum = 0;
                     this.clockLessNum = 0;
+                    this.clockEqualNum = 0;
+                    this.clockDifferentNum = 0;
                     this.isClockLeft = false;
                     this.isClockRight = false;
                 }
@@ -505,9 +514,7 @@ guardExpr
                             if(operator.equals("&gt;") ||operator.equals("&gt;=")){
                                 this.clockGreaterNum++;
                             }
-                            if(operator.equals("==")){
-                                this.clockEqualNum++;
-                            }
+
                         }
                         //then this.isClockRight is true
                         else {
@@ -517,9 +524,12 @@ guardExpr
                             if(operator.equals("&lt;") ||operator.equals("&lt;=")){
                                 this.clockGreaterNum++;
                             }
-                            if(operator.equals("==")){
-                                this.clockEqualNum++;
-                            }
+                        }
+                        if(operator.equals("==")){
+                            this.clockEqualNum++;
+                        }
+                        if(operator.equals("!=")){
+                            this.clockDifferentNum++;
                         }
                     }
                     this.isClockLeft = false;
