@@ -79,75 +79,38 @@ public class Mutation {
             if ( args.length>0 ) {
                 inputFile = args[0];
             }
-            /*
-            InputStream is = System.in;
-            if ( inputFile!=null ) {
-                is = new FileInputStream(inputFile);
+            else{
+                return;
             }
 
-            CharStream input = CharStreams.fromStream(is);*/
             CharStream input = CharStreams.fromFileName(inputFile);
             UppaalLexer lexer = new UppaalLexer(input);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
 
             UppaalParser parser = new UppaalParser(tokens, 0);
-            //parser.setBuildParseTree(false); // don't waste time bulding a tree
-            //parser.model(); // parse
 
-            //parser.reset();
-            //parser.setBuildParseTree(true);
             ParseTree tree = parser.model();
-/*
-            System.out.println( "El número de mutaciones Comparaciones Guard es: "+ parser.getNum() );
 
-            System.out.println( "El número de mutaciones TMI es: "+ parser.getTmi().size() );
+            String os = System.getProperty("os.name");
+            String here = System.getProperty("user.dir");
+            String idFile = Long.toString(System.currentTimeMillis());
+            String path = null;
+            if ("Linux".equals(os)) {
+                path = here.concat("/Mutation").concat(idFile);
+            } else {
+                path = here.concat("\\Mutation").concat(idFile);
+            }
 
-            System.out.println(parser.getChannelEnv());
-            System.out.println("Globales"+parser.getChannelEnv().get("Global"));
-
-            System.out.println("Globales "+parser.getChannelEnv().get("Global").isEmpty());
-
-*/
-
-            //System.out.println(parser.getTransitionsTad());
-            /*
-            // Create a generic parse tree walker that can trigger callbacks
-            ParseTreeWalker walker = new ParseTreeWalker();
-            // Walk the tree created during the parse, trigger callbacks
-            walker.walk(new UppaalListener(1), tree);
-
-
-            System.out.println(); // print a \n after translation
-
-*/
-            //System.out.println(tree.toStringTree(parser));
-            //System.out.println(System.getProperty("user.dir"));
-            File myFile = new File("C:\\Users\\57310\\Documents\\Github\\XMLGrammar\\src\\Parser\\Test\\Mutaciones"+System.currentTimeMillis());
+            File myFile = new File(path);
 
             if(!myFile.mkdirs()){
                 return;
             }
-/*
-            for(int i=1; i<=parser.getNum(); i++){
-                int idMutant = i;
-                new Thread(()->{
-                    UppaalVisitor eval = new UppaalVisitor(idMutant, -1, "", "", "", "", "");
-                    FileWriter myWriter = null;
-                    try {
-                        myWriter = new FileWriter(new File(myFile, Integer.toString(idMutant)+".xml"));
-                        myWriter.write(eval.visit(tree));
-                        myWriter.close();
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
-            }
-*/
+            ArrayList<Thread> threads = new ArrayList<>();
 
             for(int i: parser.getTmi()){
-                new Thread(()->{
-
+                threads.add( new Thread(()->{
                     UppaalVisitor eval = new UppaalVisitor(-1, i, "", "", "", "", "", parser.getClockEnv(), -1, -1, -1);
                     FileWriter myWriter = null;
                     try {
@@ -157,8 +120,7 @@ public class Mutation {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }).start();
-
+                }));
             }
 
             for(String template: parser.getTransitionsTad().keySet()){
@@ -192,7 +154,7 @@ public class Mutation {
                     String dimensions = parser.getChannelEnv().get(outputEnv).get(chanPicked)[1];
                     String output = chan.concat("[0]".repeat(Integer.parseInt(dimensions))).concat("!");
 
-                    new Thread(()->{
+                    threads.add(new Thread(()->{
                         UppaalVisitor eval = new UppaalVisitor(-1, -1, template, source, target, output, "", parser.getClockEnv(), -1,-1,-1);
                         FileWriter myWriter = null;
                         try {
@@ -203,26 +165,24 @@ public class Mutation {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }).start();
+                    }));
 
                 }
             }
 
             for(String template: parser.getLocationsSmi().keySet()){
                 for(String idLocation: parser.getLocationsSmi().get(template)){
-                    new Thread(()->{
+                    threads.add(new Thread(()->{
                         UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", idLocation, parser.getClockEnv(), -1,-1,-1);
                         FileWriter myWriter = null;
                         try {
                             myWriter = new FileWriter(new File(myFile, "smi".concat(template).concat((idLocation).replace("\"", "")).concat(".xml")));
                             myWriter.write(eval.visit(tree));
                             myWriter.close();
-
-
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }).start();
+                    }));
                 }
             }
 
@@ -232,8 +192,7 @@ public class Mutation {
             System.out.println("Este es el cxl:"+parser.getNumCxl());
             for(int i=1; i<=parser.getNumCxl(); i++){
                 int idCxl = i;
-                new Thread(()->{
-
+                threads.add(new Thread(()->{
                     UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", "", parser.getClockEnv(), idCxl, -1, -1);
                     FileWriter myWriter = null;
                     try {
@@ -243,14 +202,14 @@ public class Mutation {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }).start();
+                }));
 
             }
+
             System.out.println("Este es el cxs:"+parser.getNumCxs());
             for(int i=1; i<=parser.getNumCxs(); i++){
                 int idCxs = i;
-                new Thread(()->{
-
+                threads.add(new Thread(()->{
                     UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", "", parser.getClockEnv(), -1, idCxs, -1);
                     FileWriter myWriter = null;
                     try {
@@ -260,14 +219,13 @@ public class Mutation {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }).start();
-
+                }));
             }
+
             System.out.println("Este es el ccn:"+parser.getNumCcn());
             for(int i=1; i<=parser.getNumCcn(); i++){
                 int idCcn = i;
-                new Thread(()->{
-
+                threads.add(new Thread(()->{
                     UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", "", parser.getClockEnv(), -1, -1, idCcn);
                     FileWriter myWriter = null;
                     try {
@@ -277,18 +235,49 @@ public class Mutation {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }).start();
-
+                }));
             }
 
+            for (Thread mutantThread: threads){
+                mutantThread.start();
+            }
+
+            for (Thread mutantThread: threads){
+                mutantThread.join();
+            }
+
+            String[] mutantFiles = myFile.list();
+            assert mutantFiles != null;
+
+            int alive = 0;
+            int dead = 0;
+            for (String mutant: mutantFiles) {
+                String mutantPath = "";
+                if ("Linux".equals(os)) {
+                    mutantPath = path.concat("/").concat(mutant);
+                } else {
+                    mutantPath = path.concat("\\").concat(mutant);
+                }
+                System.out.println(mutantPath);
+
+                Process p = Runtime.getRuntime().exec("C:\\Users\\57310\\Desktop\\uppaal-4.1.24\\bin-Windows\\verifyta.exe -q ".concat(mutantPath));
+
+                p.waitFor();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                String line = "";
+
+                while ((line = reader.readLine()) != null){
+                    if (line.contains("NOT satisfied")){
+                        dead++;
+                        break;
+                    }
+                }
+            }
+            System.out.println("total de mutantes: " + mutantFiles.length);
+            System.out.println("Total de muertos: " + dead);
 
 
 
-            //System.out.println(parser.getLocationsSmi());
-/*
-            UppaalVisitor eval = new UppaalVisitor(3);
-            System.out.println(eval.visit(tree));
-*/
         }catch (IOException e){
 
             e.printStackTrace();

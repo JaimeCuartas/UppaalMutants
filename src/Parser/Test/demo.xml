@@ -77,7 +77,11 @@ system Process, Process0;
     </system>
 	<queries>
 		<query>
-			<formula></formula>
+			<formula>A[] deadlock</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A&lt;&gt; true</formula>
 			<comment></comment>
 		</query>
 	</queries>
