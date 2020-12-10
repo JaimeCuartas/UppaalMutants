@@ -258,23 +258,33 @@ public class Mutation {
                 } else {
                     mutantPath = path.concat("\\").concat(mutant);
                 }
-                System.out.println(mutantPath);
 
                 Process p = Runtime.getRuntime().exec("C:\\Users\\57310\\Desktop\\uppaal-4.1.24\\bin-Windows\\verifyta.exe -q ".concat(mutantPath));
 
                 p.waitFor();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 String line = "";
-
-                while ((line = reader.readLine()) != null){
-                    if (line.contains("NOT satisfied")){
+                line = reader.readLine();
+                boolean flag = false;
+                do{
+                    if (line==null || line.contains("NOT satisfied")){
                         dead++;
+                        flag = true;
                         break;
                     }
+                }while ((line = reader.readLine()) != null);
+                if(!flag){
+                    System.out.println(mutantPath);
                 }
+
             }
+
+
+
             System.out.println("total de mutantes: " + mutantFiles.length);
             System.out.println("Total de muertos: " + dead);
+            System.out.println("Total de alive: " + alive);
+
 
 
 
