@@ -1,5 +1,6 @@
 package Parser.Main;
 import Parser.Antlr.*;
+import Parser.Types.*;
 import com.uppaal.model.core2.Template;
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
@@ -73,13 +74,18 @@ public class Mutation {
 
     public static void main(String[] args) throws Exception {
 
-        try{
+        try {
+            long startTime = System.nanoTime();
+
 
             String inputFile = null;
-            if ( args.length>0 ) {
+            String propertiesFile = "";
+            if (args.length > 0) {
                 inputFile = args[0];
-            }
-            else{
+                if (args.length > 1) {
+                    propertiesFile = args[1];
+                }
+            } else {
                 return;
             }
 
@@ -95,26 +101,27 @@ public class Mutation {
             String here = System.getProperty("user.dir");
             String idFile = Long.toString(System.currentTimeMillis());
             String path = null;
+
             if ("Linux".equals(os)) {
-                path = here.concat("/Mutation").concat(idFile);
+                path = here.concat("/Mutation"+inputFile.split("\\\\")[inputFile.split("\\\\").length-1].split("\\.")[0]).concat(idFile);
             } else {
-                path = here.concat("\\Mutation").concat(idFile);
+                path = here.concat("\\Mutation"+inputFile.split("\\\\")[inputFile.split("\\\\").length-1].split("\\.")[0]).concat(idFile);
             }
 
             File myFile = new File(path);
 
-            if(!myFile.mkdirs()){
+            if (!myFile.mkdirs()) {
                 return;
             }
 
             ArrayList<Thread> threads = new ArrayList<>();
 
-            for(int i: parser.getTmi()){
-                threads.add( new Thread(()->{
+            for (int i : parser.getTmi()) {
+                threads.add(new Thread(() -> {
                     UppaalVisitor eval = new UppaalVisitor(-1, i, "", "", "", "", "", parser.getClockEnv(), -1, -1, -1);
                     FileWriter myWriter = null;
                     try {
-                        myWriter = new FileWriter(new File(myFile, "tmi"+ i +".xml"));
+                        myWriter = new FileWriter(new File(myFile, "tmi" + i + ".xml"));
                         myWriter.write(eval.visit(tree));
                         myWriter.close();
                     } catch (IOException e) {
@@ -123,21 +130,21 @@ public class Mutation {
                 }));
             }
 
-            for(String template: parser.getTransitionsTad().keySet()){
+            int tmiNumber = threads.size();
+            /*
+            for (String template : parser.getTransitionsTad().keySet()) {
                 String outputEnv = "";
-                if(!parser.getChannelEnv().get("Global").isEmpty()){
+                if (!parser.getChannelEnv().get("Global").isEmpty()) {
                     outputEnv = "Global";
-                }
-                else if(!parser.getChannelEnv().get(template).isEmpty()){
+                } else if (!parser.getChannelEnv().get(template).isEmpty()) {
                     outputEnv = template;
-                }
-                else{
+                } else {
                     continue;
                 }
-                for(String source: parser.getTransitionsTad().get(template).keySet()){
+                for (String source : parser.getTransitionsTad().get(template).keySet()) {
                     HashSet<String> targets = parser.getTransitionsTad().get(template).get(source);
 
-                    if(targets.isEmpty()){
+                    if (targets.isEmpty()) {
                         continue;
                     }
 
@@ -154,8 +161,8 @@ public class Mutation {
                     String dimensions = parser.getChannelEnv().get(outputEnv).get(chanPicked)[1];
                     String output = chan.concat("[0]".repeat(Integer.parseInt(dimensions))).concat("!");
 
-                    threads.add(new Thread(()->{
-                        UppaalVisitor eval = new UppaalVisitor(-1, -1, template, source, target, output, "", parser.getClockEnv(), -1,-1,-1);
+                    new Thread(() -> {
+                        UppaalVisitor eval = new UppaalVisitor(-1, -1, template, source, target, output, "", parser.getClockEnv(), -1, -1, -1);
                         FileWriter myWriter = null;
                         try {
                             myWriter = new FileWriter(new File(myFile, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
@@ -165,15 +172,59 @@ public class Mutation {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }));
+                    });
+
+                }
+            }*/
+
+            for (String template : parser.getTransitionsTad().keySet()) {
+                String outputEnv = "";
+                if (!parser.getChannelEnv().get("Global").isEmpty()) {
+                    outputEnv = "Global";
+                } else if (!parser.getChannelEnv().get(template).isEmpty()) {
+                    outputEnv = template;
+                } else {
+                    continue;
+                }
+                for (String source : parser.getTransitionsTad().get(template).keySet()) {
+                    HashSet<String> targets = parser.getTransitionsTad().get(template).get(source);
+
+                    if (targets.isEmpty()) {
+                        continue;
+                    }
+
+                    Iterator<String> iterTargets = targets.iterator();
+                    for (int i = 0; i < targets.size(); i++) {
+                        //Choose target
+                        String target = iterTargets.next();
+                        int chanPicked = 0;
+                        String chan = parser.getChannelEnv().get(outputEnv).get(chanPicked)[0];
+                        String dimensions = parser.getChannelEnv().get(outputEnv).get(chanPicked)[1];
+                        String output = chan.concat("[0]".repeat(Integer.parseInt(dimensions))).concat("!");
+                        threads.add(new Thread(() -> {
+                            UppaalVisitor eval = new UppaalVisitor(-1, -1, template, source, target, output, "", parser.getClockEnv(), -1, -1, -1);
+                            FileWriter myWriter = null;
+                            try {
+                                myWriter = new FileWriter(new File(myFile, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                                myWriter.write(eval.visit(tree));
+                                myWriter.close();
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }));
+                    }
+
 
                 }
             }
 
-            for(String template: parser.getLocationsSmi().keySet()){
-                for(String idLocation: parser.getLocationsSmi().get(template)){
-                    threads.add(new Thread(()->{
-                        UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", idLocation, parser.getClockEnv(), -1,-1,-1);
+            int tadNumber = threads.size()-tmiNumber;
+
+            for (String template : parser.getLocationsSmi().keySet()) {
+                for (String idLocation : parser.getLocationsSmi().get(template)) {
+                    threads.add(new Thread(() -> {
+                        UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", idLocation, parser.getClockEnv(), -1, -1, -1);
                         FileWriter myWriter = null;
                         try {
                             myWriter = new FileWriter(new File(myFile, "smi".concat(template).concat((idLocation).replace("\"", "")).concat(".xml")));
@@ -186,8 +237,7 @@ public class Mutation {
                 }
             }
 
-
-
+            int smiNumber = threads.size()-tadNumber-tmiNumber;
             
             System.out.println("Este es el cxl:"+parser.getNumCxl());
             for(int i=1; i<=parser.getNumCxl(); i++){
@@ -206,6 +256,8 @@ public class Mutation {
 
             }
 
+            int cxlNumber = threads.size()-smiNumber-tadNumber-tmiNumber;
+
             System.out.println("Este es el cxs:"+parser.getNumCxs());
             for(int i=1; i<=parser.getNumCxs(); i++){
                 int idCxs = i;
@@ -221,6 +273,8 @@ public class Mutation {
                     }
                 }));
             }
+
+            int cxsNumber = threads.size()-cxlNumber-smiNumber-tadNumber-tmiNumber;
 
             System.out.println("Este es el ccn:"+parser.getNumCcn());
             for(int i=1; i<=parser.getNumCcn(); i++){
@@ -238,6 +292,8 @@ public class Mutation {
                 }));
             }
 
+            int ccnNumber = threads.size()-cxlNumber-cxsNumber-smiNumber-tadNumber-tmiNumber;
+
             for (Thread mutantThread: threads){
                 mutantThread.start();
             }
@@ -251,30 +307,35 @@ public class Mutation {
 
             int alive = 0;
             int dead = 0;
-            for (String mutant: mutantFiles) {
+            for (String mutantFile : mutantFiles) {
+
                 String mutantPath = "";
+
                 if ("Linux".equals(os)) {
-                    mutantPath = path.concat("/").concat(mutant);
+                    mutantPath = path.concat("/").concat(mutantFile);
                 } else {
-                    mutantPath = path.concat("\\").concat(mutant);
+                    mutantPath = path.concat("\\").concat(mutantFile);
                 }
 
-                Process p = Runtime.getRuntime().exec("C:\\Users\\57310\\Desktop\\uppaal-4.1.24\\bin-Windows\\verifyta.exe -q ".concat(mutantPath));
+
+                Process p = Runtime.getRuntime().exec("C:\\Users\\57310\\Desktop\\uppaal-4.1.24\\bin-Windows\\verifyta.exe -q ".concat(mutantPath).concat(" ").concat(propertiesFile));
 
                 p.waitFor();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 String line = "";
                 line = reader.readLine();
                 boolean flag = false;
-                do{
-                    if (line==null || line.contains("NOT satisfied")){
+                do {
+                    if (line == null || line.contains("NOT satisfied")) {
                         dead++;
                         flag = true;
                         break;
                     }
-                }while ((line = reader.readLine()) != null);
-                if(!flag){
-                    System.out.println(mutantPath);
+                } while ((line = reader.readLine()) != null);
+
+                if (!flag) {
+                    System.out.println("C:\\Users\\57310\\Desktop\\uppaal-4.1.24\\bin-Windows\\verifyta.exe -q ".concat(mutantPath).concat(" ").concat(propertiesFile));
+                    alive++;
                 }
 
             }
@@ -283,9 +344,12 @@ public class Mutation {
 
             System.out.println("total de mutantes: " + mutantFiles.length);
             System.out.println("Total de muertos: " + dead);
-            System.out.println("Total de alive: " + alive);
+            System.out.println("Total de vivos: " + alive);
 
+            long endTime = System.nanoTime();
 
+            long duration = (endTime - startTime);
+            System.out.println(duration);
 
 
         }catch (IOException e){

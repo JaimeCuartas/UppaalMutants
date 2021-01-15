@@ -173,7 +173,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitUnaryExpr(UppaalParser.UnaryExprContext ctx) {
-        return ctx.unary.getText().concat(visit(ctx.expr()));
+        return ctx.unary.getText().concat(" ").concat(visit(ctx.expr()));
     }
 
     @Override
@@ -961,7 +961,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitUnaryGuard(UppaalParser.UnaryGuardContext ctx) {
-        return ctx.unary.getText().concat(visit(ctx.guardExpr()));
+        return ctx.unary.getText().concat(" ").concat(visit(ctx.guardExpr()));
     }
 
     @Override
@@ -1134,7 +1134,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitFuncGuard(UppaalParser.FuncGuardContext ctx) {
-        return visit(ctx.guardExpr()).concat("(").concat(visit(ctx.guardArguments())).concat(")");
+        return ctx.IDENTIFIER().getText().concat("(").concat(visit(ctx.guardArguments())).concat(")");
     }
 
     @Override

@@ -268,7 +268,7 @@ arrayDecl   :   '[' expr ']'    # ArrayDeclExpr
             |   '[' type ']'    # ArrayDeclType
             ;
 
-variableID  :   IDENTIFIER (arrayDecl*) (ASSIGN initialiser )? ;
+variableID  :   IDENTIFIER (arrayDecl*) ((ASSIGN | ':=') initialiser )? ;
 
 initialiser :   expr                                        # InitialiserExpr
             |   '{' initialiser (',' initialiser)* '}'      # InitialiserArray
@@ -386,7 +386,7 @@ locals[ArrayList<String> namesLocations = new ArrayList<String>()]
 
 parameter   :   OPEN_PARAMETER funcParameters CLOSE_PARAMETER ;
 
-coordinate  :   'x' EQUALS STRING 'y' EQUALS STRING ;
+coordinate  :   ('x'|'y') EQUALS STRING ('x'|'y') EQUALS STRING ;
 
 initLoc    :   '<' 'init' 'ref' EQUALS STRING '/>' ;
 
@@ -394,8 +394,8 @@ branchpoint :   '<' 'branchpoint' 'id' EQUALS STRING
                     coordinate? '>' misc*
                     '</' 'branchpoint' '>';
 
-location    :   '<' 'location' 'id' EQUALS STRING
-                    coordinate? '>' misc* (name misc*)?
+location    :   '<' 'location'
+                    'id' EQUALS STRING coordinate?  color? '>' misc* (name misc*)?
                     (labelLoc misc*)*
                     ('<' (URGENT_LOC | 'committed') '/>' misc*)?
 
@@ -407,7 +407,9 @@ name        :   '<' 'name'
                     coordinate?
                     '>' anything '</' 'name' '>' ;
 
-transition  :   '<' 'transition' '>'
+color       :   'color' EQUALS STRING;
+
+transition  :   '<' 'transition' color? '>'
                 {
                     this.currentTransition++;
                 }
@@ -543,7 +545,7 @@ guardExpr
             |   guardExpr '?' guardExpr ':' guardExpr
                                     # IfGuard
             |   guardExpr '.' IDENTIFIER   # DotGuard
-            |   guardExpr '(' guardArguments ')'# FuncGuard
+            |   IDENTIFIER '(' guardArguments ')'# FuncGuard
             |   'forall' '(' IDENTIFIER ':' guardType ')' guardExpr     # ForallGuard
             |   'exists' '(' IDENTIFIER ':' guardType ')' guardExpr     # ExistsGuard
             |   'sum' '(' IDENTIFIER ':' guardType ')' guardExpr        # SumGuard

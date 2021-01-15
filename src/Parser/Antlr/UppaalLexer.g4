@@ -75,6 +75,7 @@ DECLARATION :   'declaration' ;
 TEMPLATE    :   'template' ;
 BRANCHPOINT :   'branchpoint' ;
 LOCATION    :   'location' ;
+COLOR       :   'color' ;
 NAME        :   'name' ;
 PARAMETER   :   'parameter' ;
 INIT        :   'init' ;

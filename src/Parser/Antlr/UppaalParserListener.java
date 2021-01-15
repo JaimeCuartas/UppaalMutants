@@ -1,4 +1,4 @@
-// Generated from C:/Users/57310/Documents/Github/XMLGrammar/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.8
+// Generated from C:/Users/57310/Documents/Github/XMLGrammar/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.9
 package Parser.Antlr;
 
     import java.util.HashMap;
@@ -1069,6 +1069,16 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitName(UppaalParser.NameContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link UppaalParser#color}.
+	 * @param ctx the parse tree
+	 */
+	void enterColor(UppaalParser.ColorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#color}.
+	 * @param ctx the parse tree
+	 */
+	void exitColor(UppaalParser.ColorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link UppaalParser#transition}.
 	 * @param ctx the parse tree

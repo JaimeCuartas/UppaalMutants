@@ -1,4 +1,4 @@
-// Generated from C:/Users/57310/Documents/Github/XMLGrammar/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.8
+// Generated from C:/Users/57310/Documents/Github/XMLGrammar/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.9
 package Parser.Antlr;
 
     import java.util.HashMap;
@@ -638,6 +638,12 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitName(UppaalParser.NameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link UppaalParser#color}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitColor(UppaalParser.ColorContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link UppaalParser#transition}.
 	 * @param ctx the parse tree

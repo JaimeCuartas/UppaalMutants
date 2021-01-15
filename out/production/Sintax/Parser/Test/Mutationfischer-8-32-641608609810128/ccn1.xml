@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+<declaration>const int N = 8;
+typedef int [1, N] id_t;
+int id ;
+</declaration>
+<template>
+<name>P</name>
+<parameter>const id_t pid</parameter>
+<declaration>clock x ;
+const int a = 32;
+const int b = 64;
+</declaration>
+<location id="id0" x="40" y="80">
+<name x="30" y="50">wait</name>
+</location>
+<location id="id1" x="190" y="80">
+<name x="180" y="50">req</name>
+<label kind="invariant" x="180" y="95">x &lt;= a</label>
+</location>
+<location id="id2" x="190" y="230">
+<name x="180" y="200">A</name>
+</location>
+<location id="id3" x="40" y="230">
+<name x="30" y="200">cs</name>
+</location>
+<init ref="id2"/>
+<transition>
+<source ref="id2"/>
+<target ref="id1"/>
+<label kind="guard" x="130" y="125">id == 0</label>
+<label kind="assignment" x="130" y="155">x = 0</label>
+</transition>
+<transition>
+<source ref="id1"/>
+<target ref="id0"/>
+<label kind="assignment" x="55" y="80">x = 0, id = pid</label>
+</transition>
+<transition>
+<source ref="id0"/>
+<target ref="id1"/>
+<label kind="guard" x="55" y="50">id == 0</label>
+<label kind="assignment" x="55" y="80">x = 0</label>
+</transition>
+<transition>
+<source ref="id0"/>
+<target ref="id3"/>
+<label kind="guard" x="-20" y="125">x &lt; b &amp;&amp; id == pid</label>
+</transition>
+<transition>
+<source ref="id3"/>
+<target ref="id2"/>
+<label kind="assignment" x="55" y="230">id = 0</label>
+</transition>
+</template>
+<system>
+
+system P;</system>
+<queries>
+<query>
+<formula>A[] not (P(1).cs &amp;&amp; P(2).cs)</formula>
+<comment></comment>
+</query>
+</queries>
+</nta>
