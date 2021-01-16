@@ -7,15 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://C:/Program Files (x86)/uppaal-4.1.24/lib/model.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="library" exported="" name="antlr-4.9-complete" level="project" />
+    <orderEntry type="library" name="commons-cli-1.4" level="project" />
   </component>
 </module>

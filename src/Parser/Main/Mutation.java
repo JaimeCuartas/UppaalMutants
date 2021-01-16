@@ -6,12 +6,13 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import org.apache.commons.cli.*;
+
 import java.io.*;
 import java.util.*;
 
 //////////////////////////////////////////////////////////////////////
-import com.uppaal.engine.Engine;
-import com.uppaal.engine.EngineException;
+
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,22 +25,7 @@ import java.util.Iterator;
 public class Mutation {
 
 
-    public static Engine connectToEngine() throws EngineException, IOException
-    {
 
-        String os = System.getProperty("os.name");
-        String here = System.getProperty("user.dir");
-        String path = null;
-        if ("Linux".equals(os)) {
-            path = here+"/bin-Linux/server";
-        } else {
-            path = "C:\\Users\\57310\\Desktop\\uppaal-4.1.24\\bin-Windows\\server.exe";
-        }
-        Engine engine = new Engine();
-        engine.setServerPath(path);
-        engine.connect();
-        return engine;
-    }
 
     public static void main(String[] args) throws Exception {
 
@@ -57,6 +43,8 @@ public class Mutation {
             } else {
                 return;
             }
+
+
 
             CharStream input = CharStreams.fromFileName(inputFile);
             UppaalLexer lexer = new UppaalLexer(input);
@@ -296,7 +284,7 @@ public class Mutation {
                 line = reader.readLine();
                 boolean flag = false;
                 do {
-                    if (line == null || line.contains("NOT satisfied")) {
+                    if (line == null || line.contains("NOT satisfied") || line.contains("MAY be satisfied")) {
                         dead++;
                         flag = true;
                         break;
