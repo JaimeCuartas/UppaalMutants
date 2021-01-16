@@ -276,7 +276,7 @@ void f(){
 		<transition>
 			<source ref="id26"/>
 			<target ref="id23"/>
-			<label kind="guard" x="-322" y="101">time &gt;= timeToClose</label>
+			<label kind="guard" x="-322" y="101">timeToClose &lt;= time</label>
 			<label kind="synchronisation" x="-314" y="118">endCloseAction!</label>
 			<nail x="-178" y="127"/>
 		</transition>

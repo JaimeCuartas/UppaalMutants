@@ -30,7 +30,7 @@
             <target ref="id1"/>
             <label kind="select" x="0" y="-170">seleccion prueba</label>
             <label kind="guard" x="0" y="-153">guard </label>
-            <label kind="synchronisation" x="0" y="-136">sync prueba</label>
+            <label kind="synchronisation" x="0" y="-136">sync!</label>
             <label kind="assignment" x="0" y="-119">update prueba
                 con dos renglones</label>
             <label kind="testcode">probar codigo del edge

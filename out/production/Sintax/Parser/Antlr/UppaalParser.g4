@@ -33,6 +33,7 @@ parser grammar UppaalParser;
 @parser::header {
     import java.util.HashMap;
     import java.util.HashSet;
+    import Parser.Mutation.*;
 }
 
 @parser::members { // add members to generated UppaalParser
@@ -50,35 +51,57 @@ parser grammar UppaalParser;
     //Counter with the number of the current transition
     private int currentTransition = 0;
 
-    //env will contain as key, "global" for global declaration and the name of each template
+    //env will contain as key, "Global" for global declaration and the name of each template
     //env will contain as value, and array of string
-    //String[0] will contain the name of channel and String[1] will contain the dimensions of channel
 
-    private HashMap<String, ArrayList<String[]>> channelEnv = new HashMap<String, ArrayList<String[]>>();
-    private HashMap<String, ArrayList<String>> clockEnv = new HashMap<String, ArrayList<String>>();
+    private HashMap<String, ArrayList<ChanType>> channelEnv = new HashMap<String, ArrayList<ChanType>>();
+    private HashMap<String, HashSet<ClockType>> clockEnv = new HashMap<String, HashSet<ClockType>>();
     private String currentEnv;
     private boolean isFunctionEnv;
 
     //transitionsTad is a <Key, Value> hashmap
     //                    <name_of_template_Key, <key, value>>
     //                    <name_of_template_key, <source_key, set_of_targets>
-    //transitionsTad is a structure to save in each template the locations that does not have output actions (<expr> "!") synchro
-    //these will be candidates to mutatants
+    //transitionsTad is a structure to save in each template the locations that does not have input/output actions (<expr> "?"/"!") synchro
+    //these will be candidates to mutatants, adding transitions with output actions ( <expr> "!")
     private HashMap<String, HashMap<String, HashSet<String>>> transitionsTad = new HashMap<String, HashMap<String, HashSet<String>>>();
     private String currentSource = "";
     private String currentTarget = "";
 
+    //transitionsTadNoSync is a structure similar to transitionsTad, this one will be used to make transitions between location that has not
+    //any transition
+    private HashMap<String, HashMap<String, HashSet<String>>> transitionsTadNoSync = new HashMap<String, HashMap<String, HashSet<String>>>();
+
     //locationsSmi is a <Key, Value > hashmap
     //                  <name_of_template_Key, <value>>
     //                  <name_of_template_Key, <set_of_locations>>
+    //locations that has at least one input action ( <expr> "?" ) per template
     private HashMap<String, HashSet<String>> locationsSmi = new HashMap<String, HashSet<String>>();
     private String initLocationId = "";
+
+    ///////////////////////////////////////////////////////////////////////////
+    //private boolean isClockId = false;
+    private boolean isControllable = false;
+
+    private boolean isClockLeft = false;
+    private boolean isClockRight = false;
+    private int clockLessNum = 0;
+    private int clockGreaterNum = 0;
+    private int clockEqualNum = 0;
+    private int clockDifferentNum = 0;
+
+    //CXL Constant eXchange L operator increases the constant of a clock constraint.
+    private int numCxl = 0;
+    //CXS Constant eXchange S operator decreases the constant of a clock constraint.
+    private int numCxs = 0;
+    //CCN Clock Constraint Negation operator negates a clock constraint.
+    private int numCcn = 0;
 
     public UppaalParser(TokenStream input, int a){
         this(input);
         currentEnv = "Global";
-        channelEnv.put(currentEnv, new ArrayList<String[]>());
-        clockEnv.put(currentEnv, new ArrayList<String>());
+        channelEnv.put(currentEnv, new ArrayList<ChanType>());
+        clockEnv.put(currentEnv, new HashSet<ClockType>());
         isFunctionEnv = false;
     }
 
@@ -88,10 +111,10 @@ parser grammar UppaalParser;
     public void setNum(int num){
         this.num = num;
     }
-    public HashMap<String, ArrayList<String[]>> getChannelEnv (){
+    public HashMap<String, ArrayList<ChanType>> getChannelEnv (){
         return this.channelEnv;
     }
-    public HashMap<String, ArrayList<String>> getClockEnv (){
+    public HashMap<String, HashSet<ClockType>> getClockEnv (){
         return this.clockEnv;
     }
     public ArrayList<Integer> getTmi(){
@@ -102,10 +125,23 @@ parser grammar UppaalParser;
         return this.transitionsTad;
     }
 
+    public HashMap<String, HashMap<String, HashSet<String>>> getTransitionsTadNoSync(){
+        return this.transitionsTadNoSync;
+    }
+
     public HashMap<String, HashSet<String>> getLocationsSmi(){
         return this.locationsSmi;
     }
 
+    public int getNumCxl(){
+        return this.numCxl;
+    }
+    public int getNumCxs(){
+        return this.numCxs;
+    }
+    public int getNumCcn(){
+        return this.numCcn;
+    }
 }
 options { tokenVocab=UppaalLexer; }
 
@@ -198,15 +234,15 @@ variableDecl:   (type variableID (',' variableID)* ';')
 
                             for(UppaalParser.VariableIDContext variableId: variablesId){
                                 String chanId = variableId.IDENTIFIER().getText();
-                                String dimensions = Integer.toString(variableId.arrayDecl().size());
-                                channelEnv.get(currentEnv).add(new String[]{chanId, dimensions});
+                                int dimensions = variableId.arrayDecl().size();
+                                channelEnv.get(currentEnv).add(new ChanType(chanId, dimensions));
                             }
                         }
                         else if(typeId.equals("clock")){
                             List<UppaalParser.VariableIDContext> variablesId = $ctx.variableID();
                             for(UppaalParser.VariableIDContext variableId: variablesId){
                                 String clockId = variableId.IDENTIFIER().getText();
-                                clockEnv.get(currentEnv).add(clockId);
+                                clockEnv.get(currentEnv).add(new ClockType(clockId));
                             }
                         }
                         //env.get(currentEnv).add();
@@ -240,7 +276,7 @@ arrayDecl   :   '[' expr ']'    # ArrayDeclExpr
             |   '[' type ']'    # ArrayDeclType
             ;
 
-variableID  :   IDENTIFIER (arrayDecl*) (ASSIGN initialiser )? ;
+variableID  :   IDENTIFIER (arrayDecl*) ((ASSIGN | ':=') initialiser )? ;
 
 initialiser :   expr                                        # InitialiserExpr
             |   '{' initialiser (',' initialiser)* '}'      # InitialiserArray
@@ -308,9 +344,10 @@ locals[ArrayList<String> namesLocations = new ArrayList<String>()]
                 {
                     if($ctx.name()!=null){
                         currentEnv = $ctx.name().anything().getText();
-                        channelEnv.put(currentEnv, new ArrayList<String[]>());
-                        clockEnv.put(currentEnv, new ArrayList<String>());
+                        channelEnv.put(currentEnv, new ArrayList<ChanType>());
+                        clockEnv.put(currentEnv, new HashSet<ClockType>());
                         transitionsTad.put(currentEnv, new HashMap<String, HashSet<String>>());
+                        transitionsTadNoSync.put(currentEnv, new HashMap<String, HashSet<String>>());
                         locationsSmi.put(currentEnv, new HashSet<String>());
                     }
                 }
@@ -322,12 +359,12 @@ locals[ArrayList<String> namesLocations = new ArrayList<String>()]
                             String typeId = funcParameter.type().typeId().getText();
                             if(typeId.equals("chan")){
                                 String chanId = funcParameter.varFieldDecl().IDENTIFIER().getText();
-                                String dimensions = Integer.toString(funcParameter.varFieldDecl().arrayDecl().size());
-                                channelEnv.get(currentEnv).add(new String[]{chanId, dimensions});
+                                int dimensions = funcParameter.varFieldDecl().arrayDecl().size();
+                                channelEnv.get(currentEnv).add(new ChanType(chanId, dimensions));
                             }
                             else if (typeId.equals("clock")){
                                 String clockId = funcParameter.varFieldDecl().IDENTIFIER().getText();
-                                clockEnv.get(currentEnv).add(clockId);
+                                clockEnv.get(currentEnv).add(new ClockType(clockId));
                             }
                         }
                     }
@@ -342,10 +379,13 @@ locals[ArrayList<String> namesLocations = new ArrayList<String>()]
                     }
                     for(String locationSource: $namesLocations){
                         HashSet<String> target = new HashSet<String>();
+                        HashSet<String> targetNoSync = new HashSet<String>();
                         for(String locationTarget: $namesLocations){
                             target.add(locationTarget);
+                            targetNoSync.add(locationTarget);
                         }
                         this.transitionsTad.get(this.currentEnv).put(locationSource, target);
+                        this.transitionsTadNoSync.get(this.currentEnv).put(locationSource, targetNoSync);
                     }
 
                 }
@@ -358,7 +398,7 @@ locals[ArrayList<String> namesLocations = new ArrayList<String>()]
 
 parameter   :   OPEN_PARAMETER funcParameters CLOSE_PARAMETER ;
 
-coordinate  :   'x' EQUALS STRING 'y' EQUALS STRING ;
+coordinate  :   ('x'|'y') EQUALS STRING ('x'|'y') EQUALS STRING ;
 
 initLoc    :   '<' 'init' 'ref' EQUALS STRING '/>' ;
 
@@ -366,8 +406,8 @@ branchpoint :   '<' 'branchpoint' 'id' EQUALS STRING
                     coordinate? '>' misc*
                     '</' 'branchpoint' '>';
 
-location    :   '<' 'location' 'id' EQUALS STRING
-                    coordinate? '>' misc* (name misc*)?
+location    :   '<' 'location'
+                    'id' EQUALS STRING coordinate?  color? '>' misc* (name misc*)?
                     (labelLoc misc*)*
                     ('<' (URGENT_LOC | 'committed') '/>' misc*)?
 
@@ -379,42 +419,81 @@ name        :   '<' 'name'
                     coordinate?
                     '>' anything '</' 'name' '>' ;
 
-transition  :   '<' 'transition' '>'
+color       :   'color' EQUALS STRING;
+
+transition  :   '<' 'transition' color? '>'
                 {
                     this.currentTransition++;
                 }
                 misc* (source misc*) (target misc*)
-                (labelTransition misc*)*
+                (   labelTrans misc*
+                 |  labelTransGuard  misc*
+                 |  labelTransSyncInput misc*
+                 |  labelTransSyncOutput misc*)*
                 (nail misc*)*
-                '</' 'transition' '>' ;
-
-
-//Are equals to labels_loc but we can manipulate them differently
-labelTransition
-            :   OPEN_GUARD guardExpr? CLOSE_LABEL  # LabelTransGuard
-            |   OPEN_SYNC (expr '?')? CLOSE_LABEL
+                '</' 'transition' '>'
                 {
-                    //Add to tmi array to remove transition on tmi mutants
-                    this.tmi.add(this.currentTransition);
-
-                    //If has a synchro input remove from possible transition to make an output on tad mutants
-                    this.transitionsTad.get(currentEnv).get(currentSource).remove(currentTarget);
-
-                    //if it has at least one incoming action, then a mutant will be created without the target location
-                    if(!this.initLocationId.equals(this.currentTarget)){
-                        this.locationsSmi.get(this.currentEnv).add(this.currentTarget);
+                    if(this.isControllable){
+                        // It is an input transition '?'
+                        // clock >= num  --Mute to-> clock >= num+1
+                        this.numCxl += this.clockGreaterNum;
+                        // clock <= num  --Mute to-> clock <= num-1
+                        this.numCxs += this.clockLessNum;
                     }
-                }                                   # LabelTransSyncInput
-            |   OPEN_SYNC (expr '!')? CLOSE_LABEL
-                {
+                    else{
+                        // It is an output transition '!'
+                        // clock <= num  --Mute to-> clock <= num+1
+                        this.numCxl += this.clockLessNum;
+                        // clock >= num  --Mute to-> clock >= num-1
+                        this.numCxs += this.clockGreaterNum;
+                    }
+                    this.numCcn += this.clockGreaterNum + this.clockLessNum;
+                    this.isControllable = false;
+                    this.clockGreaterNum = 0;
+                    this.clockLessNum = 0;
+                    this.clockEqualNum = 0;
+                    this.clockDifferentNum = 0;
+                    this.isClockLeft = false;
+                    this.isClockRight = false;
+                }
+                ;
 
-                    //If has a synchro input remove from possible transition to make an output on tad mutants
-                    this.transitionsTad.get(currentEnv).get(currentSource).remove(currentTarget);
-                }                                   # LabelTransSyncOutput
-            |   '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' # labelTrans;
+labelTransGuard: OPEN_GUARD guardExpr? CLOSE_LABEL ;
+labelTransSyncInput : (OPEN_SYNC (expr '?')? CLOSE_LABEL)
+                     {
+                         //flag to know if a transition is controllable (<expr> '?')
+                         this.isControllable = true;
 
+                         //Add to tmi array to remove transition on tmi mutants
+                         this.tmi.add(this.currentTransition);
 
-guardExpr  :   IDENTIFIER  # IdentifierGuard
+                         //If has a synchro input remove from possible transition to make an output on tad mutants
+                         //due to a transition can not has two synchro labels
+                         this.transitionsTad.get(currentEnv).get(currentSource).remove(currentTarget);
+
+                         //if it has at least one incoming action, then a mutant will be created without the target location
+                         if(!this.initLocationId.equals(this.currentTarget)){
+                             this.locationsSmi.get(this.currentEnv).add(this.currentTarget);
+                         }
+                     } ;
+labelTransSyncOutput: (OPEN_SYNC (expr '!')? CLOSE_LABEL)
+                    {
+
+                        //If has a synchro input remove from possible transition to make an output on tad mutants
+                        //due to a transition can not has two synchro labels
+                        this.transitionsTad.get(currentEnv).get(currentSource).remove(currentTarget);
+                    } ;
+labelTrans: '<' 'label' 'kind' EQUALS STRING coordinate?  '>' anything '</' 'label' '>' ;
+
+guardExpr
+//locals[boolean isClockId = false, boolean isClockIdAux= false]
+            :   IDENTIFIER
+            {
+                this.isClockRight |= this.clockEnv.get(this.currentEnv).contains(new ClockType($ctx.getText()));
+                this.isClockRight |= this.clockEnv.get("Global").contains(new ClockType($ctx.getText()));
+
+            }
+            # IdentifierGuard
             |   NAT   # NatGuard
             |   POINT    # DoubleGuard
             |   guardExpr '[' guardExpr ']'   # ArrayGuard
@@ -429,14 +508,48 @@ guardExpr  :   IDENTIFIER  # IdentifierGuard
                     assign=(ASSIGN | ':=' | '+=' | '-=' | '*=' | '/=' | '%=' | '|=' | '&amp;=' | '^=' | '&lt;&lt;=' | '&gt;&gt;=')
                         guardExpr  # AssignGuard
             |   unary=('-' | '+' | '!' | 'not') guardExpr  # UnaryGuard
-            |   guardExpr binary=( '&lt;' | '&lt;=' | '==' | '!=' | '&gt;=' | '&gt;' //LESS is '<' in guard channel. Greater is '>' in guard channel
-                                   ) guardExpr
+
+            |   guardExpr
                 {
-
-                this.num++;
-
+                    this.isClockLeft = this.isClockRight;
+                    this.isClockRight = false;
                 }
-                                   # ComparisonGuard
+                binary=( '&lt;' | '&lt;=' | '==' | '!=' | '&gt;=' | '&gt;' )//LESS is '<' in guard channel. Greater is '>' in guard channel
+
+                guardExpr
+                {
+                    String operator = ((ComparisonGuardContext) _localctx).binary.getText();
+
+                    if(this.isClockLeft ^ this.isClockRight){
+                        if(this.isClockLeft){
+                            if(operator.equals("&lt;") ||operator.equals("&lt;=")){
+                                this.clockLessNum++;
+                            }
+                            if(operator.equals("&gt;") ||operator.equals("&gt;=")){
+                                this.clockGreaterNum++;
+                            }
+
+                        }
+                        //then this.isClockRight is true
+                        else {
+                            if(operator.equals("&gt;") ||operator.equals("&gt;=")){
+                                this.clockLessNum++;
+                            }
+                            if(operator.equals("&lt;") ||operator.equals("&lt;=")){
+                                this.clockGreaterNum++;
+                            }
+                        }
+                        if(operator.equals("==")){
+                            this.clockEqualNum++;
+                        }
+                        if(operator.equals("!=")){
+                            this.clockDifferentNum++;
+                        }
+                    }
+                    this.isClockLeft = false;
+                    this.isClockRight = false;
+                }
+                # ComparisonGuard
             |   guardExpr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
                                     |  '|' | '^' | '&lt;&lt;' | '&gt;&gt;' | '&amp;&amp;' | '||'
                                     |  '&lt;?' | '&gt;?' | 'or' | 'and' | 'imply')
@@ -444,7 +557,7 @@ guardExpr  :   IDENTIFIER  # IdentifierGuard
             |   guardExpr '?' guardExpr ':' guardExpr
                                     # IfGuard
             |   guardExpr '.' IDENTIFIER   # DotGuard
-            |   guardExpr '(' guardArguments ')'# FuncGuard
+            |   IDENTIFIER '(' guardArguments ')'# FuncGuard
             |   'forall' '(' IDENTIFIER ':' guardType ')' guardExpr     # ForallGuard
             |   'exists' '(' IDENTIFIER ':' guardType ')' guardExpr     # ExistsGuard
             |   'sum' '(' IDENTIFIER ':' guardType ')' guardExpr        # SumGuard
@@ -471,6 +584,7 @@ source      :   ('<' 'source' 'ref' EQUALS STRING '/>')
 target      :   '<' 'target' 'ref' EQUALS STRING '/>'
                 {
                     this.currentTarget = $ctx.STRING().getText();
+                    this.transitionsTadNoSync.get(currentEnv).get(currentSource).remove(currentTarget);
                 }
                 ;
 

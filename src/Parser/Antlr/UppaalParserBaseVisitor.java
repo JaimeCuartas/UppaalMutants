@@ -1,8 +1,9 @@
-// Generated from C:/Users/57310/Documents/Github/XMLGrammar/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.8
+// Generated from C:/Users/57310/Documents/Github/XMLGrammar/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.9
 package Parser.Antlr;
 
     import java.util.HashMap;
     import java.util.HashSet;
+    import Parser.Mutation.*;
 
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -680,6 +681,13 @@ public class UppaalParserBaseVisitor<T> extends AbstractParseTreeVisitor<T> impl
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitName(UppaalParser.NameContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitColor(UppaalParser.ColorContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

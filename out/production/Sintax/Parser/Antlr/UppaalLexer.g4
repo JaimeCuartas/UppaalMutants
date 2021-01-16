@@ -75,6 +75,7 @@ DECLARATION :   'declaration' ;
 TEMPLATE    :   'template' ;
 BRANCHPOINT :   'branchpoint' ;
 LOCATION    :   'location' ;
+COLOR       :   'color' ;
 NAME        :   'name' ;
 PARAMETER   :   'parameter' ;
 INIT        :   'init' ;
@@ -150,7 +151,7 @@ mode EXPRESSIONS;
 
 
 SLASH_COMMENT       :   '/*' .*? '*/'           -> skip ;
-LINE_COMMENT        :   '//' ~( '\n' )*         -> skip ;
+LINE_COMMENT        :   '//' ~( '<'|'\n' )*         -> skip ;
 
 CLOSE_LABEL         :   '</' [ \t\r\n]* 'label' [ \t\r\n]* '>'      -> popMode ;
 

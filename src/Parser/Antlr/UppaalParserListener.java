@@ -1,8 +1,9 @@
-// Generated from C:/Users/57310/Documents/Github/XMLGrammar/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.8
+// Generated from C:/Users/57310/Documents/Github/XMLGrammar/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.9
 package Parser.Antlr;
 
     import java.util.HashMap;
     import java.util.HashSet;
+    import Parser.Mutation.*;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -1070,6 +1071,16 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitName(UppaalParser.NameContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link UppaalParser#color}.
+	 * @param ctx the parse tree
+	 */
+	void enterColor(UppaalParser.ColorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link UppaalParser#color}.
+	 * @param ctx the parse tree
+	 */
+	void exitColor(UppaalParser.ColorContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link UppaalParser#transition}.
 	 * @param ctx the parse tree
 	 */
@@ -1080,50 +1091,42 @@ public interface UppaalParserListener extends ParseTreeListener {
 	 */
 	void exitTransition(UppaalParser.TransitionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code LabelTransGuard}
-	 * labeled alternative in {@link UppaalParser#labelTransition}.
+	 * Enter a parse tree produced by {@link UppaalParser#labelTransGuard}.
 	 * @param ctx the parse tree
 	 */
 	void enterLabelTransGuard(UppaalParser.LabelTransGuardContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code LabelTransGuard}
-	 * labeled alternative in {@link UppaalParser#labelTransition}.
+	 * Exit a parse tree produced by {@link UppaalParser#labelTransGuard}.
 	 * @param ctx the parse tree
 	 */
 	void exitLabelTransGuard(UppaalParser.LabelTransGuardContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code LabelTransSyncInput}
-	 * labeled alternative in {@link UppaalParser#labelTransition}.
+	 * Enter a parse tree produced by {@link UppaalParser#labelTransSyncInput}.
 	 * @param ctx the parse tree
 	 */
 	void enterLabelTransSyncInput(UppaalParser.LabelTransSyncInputContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code LabelTransSyncInput}
-	 * labeled alternative in {@link UppaalParser#labelTransition}.
+	 * Exit a parse tree produced by {@link UppaalParser#labelTransSyncInput}.
 	 * @param ctx the parse tree
 	 */
 	void exitLabelTransSyncInput(UppaalParser.LabelTransSyncInputContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code LabelTransSyncOutput}
-	 * labeled alternative in {@link UppaalParser#labelTransition}.
+	 * Enter a parse tree produced by {@link UppaalParser#labelTransSyncOutput}.
 	 * @param ctx the parse tree
 	 */
 	void enterLabelTransSyncOutput(UppaalParser.LabelTransSyncOutputContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code LabelTransSyncOutput}
-	 * labeled alternative in {@link UppaalParser#labelTransition}.
+	 * Exit a parse tree produced by {@link UppaalParser#labelTransSyncOutput}.
 	 * @param ctx the parse tree
 	 */
 	void exitLabelTransSyncOutput(UppaalParser.LabelTransSyncOutputContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code labelTrans}
-	 * labeled alternative in {@link UppaalParser#labelTransition}.
+	 * Enter a parse tree produced by {@link UppaalParser#labelTrans}.
 	 * @param ctx the parse tree
 	 */
 	void enterLabelTrans(UppaalParser.LabelTransContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code labelTrans}
-	 * labeled alternative in {@link UppaalParser#labelTransition}.
+	 * Exit a parse tree produced by {@link UppaalParser#labelTrans}.
 	 * @param ctx the parse tree
 	 */
 	void exitLabelTrans(UppaalParser.LabelTransContext ctx);

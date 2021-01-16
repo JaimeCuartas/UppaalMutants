@@ -1,8 +1,9 @@
-// Generated from C:/Users/57310/Documents/Github/XMLGrammar/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.8
+// Generated from C:/Users/57310/Documents/Github/XMLGrammar/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.9
 package Parser.Antlr;
 
     import java.util.HashMap;
     import java.util.HashSet;
+    import Parser.Mutation.*;
 
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -639,35 +640,37 @@ public interface UppaalParserVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitName(UppaalParser.NameContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link UppaalParser#color}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitColor(UppaalParser.ColorContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link UppaalParser#transition}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitTransition(UppaalParser.TransitionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code LabelTransGuard}
-	 * labeled alternative in {@link UppaalParser#labelTransition}.
+	 * Visit a parse tree produced by {@link UppaalParser#labelTransGuard}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitLabelTransGuard(UppaalParser.LabelTransGuardContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code LabelTransSyncInput}
-	 * labeled alternative in {@link UppaalParser#labelTransition}.
+	 * Visit a parse tree produced by {@link UppaalParser#labelTransSyncInput}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitLabelTransSyncInput(UppaalParser.LabelTransSyncInputContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code LabelTransSyncOutput}
-	 * labeled alternative in {@link UppaalParser#labelTransition}.
+	 * Visit a parse tree produced by {@link UppaalParser#labelTransSyncOutput}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitLabelTransSyncOutput(UppaalParser.LabelTransSyncOutputContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code labelTrans}
-	 * labeled alternative in {@link UppaalParser#labelTransition}.
+	 * Visit a parse tree produced by {@link UppaalParser#labelTrans}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
