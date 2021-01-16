@@ -33,6 +33,7 @@ parser grammar UppaalParser;
 @parser::header {
     import java.util.HashMap;
     import java.util.HashSet;
+    import Parser.Mutation.*;
 }
 
 @parser::members { // add members to generated UppaalParser
@@ -52,10 +53,9 @@ parser grammar UppaalParser;
 
     //env will contain as key, "Global" for global declaration and the name of each template
     //env will contain as value, and array of string
-    //String[0] will contain the name of channel and String[1] will contain the dimensions of channel
 
-    private HashMap<String, ArrayList<String[]>> channelEnv = new HashMap<String, ArrayList<String[]>>();
-    private HashMap<String, HashSet<String>> clockEnv = new HashMap<String, HashSet<String>>();
+    private HashMap<String, ArrayList<ChanType>> channelEnv = new HashMap<String, ArrayList<ChanType>>();
+    private HashMap<String, HashSet<ClockType>> clockEnv = new HashMap<String, HashSet<ClockType>>();
     private String currentEnv;
     private boolean isFunctionEnv;
 
@@ -67,6 +67,10 @@ parser grammar UppaalParser;
     private HashMap<String, HashMap<String, HashSet<String>>> transitionsTad = new HashMap<String, HashMap<String, HashSet<String>>>();
     private String currentSource = "";
     private String currentTarget = "";
+
+    //transitionsTadNoSync is a structure similar to transitionsTad, this one will be used to make transitions between location that has not
+    //any transition
+    private HashMap<String, HashMap<String, HashSet<String>>> transitionsTadNoSync = new HashMap<String, HashMap<String, HashSet<String>>>();
 
     //locationsSmi is a <Key, Value > hashmap
     //                  <name_of_template_Key, <value>>
@@ -96,8 +100,8 @@ parser grammar UppaalParser;
     public UppaalParser(TokenStream input, int a){
         this(input);
         currentEnv = "Global";
-        channelEnv.put(currentEnv, new ArrayList<String[]>());
-        clockEnv.put(currentEnv, new HashSet<String>());
+        channelEnv.put(currentEnv, new ArrayList<ChanType>());
+        clockEnv.put(currentEnv, new HashSet<ClockType>());
         isFunctionEnv = false;
     }
 
@@ -107,10 +111,10 @@ parser grammar UppaalParser;
     public void setNum(int num){
         this.num = num;
     }
-    public HashMap<String, ArrayList<String[]>> getChannelEnv (){
+    public HashMap<String, ArrayList<ChanType>> getChannelEnv (){
         return this.channelEnv;
     }
-    public HashMap<String, HashSet<String>> getClockEnv (){
+    public HashMap<String, HashSet<ClockType>> getClockEnv (){
         return this.clockEnv;
     }
     public ArrayList<Integer> getTmi(){
@@ -119,6 +123,10 @@ parser grammar UppaalParser;
 
     public HashMap<String, HashMap<String, HashSet<String>>> getTransitionsTad(){
         return this.transitionsTad;
+    }
+
+    public HashMap<String, HashMap<String, HashSet<String>>> getTransitionsTadNoSync(){
+        return this.transitionsTadNoSync;
     }
 
     public HashMap<String, HashSet<String>> getLocationsSmi(){
@@ -226,15 +234,15 @@ variableDecl:   (type variableID (',' variableID)* ';')
 
                             for(UppaalParser.VariableIDContext variableId: variablesId){
                                 String chanId = variableId.IDENTIFIER().getText();
-                                String dimensions = Integer.toString(variableId.arrayDecl().size());
-                                channelEnv.get(currentEnv).add(new String[]{chanId, dimensions});
+                                int dimensions = variableId.arrayDecl().size();
+                                channelEnv.get(currentEnv).add(new ChanType(chanId, dimensions));
                             }
                         }
                         else if(typeId.equals("clock")){
                             List<UppaalParser.VariableIDContext> variablesId = $ctx.variableID();
                             for(UppaalParser.VariableIDContext variableId: variablesId){
                                 String clockId = variableId.IDENTIFIER().getText();
-                                clockEnv.get(currentEnv).add(clockId);
+                                clockEnv.get(currentEnv).add(new ClockType(clockId));
                             }
                         }
                         //env.get(currentEnv).add();
@@ -336,9 +344,10 @@ locals[ArrayList<String> namesLocations = new ArrayList<String>()]
                 {
                     if($ctx.name()!=null){
                         currentEnv = $ctx.name().anything().getText();
-                        channelEnv.put(currentEnv, new ArrayList<String[]>());
-                        clockEnv.put(currentEnv, new HashSet<String>());
+                        channelEnv.put(currentEnv, new ArrayList<ChanType>());
+                        clockEnv.put(currentEnv, new HashSet<ClockType>());
                         transitionsTad.put(currentEnv, new HashMap<String, HashSet<String>>());
+                        transitionsTadNoSync.put(currentEnv, new HashMap<String, HashSet<String>>());
                         locationsSmi.put(currentEnv, new HashSet<String>());
                     }
                 }
@@ -350,12 +359,12 @@ locals[ArrayList<String> namesLocations = new ArrayList<String>()]
                             String typeId = funcParameter.type().typeId().getText();
                             if(typeId.equals("chan")){
                                 String chanId = funcParameter.varFieldDecl().IDENTIFIER().getText();
-                                String dimensions = Integer.toString(funcParameter.varFieldDecl().arrayDecl().size());
-                                channelEnv.get(currentEnv).add(new String[]{chanId, dimensions});
+                                int dimensions = funcParameter.varFieldDecl().arrayDecl().size();
+                                channelEnv.get(currentEnv).add(new ChanType(chanId, dimensions));
                             }
                             else if (typeId.equals("clock")){
                                 String clockId = funcParameter.varFieldDecl().IDENTIFIER().getText();
-                                clockEnv.get(currentEnv).add(clockId);
+                                clockEnv.get(currentEnv).add(new ClockType(clockId));
                             }
                         }
                     }
@@ -370,10 +379,13 @@ locals[ArrayList<String> namesLocations = new ArrayList<String>()]
                     }
                     for(String locationSource: $namesLocations){
                         HashSet<String> target = new HashSet<String>();
+                        HashSet<String> targetNoSync = new HashSet<String>();
                         for(String locationTarget: $namesLocations){
                             target.add(locationTarget);
+                            targetNoSync.add(locationTarget);
                         }
                         this.transitionsTad.get(this.currentEnv).put(locationSource, target);
+                        this.transitionsTadNoSync.get(this.currentEnv).put(locationSource, targetNoSync);
                     }
 
                 }
@@ -477,8 +489,8 @@ guardExpr
 //locals[boolean isClockId = false, boolean isClockIdAux= false]
             :   IDENTIFIER
             {
-                this.isClockRight |= this.clockEnv.get(this.currentEnv).contains($ctx.getText());
-                this.isClockRight |= this.clockEnv.get("Global").contains($ctx.getText());
+                this.isClockRight |= this.clockEnv.get(this.currentEnv).contains(new ClockType($ctx.getText()));
+                this.isClockRight |= this.clockEnv.get("Global").contains(new ClockType($ctx.getText()));
 
             }
             # IdentifierGuard
@@ -572,6 +584,7 @@ source      :   ('<' 'source' 'ref' EQUALS STRING '/>')
 target      :   '<' 'target' 'ref' EQUALS STRING '/>'
                 {
                     this.currentTarget = $ctx.STRING().getText();
+                    this.transitionsTadNoSync.get(currentEnv).get(currentSource).remove(currentTarget);
                 }
                 ;
 

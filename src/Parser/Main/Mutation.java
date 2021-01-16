@@ -1,53 +1,22 @@
 package Parser.Main;
 import Parser.Antlr.*;
-import Parser.Types.*;
-import com.uppaal.model.core2.Template;
-import org.antlr.runtime.ANTLRInputStream;
+import Parser.Mutation.*;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
-
-import com.uppaal.engine.Parser;
 
 import java.io.*;
 import java.util.*;
 
 //////////////////////////////////////////////////////////////////////
-import com.uppaal.engine.CannotEvaluateException;
 import com.uppaal.engine.Engine;
 import com.uppaal.engine.EngineException;
-import com.uppaal.engine.EngineStub;
-import com.uppaal.engine.Problem;
-import com.uppaal.engine.QueryFeedback;
-import com.uppaal.engine.QueryResult;
-import com.uppaal.model.io2.XMLWriter;
-import com.uppaal.model.core2.Data2D;
-import com.uppaal.model.core2.DataSet2D;
-import com.uppaal.model.core2.Document;
-import com.uppaal.model.core2.Edge;
-import com.uppaal.model.core2.Location;
-import com.uppaal.model.core2.Property;
-import com.uppaal.model.core2.PrototypeDocument;
-import com.uppaal.model.core2.Query;
-import com.uppaal.model.core2.QueryData;
-import com.uppaal.model.core2.Template;
-import com.uppaal.model.system.SystemEdge;
-import com.uppaal.model.system.SystemLocation;
-import com.uppaal.model.system.symbolic.SymbolicState;
-import com.uppaal.model.system.symbolic.SymbolicTransition;
-import com.uppaal.model.system.symbolic.SymbolicTrace;
-import com.uppaal.model.system.concrete.ConcreteTrace;
-import com.uppaal.model.system.UppaalSystem;
+
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-import java.awt.geom.Point2D;
 
 //////////////////////////////////////////////////////////////////////
 
@@ -194,13 +163,14 @@ public class Mutation {
                     }
 
                     Iterator<String> iterTargets = targets.iterator();
+
                     for (int i = 0; i < targets.size(); i++) {
                         //Choose target
                         String target = iterTargets.next();
                         int chanPicked = 0;
-                        String chan = parser.getChannelEnv().get(outputEnv).get(chanPicked)[0];
-                        String dimensions = parser.getChannelEnv().get(outputEnv).get(chanPicked)[1];
-                        String output = chan.concat("[0]".repeat(Integer.parseInt(dimensions))).concat("!");
+                        String chan = parser.getChannelEnv().get(outputEnv).get(chanPicked).getName();
+                        int dimensions = parser.getChannelEnv().get(outputEnv).get(chanPicked).getDimension();
+                        String output = chan.concat("[0]".repeat(dimensions)).concat("!");
                         threads.add(new Thread(() -> {
                             UppaalVisitor eval = new UppaalVisitor(-1, -1, template, source, target, output, "", parser.getClockEnv(), -1, -1, -1);
                             FileWriter myWriter = null;
