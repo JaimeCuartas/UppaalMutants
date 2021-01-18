@@ -56,20 +56,58 @@ public class MutantController {
         this.tree = this.parser.model();
     }
 
+    public String infoMutants(){
+        String info = "Number of mutants:\n";
+        info = info.concat("tmi ").concat(Integer.toString(this.threadsTmi.size())).concat("\n");
+        info = info.concat("tad ").concat(Integer.toString(this.threadsTad.size())).concat("\n");
+        info = info.concat("smi ").concat(Integer.toString(this.threadsSmi.size())).concat("\n");
+        info = info.concat("cxl ").concat(Integer.toString(this.threadsCxl.size())).concat("\n");
+        info = info.concat("cxs ").concat(Integer.toString(this.threadsCxs.size())).concat("\n");
+        info = info.concat("ccn ").concat(Integer.toString(this.threadsCcn.size())).concat("\n");
+
+        info = info.concat("Total ").concat(Integer.toString(
+                this.threadsTmi.size()
+                +this.threadsTad.size()
+                +this.threadsSmi.size()
+                +this.threadsCxl.size()
+                +this.threadsCxs.size()
+                +this.threadsCcn.size()
+        )).concat("\n");
+        return info;
+    }
+
     public String verifyMutants(String pathIn, String pathVerifyTa, String pathQuery) throws IOException, InterruptedException {
         String log = "";
 
-        log = log.concat(Integer.toString(killedMutants(this.threadsTmi, pathIn, pathVerifyTa, pathQuery)));
-        log = log.concat("\n");
-        log = log.concat(Integer.toString(killedMutants(this.threadsTad, pathIn, pathVerifyTa, pathQuery)));
-        log = log.concat("\n");
-        log = log.concat(Integer.toString(killedMutants(this.threadsSmi, pathIn, pathVerifyTa, pathQuery)));
-        log = log.concat("\n");
-        log = log.concat(Integer.toString(killedMutants(this.threadsCxl, pathIn, pathVerifyTa, pathQuery)));
-        log = log.concat("\n");
-        log = log.concat(Integer.toString(killedMutants(this.threadsCxs, pathIn, pathVerifyTa, pathQuery)));
-        log = log.concat("\n");
-        log = log.concat(Integer.toString(killedMutants(this.threadsCcn, pathIn, pathVerifyTa, pathQuery)));
+        log = log.concat("Tmi killed ");
+        int killedTmi =  killedMutants(this.threadsTmi, pathIn, pathVerifyTa, pathQuery);
+        int killedTad = killedMutants(this.threadsTad, pathIn, pathVerifyTa, pathQuery);
+        int killedSmi = killedMutants(this.threadsSmi, pathIn, pathVerifyTa, pathQuery);
+        int killedCxl = killedMutants(this.threadsCxl, pathIn, pathVerifyTa, pathQuery);
+        int killedCxs = killedMutants(this.threadsCxs, pathIn, pathVerifyTa, pathQuery);
+        int killedCcn = killedMutants(this.threadsCcn, pathIn, pathVerifyTa, pathQuery);
+
+        log = log.concat(Integer.toString(killedTmi));
+        log = log.concat("\nTad killed ");
+        log = log.concat(Integer.toString(killedTad));
+        log = log.concat("\nSmi killed ");
+        log = log.concat(Integer.toString(killedSmi));
+        log = log.concat("\nCxl killed ");
+        log = log.concat(Integer.toString(killedCxl));
+        log = log.concat("\nCxs killed ");
+        log = log.concat(Integer.toString(killedCxs));
+        log = log.concat("\nCcn killed ");
+        log = log.concat(Integer.toString(killedCcn));
+        log = log.concat("\nScore ").concat(Integer.toString(
+                killedTmi+killedTad+killedCxl+killedCxs+killedCcn
+                )).concat("/").concat(Integer.toString(
+                        this.threadsTmi.size()
+                        +this.threadsTad.size()
+                        +this.threadsSmi.size()
+                        +this.threadsCxl.size()
+                        +this.threadsCxs.size()
+                        +this.threadsCcn.size()
+        ));
         log = log.concat("\n");
         return log;
     }

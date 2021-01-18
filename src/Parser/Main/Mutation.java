@@ -1,6 +1,7 @@
 package Parser.Main;
 import Parser.Antlr.*;
 import Parser.Errors.NoModelError;
+import Parser.Errors.NoVerifyTaError;
 import Parser.Mutation.*;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -19,6 +20,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 
 //////////////////////////////////////////////////////////////////////
 
@@ -27,22 +29,41 @@ public class Mutation {
 
     public static void main(String[] args)  {
 
-        long startTime = System.nanoTime();
+        long startTime = System.currentTimeMillis();
+        String output = "";
         OptionsArgs opt = new OptionsArgs();
+
 
         try{
             opt.parseArgs(args);
         } catch (ParseException e) {
             opt.printHelp();
             System.exit(1);
-        }
-        catch (NoModelError e) {
+        } catch (NoModelError e) {
             System.out.println("-m,--model <file> is a required option" +
                     "\nTry `app -h' for more information" +
                     "\nPress enter to exit.");
             Scanner scan = new Scanner(System.in);
             scan.nextLine();
             System.exit(1);
+        } catch (NoVerifyTaError e) {
+            System.out.println("-m,--model <file> is a required option to score" +
+                    "\nDo you want to generate the mutants without scoring? (y/n)\n");
+            Scanner scan = new Scanner(System.in);
+            String response = scan.next();
+            while (!response.equalsIgnoreCase("y") && !response.equalsIgnoreCase("n")) {
+                System.out.println("\nInvalid response. Try again.");
+                response = scan.next();
+            }
+            if (response.equalsIgnoreCase("n")) {
+                System.out.println("\nTry `app -h' for more information");
+                System.out.println("\nPress enter to exit.");
+                scan = new Scanner(System.in);
+                scan.nextLine();
+                System.exit(1);
+            } else {
+                System.out.println("\nFine. Mutants without score will be generated");
+            }
         }
 
         MutantController controller = null;
@@ -57,13 +78,24 @@ public class Mutation {
             System.exit(1);
         }
 
-        String here = System.getProperty("user.dir");
-        String idFile = Long.toString(System.currentTimeMillis());
-        String path = here.concat(File.separator + "Mutation"+ idFile);
+        String path = opt.getPathMutants();
+
+        if(opt.getPathMutants().equals("")){
+            String here = System.getProperty("user.dir");
+            String idFile = Long.toString(System.currentTimeMillis());
+             path = here.concat(File.separator + "Mutation"+ idFile);
+        }
+
+        System.out.println("mutants will be created in this path: "+path);
 
         File myFile = new File(path);
-
-        if(!myFile.mkdirs()){
+        myFile.mkdirs();
+        if(!myFile.exists()){
+            System.out.println("there was an error creating the directory indicated " +
+                    "\nwith the path option [-p <path>]. You may have indicated a wrong route. " +
+                    "\nPress enter to exit.");
+            Scanner scan = new Scanner(System.in);
+            scan.nextLine();
             System.exit(1);
         }
 
@@ -75,18 +107,44 @@ public class Mutation {
             e.printStackTrace();
             System.exit(1);
         }
+
+        output = output.concat(controller.infoMutants());
+
         try {
-            String a = controller.verifyMutants(path,
-                    "C:\\Users\\57310\\Desktop\\uppaal-4.1.24\\bin-Windows\\verifyta.exe",
-                    opt.getQueryFile());
-            System.out.println(a);
+            if(!opt.getVerifyTaFile().equals("")){
+                output =output.concat(
+                        controller.verifyMutants(
+                                path,
+                                opt.getVerifyTaFile(),
+                                opt.getQueryFile()
+                        )
+                );
+            }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
-        long endTime = System.nanoTime();
+        long endTime = System.currentTimeMillis();
 
         long duration = (endTime - startTime);
-        System.out.println(duration);
+
+        output = output.concat("Time execution: " +
+                String.format("%d min, %d sec",
+                TimeUnit.MILLISECONDS.toMinutes(duration),
+                TimeUnit.MILLISECONDS.toSeconds(duration) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)))
+        );
+        try {
+            if(opt.isLog()){
+                FileWriter myWriter = null;
+                myWriter = new FileWriter(new File(myFile, "log"));
+                myWriter.write(output);
+                myWriter.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(output);
+
     }
 }

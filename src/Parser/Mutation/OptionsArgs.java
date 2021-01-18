@@ -1,5 +1,5 @@
 package Parser.Mutation;
-import Parser.Errors.NoModelError;
+import Parser.Errors.*;
 
 import org.apache.commons.cli.*;
 
@@ -8,7 +8,9 @@ import java.util.Scanner;
 public class OptionsArgs {
     private String modelFile;
     private String queryFile;
-    private String logFile;
+    private String verifyTaFile;
+    private String pathMutants;
+    private boolean log;
     private boolean tmi;
     private boolean tad;
     private boolean smi;
@@ -21,7 +23,9 @@ public class OptionsArgs {
         this.options = new Options();
         this.modelFile = "";
         this.queryFile = "";
-        this.logFile = "";
+        this.verifyTaFile = "";
+        this.pathMutants = "";
+        this.log = false;
         this.tmi = false;
         this.tad = false;
         this.smi = false;
@@ -30,66 +34,85 @@ public class OptionsArgs {
         this.ccn = false;
     }
 
-    public void parseArgs(String[] args) throws ParseException, NoModelError {
+    public void parseArgs(String[] args) throws ParseException, NoModelError, NoVerifyTaError {
 
         Option modelOpt = Option.builder("m")
                 .longOpt("model")
                 .hasArg()
                 .desc("Required argument, specifies the file containing the model to mutate.")
-                .argName("file").build();
+                .argName("path").build();
         Option queryOpt = Option.builder("q")
                 .longOpt("query")
                 .hasArg()
                 .desc("Specifies the query file containing the properties of the model.")
-                .argName("file").build();
-        Option logOpt = Option.builder("l")
-                .longOpt("log")
+                .argName("path").build();
+
+        Option verifyOpt = Option.builder("v")
+                .longOpt("verifyTa")
                 .hasArg()
-                .desc("Produced a file that contains a record of generated mutants.")
-                .argName("file").build();
+                .desc("Specifies the query file containing the properties of the model.")
+                .argName("path").build();
 
-        Option help = new Option( "h", "help", false, "Shows this help screen.");
-        Option tmi = new Option ( "tmi" , false, "Enable tmi operator. Transition MIssing operator removes a transition.");
-        Option tad = new Option ( "tad" , false, "Enable tad operator. Transition ADd operator adds a transition between two states.");
-        Option smi = new Option ( "smi" , false, "Enable smi operator. State MIssing operator removes a state (other than the initial state) and all its incoming/outgoing transitions.");
-        Option cxl = new Option ( "cxl" , false, "Enable cxl operator. Constant eXchange L operator increases the constant of a clock constraint.");
-        Option cxs = new Option ( "cxs" , false, "Enable cxs operator. Constant eXchange S operator decreases the constant of a clock constraint.");
-        Option ccn = new Option ( "ccn" , false, "Enable ccn operator. Clock Constraint Negation operator negates a clock constraint.");
+        Option pathOpt = Option.builder("p")
+                .longOpt("pathMutants")
+                .hasArg()
+                .desc("Specifies the folder path where the mutants will be located and the log file (if it is indicated).")
+                .argName("path").build();
 
-        options.addOption(help);
+        Option helpOpt = new Option( "h", "help", false, "Shows this help screen.");
+        Option logOpt = new Option( "l", "log", false, "Produce a file that contains a record of generated mutants in mutant folder.");
+        Option tmiOpt = new Option ( "tmi" , false, "Enable tmi operator. Transition MIssing operator removes a transition.");
+        Option tadOpt = new Option ( "tad" , false, "Enable tad operator. Transition ADd operator adds a transition between two states.");
+        Option smiOpt = new Option ( "smi" , false, "Enable smi operator. State MIssing operator removes a state (other than the initial state) and all its incoming/outgoing transitions.");
+        Option cxlOpt = new Option ( "cxl" , false, "Enable cxl operator. Constant eXchange L operator increases the constant of a clock constraint.");
+        Option cxsOpt = new Option ( "cxs" , false, "Enable cxs operator. Constant eXchange S operator decreases the constant of a clock constraint.");
+        Option ccnOpt = new Option ( "ccn" , false, "Enable ccn operator. Clock Constraint Negation operator negates a clock constraint.");
+
+        options.addOption(helpOpt);
         options.addOption(modelOpt);
         options.addOption(queryOpt);
+        options.addOption(verifyOpt);
+        options.addOption(pathOpt);
         options.addOption(logOpt);
-        options.addOption(tmi);
-        options.addOption(tad);
-        options.addOption(smi);
-        options.addOption(cxl);
-        options.addOption(cxs);
-        options.addOption(ccn);
+        options.addOption(tmiOpt);
+        options.addOption(tadOpt);
+        options.addOption(smiOpt);
+        options.addOption(cxlOpt);
+        options.addOption(cxsOpt);
+        options.addOption(ccnOpt);
 
         CommandLineParser argsParser = new DefaultParser();
         CommandLine line = argsParser.parse(options, args);
         if(!line.hasOption("m")){
             throw new NoModelError("No model file option to mutate");
         }
+
         if(line.hasOption("m")){
-            modelFile = line.getOptionValue("m");
+            this.modelFile = line.getOptionValue("m");
         }
         if(line.hasOption("q")){
-            queryFile = line.getOptionValue("q");
+            this.queryFile = line.getOptionValue("q");
         }
-        if(line.hasOption("l")){
-            logFile = line.getOptionValue("l");
+        if(line.hasOption("p")){
+            this.pathMutants = line.getOptionValue("p");
         }
         if(line.hasOption("h")){
             this.printHelp();
         }
+        this.log = line.hasOption("log");
         this.tmi = line.hasOption("tmi");
         this.tad = line.hasOption("tad");
         this.smi = line.hasOption("smi");
         this.cxl = line.hasOption("cxl");
         this.cxs = line.hasOption("cxs");
         this.ccn = line.hasOption("ccn");
+
+        if(!line.hasOption("v")){
+            throw new NoVerifyTaError("no VerifyTa path specified");
+        }
+        if(line.hasOption("v")){
+            this.verifyTaFile = line.getOptionValue("v");
+        }
     }
 
     public void printHelp(){
@@ -116,12 +139,36 @@ public class OptionsArgs {
         this.queryFile = queryFile;
     }
 
-    public String getLogFile() {
-        return logFile;
+    public String getPathMutants() {
+        return pathMutants;
     }
 
-    public void setLogFile(String logFile) {
-        this.logFile = logFile;
+    public void setPathMutants(String pathMutants) {
+        this.pathMutants = pathMutants;
+    }
+
+    public String getVerifyTaFile() {
+        return verifyTaFile;
+    }
+
+    public void setVerifyTaFile(String verifyTaFile) {
+        this.verifyTaFile = verifyTaFile;
+    }
+
+    public boolean isLog() {
+        return log;
+    }
+
+    public void setLog(boolean log) {
+        this.log = log;
+    }
+
+    public Options getOptions() {
+        return options;
+    }
+
+    public void setOptions(Options options) {
+        this.options = options;
     }
 
     public boolean isTmi() {
