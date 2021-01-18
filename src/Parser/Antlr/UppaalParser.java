@@ -190,10 +190,17 @@ public class UppaalParser extends Parser {
 	    //env will contain as key, "Global" for global declaration and the name of each template
 	    //env will contain as value, and array of string
 
-	    private HashMap<String, ArrayList<ChanType>> channelEnv = new HashMap<String, ArrayList<ChanType>>();
-	    private HashMap<String, HashSet<ClockType>> clockEnv = new HashMap<String, HashSet<ClockType>>();
-	    private String currentEnv;
-	    private boolean isFunctionEnv;
+
+	    private String currentEnv = "Global";
+	    private HashMap<String, ArrayList<ChanType>> channelEnv = new HashMap<String, ArrayList<ChanType>>()
+	        {{
+	            put(currentEnv, new ArrayList<ChanType>());
+	        }};
+	    private HashMap<String, HashSet<ClockType>> clockEnv = new HashMap<String, HashSet<ClockType>>()
+	        {{
+	            put(currentEnv, new HashSet<ClockType>());
+	        }};
+	    private boolean isFunctionEnv = false;
 
 	    //transitionsTad is a <Key, Value> hashmap
 	    //                    <name_of_template_Key, <key, value>>
@@ -232,14 +239,6 @@ public class UppaalParser extends Parser {
 	    private int numCxs = 0;
 	    //CCN Clock Constraint Negation operator negates a clock constraint.
 	    private int numCcn = 0;
-
-	    public UppaalParser(TokenStream input, int a){
-	        this(input);
-	        currentEnv = "Global";
-	        channelEnv.put(currentEnv, new ArrayList<ChanType>());
-	        clockEnv.put(currentEnv, new HashSet<ClockType>());
-	        isFunctionEnv = false;
-	    }
 
 	    public int getNum(){
 	        return this.num;
