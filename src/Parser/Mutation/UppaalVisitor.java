@@ -897,8 +897,8 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitIdentifierGuard(UppaalParser.IdentifierGuardContext ctx) {
-        this.isClockRight |= this.clockEnv.get(this.currentEnv).contains(ctx.IDENTIFIER().getText());
-        this.isClockRight |= this.clockEnv.get("Global").contains(ctx.IDENTIFIER().getText());
+        this.isClockRight |= this.clockEnv.get(this.currentEnv).contains(new ClockType(ctx.IDENTIFIER().getText()));
+        this.isClockRight |= this.clockEnv.get("Global").contains(new ClockType(ctx.IDENTIFIER().getText()));
         return ctx.IDENTIFIER().getText();
     }
 
