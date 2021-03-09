@@ -12,16 +12,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class MutantController {
 
+public class MutantController {
     private boolean tmi;
     private boolean tad;
+    private String tadSync;
+    private boolean tadRandomSync;
     private boolean smi;
     private boolean cxl;
     private boolean cxs;
     private boolean ccn;
     private ArrayList<Thread> threadsTmi;
     private ArrayList<Thread> threadsTad;
+    private ArrayList<Thread> threadsTadSync;
+    private ArrayList<Thread> threadsTadRandomSync;
     private ArrayList<Thread> threadsSmi;
     private ArrayList<Thread> threadsCxl;
     private ArrayList<Thread> threadsCxs;
@@ -31,11 +35,13 @@ public class MutantController {
 
     public MutantController(
             String modelFile,
-            boolean tmi, boolean tad, boolean smi,
+            boolean tmi, boolean tad, String tadSync, boolean tadRandomSync, boolean smi,
             boolean cxl, boolean cxs, boolean ccn) throws IOException {
 
         this.tmi = tmi;
         this.tad = tad;
+        this.tadSync = tadSync;
+        this.tadRandomSync = tadRandomSync;
         this.smi = smi;
         this.cxl = cxl;
         this.cxs = cxs;
@@ -43,6 +49,8 @@ public class MutantController {
 
         this.threadsTmi = new ArrayList<>();
         this.threadsTad = new ArrayList<>();
+        this.threadsTadSync = new ArrayList<>();
+        this.threadsTadRandomSync = new ArrayList<>();
         this.threadsSmi = new ArrayList<>();
         this.threadsCxl = new ArrayList<>();
         this.threadsCxs = new ArrayList<>();
@@ -60,6 +68,8 @@ public class MutantController {
         String info = "Number of mutants:\n";
         info = info.concat("tmi ").concat(Integer.toString(this.threadsTmi.size())).concat("\n");
         info = info.concat("tad ").concat(Integer.toString(this.threadsTad.size())).concat("\n");
+        info = info.concat("tadSync ").concat(Integer.toString(this.threadsTadSync.size())).concat("\n");
+        info = info.concat("tadRandomSync ").concat(Integer.toString(this.threadsTadRandomSync.size())).concat("\n");
         info = info.concat("smi ").concat(Integer.toString(this.threadsSmi.size())).concat("\n");
         info = info.concat("cxl ").concat(Integer.toString(this.threadsCxl.size())).concat("\n");
         info = info.concat("cxs ").concat(Integer.toString(this.threadsCxs.size())).concat("\n");
@@ -68,6 +78,8 @@ public class MutantController {
         info = info.concat("Total ").concat(Integer.toString(
                 this.threadsTmi.size()
                 +this.threadsTad.size()
+                +this.threadsTadSync.size()
+                +this.threadsTadRandomSync.size()
                 +this.threadsSmi.size()
                 +this.threadsCxl.size()
                 +this.threadsCxs.size()
@@ -78,18 +90,23 @@ public class MutantController {
 
     public String verifyMutants(String pathIn, String pathVerifyTa, String pathQuery) throws IOException, InterruptedException {
         String log = "";
-
-        log = log.concat("Tmi killed ");
         int killedTmi =  killedMutants(this.threadsTmi, pathIn, pathVerifyTa, pathQuery);
         int killedTad = killedMutants(this.threadsTad, pathIn, pathVerifyTa, pathQuery);
+        int killedTadSync = killedMutants(this.threadsTadSync, pathIn, pathVerifyTa, pathQuery);
+        int killedTadRandomSync = killedMutants(this.threadsTadRandomSync, pathIn, pathVerifyTa, pathQuery);
         int killedSmi = killedMutants(this.threadsSmi, pathIn, pathVerifyTa, pathQuery);
         int killedCxl = killedMutants(this.threadsCxl, pathIn, pathVerifyTa, pathQuery);
         int killedCxs = killedMutants(this.threadsCxs, pathIn, pathVerifyTa, pathQuery);
         int killedCcn = killedMutants(this.threadsCcn, pathIn, pathVerifyTa, pathQuery);
 
+        log = log.concat("Tmi killed ");
         log = log.concat(Integer.toString(killedTmi));
         log = log.concat("\nTad killed ");
         log = log.concat(Integer.toString(killedTad));
+        log = log.concat("\ntadSync killed ");
+        log = log.concat(Integer.toString(killedTadSync));
+        log = log.concat("\ntadRandomSync killed ");
+        log = log.concat(Integer.toString(killedTadRandomSync));
         log = log.concat("\nSmi killed ");
         log = log.concat(Integer.toString(killedSmi));
         log = log.concat("\nCxl killed ");
@@ -99,10 +116,12 @@ public class MutantController {
         log = log.concat("\nCcn killed ");
         log = log.concat(Integer.toString(killedCcn));
         log = log.concat("\nScore ").concat(Integer.toString(
-                killedTmi+killedTad+killedCxl+killedCxs+killedCcn
+                killedTmi+killedTad+killedTadSync+killedTadRandomSync+killedSmi+killedCxl+killedCxs+killedCcn
                 )).concat("/").concat(Integer.toString(
                         this.threadsTmi.size()
                         +this.threadsTad.size()
+                        +this.threadsTadSync.size()
+                        +this.threadsTadRandomSync.size()
                         +this.threadsSmi.size()
                         +this.threadsCxl.size()
                         +this.threadsCxs.size()
@@ -143,6 +162,8 @@ public class MutantController {
     public void runOperators(){
         this.runTmi();
         this.runTad();
+        this.runTadSync();
+        this.runTadRandomSync();
         this.runSmi();
         this.runCxl();
         this.runCxs();
@@ -156,6 +177,16 @@ public class MutantController {
     }
     public void runTad(){
         for (Thread mutantThread: this.threadsTad){
+            mutantThread.start();
+        }
+    }
+    public void runTadSync(){
+        for (Thread mutantThread: this.threadsTadSync){
+            mutantThread.start();
+        }
+    }
+    public void runTadRandomSync(){
+        for (Thread mutantThread: this.threadsTadRandomSync){
             mutantThread.start();
         }
     }
@@ -187,6 +218,8 @@ public class MutantController {
     public void joinOperators() throws InterruptedException {
         this.joinTmi();
         this.joinTad();
+        this.joinTadSync();
+        this.joinTadRandomSync();
         this.joinSmi();
         this.joinCxl();
         this.joinCxs();
@@ -200,6 +233,16 @@ public class MutantController {
     }
     public void joinTad() throws InterruptedException {
         for (Thread mutantThread: this.threadsTad){
+            mutantThread.join();
+        }
+    }
+    public void joinTadSync() throws InterruptedException {
+        for (Thread mutantThread: this.threadsTadSync){
+            mutantThread.join();
+        }
+    }
+    public void joinTadRandomSync() throws  InterruptedException {
+        for (Thread mutantThread: this.threadsTadRandomSync){
             mutantThread.join();
         }
     }
@@ -235,11 +278,17 @@ public class MutantController {
         if(this.tad){
             this.tadOperator(fileIn);
         }
+        if(this.tadSync!=""){
+            this.tadSyncOperator(fileIn);
+        }
+        if(this.tadRandomSync){
+            this.tadRandomSyncOperator(fileIn);
+        }
         if(this.smi){
             this.smiOperator(fileIn);
         }
         if(this.cxl){
-            this.cxsOperator(fileIn);
+            this.cxlOperator(fileIn);
         }
         if (this.cxs){
             this.cxsOperator(fileIn);
@@ -252,7 +301,7 @@ public class MutantController {
     public void tmiOperator(File fileIn){
         for (int i : parser.getTmi()) {
             threadsTmi.add(new Thread(() -> {
-                UppaalVisitor eval = new UppaalVisitor(-1, i, "", "", "", "", "", parser.getClockEnv(), -1, -1, -1);
+                UppaalVisitor eval = new UppaalVisitor(i, "", "", "", "", "", parser.getClockEnv(), -1, -1, -1);
                 FileWriter myWriter = null;
                 try {
                     myWriter = new FileWriter(new File(fileIn, "tmi" + i + ".xml"));
@@ -264,7 +313,76 @@ public class MutantController {
             }, "tmi" + i + ".xml"));
         }
     }
+
+    public void tadOperator(File fileIn){
+        //Each template
+        for (String template : parser.getTransitionsTad().keySet()) {
+            //Each source
+            for (String source : this.parser.getTransitionsTadNoSync().get(template).keySet()) {
+                HashSet<String> targets = this.parser.getTransitionsTadNoSync().get(template).get(source);
+                //If source does not have an available target, then continue
+                if (targets.isEmpty()) {
+                    continue;
+                }
+
+                Iterator<String> iterTargets = targets.iterator();
+
+                for (int i = 0; i < targets.size(); i++) {
+                    //Choose target
+                    String target = iterTargets.next();
+
+                    this.threadsTad.add(new Thread(() -> {
+                        UppaalVisitor eval = new UppaalVisitor(-1, template, source, target, "", "", parser.getClockEnv(), -1, -1, -1);
+                        FileWriter myWriter = null;
+                        try {
+                            myWriter = new FileWriter(new File(fileIn, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                            myWriter.write(eval.visit(this.tree));
+                            myWriter.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                }
+            }
+        }
+    }
+
     public void tadSyncOperator(File fileIn){
+        //Each template
+        for (String template : parser.getTransitionsTad().keySet()) {
+            //Each source
+            for (String source : this.parser.getTransitionsTad().get(template).keySet()) {
+                HashSet<String> targets = this.parser.getTransitionsTad().get(template).get(source);
+                //If source does not have an available target, then continue
+                if (targets.isEmpty()) {
+                    continue;
+                }
+
+
+                Iterator<String> iterTargets = targets.iterator();
+
+                for (int i = 0; i < targets.size(); i++) {
+                    //Choose target
+                    String target = iterTargets.next();
+
+                    String output = this.tadSync.concat("!");
+                    this.threadsTadSync.add(new Thread(() -> {
+                        UppaalVisitor eval = new UppaalVisitor(-1, template, source, target, output, "", parser.getClockEnv(), -1, -1, -1);
+                        FileWriter myWriter = null;
+                        try {
+                            myWriter = new FileWriter(new File(fileIn, "tadSync".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                            myWriter.write(eval.visit(this.tree));
+                            myWriter.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }, "tadSync".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                }
+            }
+        }
+    }
+
+    public void tadRandomSyncOperator(File fileIn){
         for (String template : parser.getTransitionsTad().keySet()) {
             String outputEnv = "";
             if (!this.parser.getChannelEnv().get("Global").isEmpty()) {
@@ -289,60 +407,31 @@ public class MutantController {
                     int chanPicked = 0;
                     String chan = this.parser.getChannelEnv().get(outputEnv).get(chanPicked).getName();
                     int dimensions = this.parser.getChannelEnv().get(outputEnv).get(chanPicked).getDimension();
-                    String output = chan.concat("[0]".repeat(dimensions)).concat("!");
-                    this.threadsTad.add(new Thread(() -> {
-                        UppaalVisitor eval = new UppaalVisitor(-1, -1, template, source, target, output, "", parser.getClockEnv(), -1, -1, -1);
+                    for (int j=0; j<dimensions; j++){
+                        chan = chan.concat("[0]");
+                    }
+                    String output = chan.concat("!");
+                    this.threadsTadRandomSync.add(new Thread(() -> {
+                        UppaalVisitor eval = new UppaalVisitor(-1, template, source, target, output, "", parser.getClockEnv(), -1, -1, -1);
                         FileWriter myWriter = null;
                         try {
-                            myWriter = new FileWriter(new File(fileIn, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                                myWriter = new FileWriter(new File(fileIn, "tadRandomSync".concat(source.concat(target).replace("\"", "")).concat(".xml")));
                             myWriter.write(eval.visit(this.tree));
                             myWriter.close();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                    }, "tadRandomSync".concat(source.concat(target).replace("\"", "")).concat(".xml")));
                 }
             }
         }
     }
 
-    public void tadOperator(File fileIn){
-        //Each template
-        for (String template : parser.getTransitionsTad().keySet()) {
-            //Each source
-            for (String source : this.parser.getTransitionsTadNoSync().get(template).keySet()) {
-                HashSet<String> targets = this.parser.getTransitionsTadNoSync().get(template).get(source);
-                //If source does not have an available target, then continue
-                if (targets.isEmpty()) {
-                    continue;
-                }
-
-                Iterator<String> iterTargets = targets.iterator();
-
-                for (int i = 0; i < targets.size(); i++) {
-                    //Choose target
-                    String target = iterTargets.next();
-
-                    this.threadsTad.add(new Thread(() -> {
-                        UppaalVisitor eval = new UppaalVisitor(-1, -1, template, source, target, "", "", parser.getClockEnv(), -1, -1, -1);
-                        FileWriter myWriter = null;
-                        try {
-                            myWriter = new FileWriter(new File(fileIn, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
-                            myWriter.write(eval.visit(this.tree));
-                            myWriter.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
-                }
-            }
-        }
-    }
     public void smiOperator(File fileIn){
         for (String template : this.parser.getLocationsSmi().keySet()) {
             for (String idLocation : this.parser.getLocationsSmi().get(template)) {
                 threadsSmi.add(new Thread(() -> {
-                    UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", idLocation, parser.getClockEnv(), -1, -1, -1);
+                    UppaalVisitor eval = new UppaalVisitor(-1, "", "", "", "", idLocation, parser.getClockEnv(), -1, -1, -1);
                     FileWriter myWriter = null;
                     try {
                         myWriter = new FileWriter(new File(fileIn, "smi".concat(template).concat((idLocation).replace("\"", "")).concat(".xml")));
@@ -359,7 +448,7 @@ public class MutantController {
         for(int i=1; i<=this.parser.getNumCxl(); i++){
             int idCxl = i;
             this.threadsCxl.add(new Thread(()->{
-                UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", "", parser.getClockEnv(), idCxl, -1, -1);
+                UppaalVisitor eval = new UppaalVisitor(-1, "", "", "", "", "", parser.getClockEnv(), idCxl, -1, -1);
                 FileWriter myWriter = null;
                 try {
                     myWriter = new FileWriter(new File(fileIn, "cxl"+ idCxl +".xml"));
@@ -375,7 +464,7 @@ public class MutantController {
         for(int i=1; i<=this.parser.getNumCxs(); i++){
             int idCxs = i;
             this.threadsCxs.add(new Thread(()->{
-                UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", "", parser.getClockEnv(), -1, idCxs, -1);
+                UppaalVisitor eval = new UppaalVisitor(-1, "", "", "", "", "", parser.getClockEnv(), -1, idCxs, -1);
                 FileWriter myWriter = null;
                 try {
                     myWriter = new FileWriter(new File(fileIn, "cxs"+ idCxs +".xml"));
@@ -391,7 +480,7 @@ public class MutantController {
         for(int i=1; i<=parser.getNumCcn(); i++){
             int idCcn = i;
             this.threadsCcn.add(new Thread(()->{
-                UppaalVisitor eval = new UppaalVisitor(-1, -1, "", "", "", "", "", parser.getClockEnv(), -1, -1, idCcn);
+                UppaalVisitor eval = new UppaalVisitor(-1, "", "", "", "", "", parser.getClockEnv(), -1, -1, idCcn);
                 FileWriter myWriter = null;
                 try {
                     myWriter = new FileWriter(new File(fileIn, "ccn"+ idCcn +".xml"));

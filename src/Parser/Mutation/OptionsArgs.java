@@ -13,6 +13,8 @@ public class OptionsArgs {
     private boolean log;
     private boolean tmi;
     private boolean tad;
+    private String tadSync;
+    private boolean tadRandomSync;
     private boolean smi;
     private boolean cxl;
     private boolean cxs;
@@ -28,6 +30,8 @@ public class OptionsArgs {
         this.log = false;
         this.tmi = false;
         this.tad = false;
+        this.tadSync = "";
+        this.tadRandomSync = false;
         this.smi = false;
         this.cxl = false;
         this.cxs = false;
@@ -50,7 +54,7 @@ public class OptionsArgs {
         Option verifyOpt = Option.builder("v")
                 .longOpt("verifyTa")
                 .hasArg()
-                .desc("Specifies the query file containing the properties of the model.")
+                .desc("Specifies the path where the uppaal verifyta file is located to verify models.")
                 .argName("path").build();
 
         Option pathOpt = Option.builder("p")
@@ -62,7 +66,15 @@ public class OptionsArgs {
         Option helpOpt = new Option( "h", "help", false, "Shows this help screen.");
         Option logOpt = new Option( "l", "log", false, "Produce a file that contains a record of generated mutants in mutant folder.");
         Option tmiOpt = new Option ( "tmi" , false, "Enable tmi operator. Transition MIssing operator removes a transition.");
-        Option tadOpt = new Option ( "tad" , false, "Enable tad operator. Transition ADd operator adds a transition between two states.");
+        Option tadOpt = new Option ( "tad" , false, "Enable tad operator. Transition ADd operator adds a transition between two states. This operator make an internal action (tau/siilent). The new transitions will not be where the automaton already had another transition");
+
+        Option tadSyncOpt = Option.builder("tadSync")
+                .hasArg()
+                .desc("Enable tad operator. Transition ADd operator adds a transition between two states. This operator use the specified action as an output action (action!). Be sure the action is on the environment of the system to verify it. The new transitions will not be where the automaton already had another external transition")
+                .argName("action").build();
+
+        Option tadRandomOpt = new Option ( "tadRandomSync" , false, "Enable tad operator. Transition ADd operator adds a transition between two states. This operator use a random channel on the environment as an output action (a!). The new transitions will not be where the automaton already had another external transition");
+
         Option smiOpt = new Option ( "smi" , false, "Enable smi operator. State MIssing operator removes a state (other than the initial state) and all its incoming/outgoing transitions.");
         Option cxlOpt = new Option ( "cxl" , false, "Enable cxl operator. Constant eXchange L operator increases the constant of a clock constraint.");
         Option cxsOpt = new Option ( "cxs" , false, "Enable cxs operator. Constant eXchange S operator decreases the constant of a clock constraint.");
@@ -76,6 +88,8 @@ public class OptionsArgs {
         options.addOption(logOpt);
         options.addOption(tmiOpt);
         options.addOption(tadOpt);
+        options.addOption(tadSyncOpt);
+        options.addOption(tadRandomOpt);
         options.addOption(smiOpt);
         options.addOption(cxlOpt);
         options.addOption(cxsOpt);
@@ -83,9 +97,7 @@ public class OptionsArgs {
 
         CommandLineParser argsParser = new DefaultParser();
         CommandLine line = argsParser.parse(options, args);
-        if(!line.hasOption("m")){
-            throw new NoModelError("No model file option to mutate");
-        }
+
 
         if(line.hasOption("m")){
             this.modelFile = line.getOptionValue("m");
@@ -102,14 +114,25 @@ public class OptionsArgs {
         this.log = line.hasOption("log");
         this.tmi = line.hasOption("tmi");
         this.tad = line.hasOption("tad");
+
+        if(line.hasOption("tadSync")){
+            this.tadSync = line.getOptionValue("tadSync");
+        }
+
+        this.tadRandomSync = line.hasOption("tadSync");
         this.smi = line.hasOption("smi");
         this.cxl = line.hasOption("cxl");
         this.cxs = line.hasOption("cxs");
         this.ccn = line.hasOption("ccn");
 
+        if(!line.hasOption("m")){
+            throw new NoModelError("No model file option to mutate");
+        }
+
         if(!line.hasOption("v")){
             throw new NoVerifyTaError("no VerifyTa path specified");
         }
+
         if(line.hasOption("v")){
             this.verifyTaFile = line.getOptionValue("v");
         }
@@ -120,7 +143,7 @@ public class OptionsArgs {
         String header = "Where [-m <file>] model is a required option\nIf [-q <file>] query is missing, the execution of verifyta will be done only with the model\n\n";
         String footer = "\n";
         formatter.setOptionComparator(null);
-        formatter.printHelp("myapp [OPTION]...", header, this.options, footer, false);
+        formatter.printHelp("java -jar MutationUppaal [OPTION]...", header, this.options, footer, false);
     }
 
     public String getModelFile() {
@@ -185,6 +208,22 @@ public class OptionsArgs {
 
     public void setTad(boolean tad) {
         this.tad = tad;
+    }
+
+    public String getTadSync() {
+        return tadSync;
+    }
+
+    public void setTadSync(String tadSync) {
+        this.tadSync = tadSync;
+    }
+
+    public boolean isTadRandomSync() {
+        return tadRandomSync;
+    }
+
+    public void setTadRandomSync(boolean tadRandomSync) {
+        this.tadRandomSync = tadRandomSync;
     }
 
     public boolean isSmi() {

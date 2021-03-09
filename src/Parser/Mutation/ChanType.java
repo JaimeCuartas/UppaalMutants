@@ -23,8 +23,4 @@ public class ChanType {
     public void setDimension(int dimension) {
         this.dimension = dimension;
     }
-
-    public String getFirstChan() {
-        return this.name.concat("[0]".repeat(this.dimension));
-    }
 }
