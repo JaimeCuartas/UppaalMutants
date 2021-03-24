@@ -147,6 +147,9 @@ parser grammar UppaalParser;
     public int getNumCcn(){
         return this.numCcn;
     }
+    public HashMap<String, Graph> getGraphs(){
+        return this.graphs;
+    }
 }
 options { tokenVocab=UppaalLexer; }
 

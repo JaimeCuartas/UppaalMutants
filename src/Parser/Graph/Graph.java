@@ -59,6 +59,7 @@ public class Graph {
         return listGraph;
     }
 
+    //Returns true if the target location only has one previous location to end in target location
     public boolean samePreviousNode(ArrayList<ArrayList<Integer>> listGraph, String nameTarget){
         int numSourceNode = this.nodes.get(this.initialNode).getId();
 
@@ -67,17 +68,22 @@ public class Graph {
 
         int numPreviousNode = BFS(listGraph, numSourceNode, numTargetNode);
 
+        //Not same previous node but is un reachable, is the same remove the location
+        if(numPreviousNode == -1){
+            return true;
+        }
+
         Node nodePrevious = this.nodesId.get(numPreviousNode);
 
         if(nodePrevious.getMultiplicity().contains(nodeTarget)){
-            return true;
+            return false;
         }
 
         listGraph.get(numPreviousNode).remove(Integer.valueOf(numTargetNode));
 
         int newPreviousNode = BFS(listGraph, numSourceNode, numTargetNode);
         listGraph.get(numPreviousNode).add(numTargetNode);
-        return newPreviousNode!=-1;
+        return newPreviousNode==-1;
     }
 
     //BFS algorithm to return the name of the previous node to the destination
@@ -91,10 +97,11 @@ public class Graph {
         for(int i=0; i<this.nodes.size(); i++){
             visited[i]=false;
         }
-        visited[0]=true;
+        visited[source]=true;
         queue.add(source);
 
         while(!queue.isEmpty()){
+
             int currentNode = queue.remove();
 
             for(int edge: numGraph.get(currentNode)){

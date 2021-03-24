@@ -283,6 +283,9 @@ public class UppaalParser extends Parser {
 	    public int getNumCcn(){
 	        return this.numCcn;
 	    }
+	    public HashMap<String, Graph> getGraphs(){
+	        return this.graphs;
+	    }
 
 	public UppaalParser(TokenStream input) {
 		super(input);

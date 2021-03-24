@@ -16,6 +16,7 @@ public class OptionsArgs {
     private String tadSync;
     private boolean tadRandomSync;
     private boolean smi;
+    private boolean smiNoRedundant;
     private boolean cxl;
     private boolean cxs;
     private boolean ccn;
@@ -33,6 +34,7 @@ public class OptionsArgs {
         this.tadSync = "";
         this.tadRandomSync = false;
         this.smi = false;
+        this.smiNoRedundant = false;
         this.cxl = false;
         this.cxs = false;
         this.ccn = false;
@@ -76,6 +78,7 @@ public class OptionsArgs {
         Option tadRandomOpt = new Option ( "tadRandomSync" , false, "Enable tad operator. Transition ADd operator adds a transition between two states. This operator use a random channel on the environment as an output action (a!). The new transitions will not be where the automaton already had another external transition");
 
         Option smiOpt = new Option ( "smi" , false, "Enable smi operator. State MIssing operator removes a state (other than the initial state) and all its incoming/outgoing transitions.");
+        Option smiNoRedundantOpt = new Option ( "smiNoRedundant" , false, "Enable smi operator. State MIssing operator removes a state (other than the initial state) and all its incoming/outgoing transitions. This operator avoid some redundant mutants with the tmi operator. Generate a subset of smi mutants");
         Option cxlOpt = new Option ( "cxl" , false, "Enable cxl operator. Constant eXchange L operator increases the constant of a clock constraint.");
         Option cxsOpt = new Option ( "cxs" , false, "Enable cxs operator. Constant eXchange S operator decreases the constant of a clock constraint.");
         Option ccnOpt = new Option ( "ccn" , false, "Enable ccn operator. Clock Constraint Negation operator negates a clock constraint.");
@@ -91,6 +94,7 @@ public class OptionsArgs {
         options.addOption(tadSyncOpt);
         options.addOption(tadRandomOpt);
         options.addOption(smiOpt);
+        options.addOption(smiNoRedundantOpt);
         options.addOption(cxlOpt);
         options.addOption(cxsOpt);
         options.addOption(ccnOpt);
@@ -121,6 +125,7 @@ public class OptionsArgs {
 
         this.tadRandomSync = line.hasOption("tadRandomSync");
         this.smi = line.hasOption("smi");
+        this.smiNoRedundant = line.hasOption("smiNoRedundant");
         this.cxl = line.hasOption("cxl");
         this.cxs = line.hasOption("cxs");
         this.ccn = line.hasOption("ccn");
@@ -198,6 +203,7 @@ public class OptionsArgs {
         return tmi;
     }
 
+
     public void setTmi(boolean tmi) {
         this.tmi = tmi;
     }
@@ -232,6 +238,14 @@ public class OptionsArgs {
 
     public void setSmi(boolean smi) {
         this.smi = smi;
+    }
+
+    public boolean isSmiNoRedundant() {
+        return smiNoRedundant;
+    }
+
+    public void setSmiNoRedundant(boolean smiNoRedundant) {
+        this.smiNoRedundant = smiNoRedundant;
     }
 
     public boolean isCxl() {

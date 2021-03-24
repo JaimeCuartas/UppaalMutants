@@ -69,7 +69,7 @@ public class Main {
 
             controller = new MutantController(
                     opt.getModelFile(),
-                    opt.isTmi(), opt.isTad(), opt.getTadSync(), opt.isTadRandomSync(), opt.isSmi(),
+                    opt.isTmi(), opt.isTad(), opt.getTadSync(), opt.isTadRandomSync(), opt.isSmi(), opt.isSmiNoRedundant(),
                     opt.isCxl(), opt.isCxs(), opt.isCcn()
             );
         }catch (IOException e){
