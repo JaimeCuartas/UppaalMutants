@@ -1,9 +1,10 @@
-// Generated from C:/Users/57310/Documents/Github/XMLGrammar/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.9
+// Generated from C:/Users/57310/Documents/Github/XMLGrammar/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.9.1
 package Parser.Antlr;
 
     import java.util.HashMap;
     import java.util.HashSet;
     import Parser.Mutation.*;
+    import Parser.Graph.*;
 
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 

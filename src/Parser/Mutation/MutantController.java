@@ -278,7 +278,7 @@ public class MutantController {
         if(this.tad){
             this.tadOperator(fileIn);
         }
-        if(this.tadSync!=""){
+        if(!this.tadSync.equals("")){
             this.tadSyncOperator(fileIn);
         }
         if(this.tadRandomSync){

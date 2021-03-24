@@ -66,6 +66,7 @@ public class Main {
 
         MutantController controller = null;
         try {
+
             controller = new MutantController(
                     opt.getModelFile(),
                     opt.isTmi(), opt.isTad(), opt.getTadSync(), opt.isTadRandomSync(), opt.isSmi(),
@@ -81,7 +82,7 @@ public class Main {
         if(opt.getPathMutants().equals("")){
             String here = System.getProperty("user.dir");
             String idFile = Long.toString(System.currentTimeMillis());
-             path = here.concat(File.separator + "Mutation"+ idFile);
+            path = here.concat(File.separator + "Mutation"+ idFile);
         }
 
         System.out.println("mutants will be created in this path: "+path);

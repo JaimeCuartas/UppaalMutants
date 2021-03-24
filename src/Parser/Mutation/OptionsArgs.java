@@ -119,7 +119,7 @@ public class OptionsArgs {
             this.tadSync = line.getOptionValue("tadSync");
         }
 
-        this.tadRandomSync = line.hasOption("tadSync");
+        this.tadRandomSync = line.hasOption("tadRandomSync");
         this.smi = line.hasOption("smi");
         this.cxl = line.hasOption("cxl");
         this.cxs = line.hasOption("cxs");

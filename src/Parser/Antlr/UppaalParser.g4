@@ -34,11 +34,17 @@ parser grammar UppaalParser;
     import java.util.HashMap;
     import java.util.HashSet;
     import Parser.Mutation.*;
+    import Parser.Graph.*;
 }
 
 @parser::members { // add members to generated UppaalParser
     private int num=0;
 
+    //Graphs to avoid redundant mutants of smi operator, every template has an graph
+    //graphs is <Key, Value> hashmap
+    //          <name_of_template_Key, graph>
+
+    HashMap<String, Graph> graphs = new HashMap<String, Graph>();
 
     //Number of controllable transitions (input actions <expr> "?")
     //The purpose is to know how many transitions can be removed, each one will be a mutant
@@ -348,6 +354,8 @@ locals[ArrayList<String> namesLocations = new ArrayList<String>()]
                         transitionsTad.put(currentEnv, new HashMap<String, HashSet<String>>());
                         transitionsTadNoSync.put(currentEnv, new HashMap<String, HashSet<String>>());
                         locationsSmi.put(currentEnv, new HashSet<String>());
+
+                        graphs.put(currentEnv, new Graph());
                     }
                 }
                 ((parameter misc*)?)
@@ -385,14 +393,22 @@ locals[ArrayList<String> namesLocations = new ArrayList<String>()]
                         }
                         this.transitionsTad.get(this.currentEnv).put(locationSource, target);
                         this.transitionsTadNoSync.get(this.currentEnv).put(locationSource, targetNoSync);
+
+                        //For graph
+                        this.graphs.get(this.currentEnv).addNode(locationSource);
                     }
 
                 }
                 (initLoc misc*)
                 {
                     this.initLocationId=$ctx.initLoc().STRING().getText();
+
                 }
                 (transition misc*)*
+
+                {
+                    this.graphs.get(this.currentEnv).setInitialNode(initLocationId);
+                }
                 ;
 
 parameter   :   OPEN_PARAMETER funcParameters CLOSE_PARAMETER ;
@@ -584,6 +600,8 @@ target      :   '<' 'target' 'ref' EQUALS STRING '/>'
                 {
                     this.currentTarget = $ctx.STRING().getText();
                     this.transitionsTadNoSync.get(currentEnv).get(currentSource).remove(currentTarget);
+
+                    this.graphs.get(currentEnv).addEdge(currentSource, currentTarget);
                 }
                 ;
 
