@@ -9,8 +9,7 @@ import java.util.List;
 
 public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
-    private final int idOperator;
-    private int indexOperator;
+
     private final int tmiOperator;
     private int indexCurrentTransition;
 
@@ -33,11 +32,10 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     private boolean isClockLeft = false;
     private boolean isClockRight = false;
 
-    public UppaalVisitor (int idOperator, int tmiOperator, String templateTad, String sourceTad, String targetTad, String outputTad, String locationSmi,
+    public UppaalVisitor (int tmiOperator, String templateTad, String sourceTad, String targetTad, String outputTad, String locationSmi,
                           HashMap<String, HashSet<ClockType>> clockEnv, int idCxlOperator, int idCxsOperator, int idCcnOperator){
 
-        this.idOperator = idOperator;
-        this.indexOperator = 0;
+
         this.tmiOperator = tmiOperator;
         this.indexCurrentTransition = 0;
 
@@ -681,7 +679,9 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         if(addInput){
             tempContent = tempContent.concat("<transition>\n<source ref=").concat(this.sourceTad).concat("/>\n");
             tempContent = tempContent.concat("<target ref=").concat(this.targetTad).concat("/>\n");
-            tempContent = tempContent.concat("<label kind=\"synchronisation\" x=\"0\" y=\"0\">").concat(this.outputTad).concat("</label>").concat("\n");
+            if(!this.outputTad.equals("")){
+                tempContent = tempContent.concat("<label kind=\"synchronisation\" x=\"0\" y=\"0\">").concat(this.outputTad).concat("</label>").concat("\n");
+            }
             tempContent = tempContent.concat("</transition>\n");
         }
         List<UppaalParser.TransitionContext> transitions = ctx.transition();
@@ -897,8 +897,8 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
     @Override
     public String visitIdentifierGuard(UppaalParser.IdentifierGuardContext ctx) {
-        this.isClockRight |= this.clockEnv.get(this.currentEnv).contains(ctx.IDENTIFIER().getText());
-        this.isClockRight |= this.clockEnv.get("Global").contains(ctx.IDENTIFIER().getText());
+        this.isClockRight |= this.clockEnv.get(this.currentEnv).contains(new ClockType(ctx.IDENTIFIER().getText()));
+        this.isClockRight |= this.clockEnv.get("Global").contains(new ClockType(ctx.IDENTIFIER().getText()));
         return ctx.IDENTIFIER().getText();
     }
 
@@ -967,32 +967,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         String guardLeft = visit(ctx.guardExpr(0));
         this.isClockLeft = this.isClockRight;
         this.isClockRight = false;
-        /*this.indexOperator++;
 
-        if(this.idOperator==this.indexOperator){
-            switch (ctx.binary.getType()){
-                case UppaalParser.GREATER:
-                    guard = guard.concat(" &lt; ");
-                    break;
-                case UppaalParser.GREATEREQ:
-                    guard = guard.concat(" &lt;= ");
-                    break;
-                case UppaalParser.LESS:
-                    guard = guard.concat(" &gt; ");
-                    break;
-                case UppaalParser.LESSEQ:
-                    guard = guard.concat(" &gt;= ");
-                    break;
-                case UppaalParser.COMPARE:
-                    guard = guard.concat(" != ");
-                    break;
-                case UppaalParser.DIFFERENT:
-                    guard = guard.concat(" == ");
-                    break;
-            }
-            guard = guard.concat(visit(ctx.guardExpr(1)));
-            return guard;
-        }*/
         String operator = ctx.binary.getText();
         String guardRight = visit(ctx.guardExpr(1));
 
