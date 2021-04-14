@@ -64,6 +64,29 @@ public class Main {
             }
         }
 
+
+
+        String path = opt.getPathMutants();
+
+        if(opt.getPathMutants().equals("")){
+            String here = System.getProperty("user.dir");
+            String idFile = Long.toString(System.currentTimeMillis());
+            path = here.concat(File.separator + "Mutation"+ idFile);
+        }
+
+        System.out.println("mutants will be created in this path: "+path);
+
+        File fileMutants = new File(path);
+        fileMutants.mkdirs();
+        if(!fileMutants.exists()){
+            System.out.println("there was an error creating the directory indicated " +
+                    "\nwith the path option [-p <path>]. You may have indicated a wrong route. " +
+                    "\nPress enter to exit.");
+            Scanner scan = new Scanner(System.in);
+            scan.nextLine();
+            System.exit(1);
+        }
+
         MutantController controller = null;
         try {
 
@@ -77,28 +100,7 @@ public class Main {
             System.exit(1);
         }
 
-        String path = opt.getPathMutants();
-
-        if(opt.getPathMutants().equals("")){
-            String here = System.getProperty("user.dir");
-            String idFile = Long.toString(System.currentTimeMillis());
-            path = here.concat(File.separator + "Mutation"+ idFile);
-        }
-
-        System.out.println("mutants will be created in this path: "+path);
-
-        File myFile = new File(path);
-        myFile.mkdirs();
-        if(!myFile.exists()){
-            System.out.println("there was an error creating the directory indicated " +
-                    "\nwith the path option [-p <path>]. You may have indicated a wrong route. " +
-                    "\nPress enter to exit.");
-            Scanner scan = new Scanner(System.in);
-            scan.nextLine();
-            System.exit(1);
-        }
-
-        controller.prepareOperators(myFile);
+        controller.prepareOperators(fileMutants);
         controller.runOperators();
         try {
             controller.joinOperators();
@@ -136,7 +138,7 @@ public class Main {
         try {
             if(opt.isLog()){
                 FileWriter myWriter = null;
-                myWriter = new FileWriter(new File(myFile, "log"));
+                myWriter = new FileWriter(new File(fileMutants, "log"));
                 myWriter.write(output);
                 myWriter.close();
             }
