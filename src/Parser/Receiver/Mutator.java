@@ -234,9 +234,9 @@ public class Mutator {
     }
 
 
-    public void joinThreads(ArrayList<Thread> threads){
+    public void joinThreads(ArrayList<Thread> threads) throws InterruptedException {
         for (Thread mutantThread: threads){
-            mutantThread.start();
+            mutantThread.join();
         }
     }
     /*
