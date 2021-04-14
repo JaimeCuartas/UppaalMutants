@@ -1,12 +1,12 @@
 package Parser.Main;
-import Parser.Antlr.*;
+import Parser.Command.Command;
 import Parser.Errors.NoModelError;
 import Parser.Errors.NoVerifyTaError;
-import Parser.Mutation.*;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
+import Parser.Invoker.Switch;
+import Parser.OperatorCommands.*;
+import Parser.OperatorCommands.SmiNoRedundant;
+import Parser.Receiver.Mutator;
+import Parser.Mutation.OptionsArgs;
 
 import org.apache.commons.cli.*;
 
@@ -18,8 +18,6 @@ import java.util.*;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 //////////////////////////////////////////////////////////////////////
@@ -64,8 +62,6 @@ public class Main {
             }
         }
 
-
-
         String path = opt.getPathMutants();
 
         if(opt.getPathMutants().equals("")){
@@ -87,34 +83,55 @@ public class Main {
             System.exit(1);
         }
 
-        MutantController controller = null;
+        Mutator mutator = null;
         try {
-
-            controller = new MutantController(
-                    opt.getModelFile(),
-                    opt.isTmi(), opt.isTad(), opt.getTadSync(), opt.isTadRandomSync(), opt.isSmi(), opt.isSmiNoRedundant(),
-                    opt.isCxl(), opt.isCxs(), opt.isCcn()
-            );
+            mutator = new Mutator(opt.getModelFile(), fileMutants);
         }catch (IOException e){
             e.printStackTrace();
             System.exit(1);
         }
 
-        controller.prepareOperators(fileMutants);
-        controller.runOperators();
+        Command ccnMutant = new Ccn(mutator);
+        Command cxlMutant = new Cxl(mutator);
+        Command cxsMutant = new Cxs(mutator);
+        Command smiMutant = new Smi(mutator);
+        Command smiNoRedundant = new SmiNoRedundant(mutator);
+        Command tadMutant = new Tad(mutator);
+        Command tadRandomSyncMutant = new TadRandomSync(mutator);
+        //prepare mutants only  if opt.getTadSync!=""
+        Command tadSyncMutant = new TadSync(mutator, opt.getTadSync());
+        Command tmiMutant = new Tmi(mutator);
+
+        Switch mySwitch = new Switch(tmiMutant, tadMutant, tadSyncMutant, tadRandomSyncMutant,
+                smiMutant, smiNoRedundant,
+                cxlMutant, cxsMutant, ccnMutant);
+
+
+        if(opt.isTmi()) mySwitch.tmi();
+        if(opt.isTad()) mySwitch.tad();
+        if(opt.getTadSync().equals("")) mySwitch.tadSync();
+        if(opt.isTadRandomSync()) mySwitch.setTadRandomSync();
+        if(opt.isSmi()) mySwitch.smi();
+        if(opt.isSmiNoRedundant()) mySwitch.smiNoRedundant();
+        if(opt.isCxl()) mySwitch.cxl();
+        if(opt.isCxs()) mySwitch.cxs();
+        if(opt.isCcn()) mySwitch.ccn();
+
+
+        mutator.runOperators();
         try {
-            controller.joinOperators();
+            mutator.joinOperators();
         } catch (InterruptedException e) {
             e.printStackTrace();
             System.exit(1);
         }
 
-        output = output.concat(controller.infoMutants());
+        output = output.concat(mutator.infoMutants());
 
         try {
             if(!opt.getVerifyTaFile().equals("")){
                 output =output.concat(
-                        controller.verifyMutants(
+                        mutator.verifyMutants(
                                 path,
                                 opt.getVerifyTaFile(),
                                 opt.getQueryFile()
