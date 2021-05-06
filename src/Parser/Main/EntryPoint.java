@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 //////////////////////////////////////////////////////////////////////
 
-public class Main {
+public class EntryPoint {
 
     public static void main(String[] args)  {
 
@@ -37,7 +37,7 @@ public class Main {
             System.exit(1);
         } catch (NoModelError e) {
             System.out.println("-m,--model <path> is a required option" +
-                    "\nTry `MutationUppaal -h' for more information" +
+                    "\nTry `java -jar MutationUppaal.jar -h' for more information" +
                     "\nPress enter to exit.");
             Scanner scan = new Scanner(System.in);
             scan.nextLine();
@@ -52,7 +52,7 @@ public class Main {
                 response = scan.next();
             }
             if (response.equalsIgnoreCase("n")) {
-                System.out.println("\nTry `app -h' for more information");
+                System.out.println("\nTry `java -jar MutationUppaal.jar -h' for more information");
                 System.out.println("\nPress enter to exit.");
                 scan = new Scanner(System.in);
                 scan.nextLine();
@@ -109,7 +109,7 @@ public class Main {
 
         if(opt.isTmi()) mySwitch.tmi();
         if(opt.isTad()) mySwitch.tad();
-        if(opt.getTadSync().equals("")) mySwitch.tadSync();
+        if(!opt.getTadSync().equals("")) mySwitch.tadSync();
         if(opt.isTadRandomSync()) mySwitch.setTadRandomSync();
         if(opt.isSmi()) mySwitch.smi();
         if(opt.isSmiNoRedundant()) mySwitch.smiNoRedundant();
