@@ -1,4 +1,4 @@
-// Generated from C:/Users/57310/Documents/Github/XMLGrammar/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.9.1
+// Generated from C:/Users/57310/OneDrive - correounivalle.edu.co/Documentos/Github/UppaalMutants/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.9.1
 package Parser.Antlr;
 
     import java.util.HashMap;
@@ -1499,6 +1499,7 @@ public class UppaalParser extends Parser {
 		public TerminalNode MAXIMUM() { return getToken(UppaalParser.MAXIMUM, 0); }
 		public TerminalNode OR() { return getToken(UppaalParser.OR, 0); }
 		public TerminalNode AND() { return getToken(UppaalParser.AND, 0); }
+		public TerminalNode COMMA() { return getToken(UppaalParser.COMMA, 0); }
 		public TerminalNode IMPLY() { return getToken(UppaalParser.IMPLY, 0); }
 		public BinaryExprContext(ExprContext ctx) { copyFrom(ctx); }
 		@Override
@@ -2125,7 +2126,7 @@ public class UppaalParser extends Parser {
 						setState(324);
 						((BinaryExprContext)_localctx).binary = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(((((_la - 88)) & ~0x3f) == 0 && ((1L << (_la - 88)) & ((1L << (ADD - 88)) | (1L << (SUB - 88)) | (1L << (MUL - 88)) | (1L << (DIV - 88)) | (1L << (PERCENT - 88)) | (1L << (BITAND - 88)) | (1L << (BITOR - 88)) | (1L << (BITXOR - 88)) | (1L << (LSHIFT - 88)) | (1L << (RSHIFT - 88)) | (1L << (AND_SYMBOL - 88)) | (1L << (OR_SYMBOL - 88)) | (1L << (MINIMUM - 88)) | (1L << (MAXIMUM - 88)) | (1L << (OR - 88)) | (1L << (AND - 88)) | (1L << (IMPLY - 88)))) != 0)) ) {
+						if ( !(((((_la - 72)) & ~0x3f) == 0 && ((1L << (_la - 72)) & ((1L << (COMMA - 72)) | (1L << (ADD - 72)) | (1L << (SUB - 72)) | (1L << (MUL - 72)) | (1L << (DIV - 72)) | (1L << (PERCENT - 72)) | (1L << (BITAND - 72)) | (1L << (BITOR - 72)) | (1L << (BITXOR - 72)) | (1L << (LSHIFT - 72)) | (1L << (RSHIFT - 72)) | (1L << (AND_SYMBOL - 72)) | (1L << (OR_SYMBOL - 72)) | (1L << (MINIMUM - 72)) | (1L << (MAXIMUM - 72)) | (1L << (OR - 72)) | (1L << (AND - 72)) | (1L << (IMPLY - 72)))) != 0)) ) {
 							((BinaryExprContext)_localctx).binary = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -6852,6 +6853,7 @@ public class UppaalParser extends Parser {
 		public TerminalNode MAXIMUM() { return getToken(UppaalParser.MAXIMUM, 0); }
 		public TerminalNode OR() { return getToken(UppaalParser.OR, 0); }
 		public TerminalNode AND() { return getToken(UppaalParser.AND, 0); }
+		public TerminalNode COMMA() { return getToken(UppaalParser.COMMA, 0); }
 		public TerminalNode IMPLY() { return getToken(UppaalParser.IMPLY, 0); }
 		public BinaryGuardContext(GuardExprContext ctx) { copyFrom(ctx); }
 		@Override
@@ -7427,7 +7429,7 @@ public class UppaalParser extends Parser {
 						setState(1007);
 						((BinaryGuardContext)_localctx).binary = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(((((_la - 88)) & ~0x3f) == 0 && ((1L << (_la - 88)) & ((1L << (ADD - 88)) | (1L << (SUB - 88)) | (1L << (MUL - 88)) | (1L << (DIV - 88)) | (1L << (PERCENT - 88)) | (1L << (BITAND - 88)) | (1L << (BITOR - 88)) | (1L << (BITXOR - 88)) | (1L << (LSHIFT - 88)) | (1L << (RSHIFT - 88)) | (1L << (AND_SYMBOL - 88)) | (1L << (OR_SYMBOL - 88)) | (1L << (MINIMUM - 88)) | (1L << (MAXIMUM - 88)) | (1L << (OR - 88)) | (1L << (AND - 88)) | (1L << (IMPLY - 88)))) != 0)) ) {
+						if ( !(((((_la - 72)) & ~0x3f) == 0 && ((1L << (_la - 72)) & ((1L << (COMMA - 72)) | (1L << (ADD - 72)) | (1L << (SUB - 72)) | (1L << (MUL - 72)) | (1L << (DIV - 72)) | (1L << (PERCENT - 72)) | (1L << (BITAND - 72)) | (1L << (BITOR - 72)) | (1L << (BITXOR - 72)) | (1L << (LSHIFT - 72)) | (1L << (RSHIFT - 72)) | (1L << (AND_SYMBOL - 72)) | (1L << (OR_SYMBOL - 72)) | (1L << (MINIMUM - 72)) | (1L << (MAXIMUM - 72)) | (1L << (OR - 72)) | (1L << (AND - 72)) | (1L << (IMPLY - 72)))) != 0)) ) {
 							((BinaryGuardContext)_localctx).binary = (Token)_errHandler.recoverInline(this);
 						}
 						else {
@@ -8601,32 +8603,32 @@ public class UppaalParser extends Parser {
 		"D\3D\3D\3D\3D\3D\2\5\32NpE\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$"+
 		"&(*,.\60\62\64\668:<>@BDFHJLNPRTVXZ\\^`bdfhjlnprtvxz|~\u0080\u0082\u0084"+
 		"\u0086\2\16\3\2\6\7\4\2\b\b\20\20\5\2\3\3\b\b\62\62\3\2Z]\3\2NY\3\2^c"+
-		"\4\2Z[dr\3\2NO\4\2JJ^^\3\2\34\35\3\2\36\37\3\2{|\2\u04fc\2\u0089\3\2\2"+
-		"\2\4\u0098\3\2\2\2\6\u00a2\3\2\2\2\b\u00ca\3\2\2\2\n\u00cc\3\2\2\2\f\u00ce"+
-		"\3\2\2\2\16\u00d2\3\2\2\2\20\u00d4\3\2\2\2\22\u00d6\3\2\2\2\24\u0105\3"+
-		"\2\2\2\26\u010c\3\2\2\2\30\u0113\3\2\2\2\32\u013d\3\2\2\2\34\u016e\3\2"+
-		"\2\2\36\u0170\3\2\2\2 \u017e\3\2\2\2\"\u0186\3\2\2\2$\u01a3\3\2\2\2&\u01a5"+
-		"\3\2\2\2(\u01b0\3\2\2\2*\u01bf\3\2\2\2,\u01c1\3\2\2\2.\u01d8\3\2\2\2\60"+
-		"\u01da\3\2\2\2\62\u01e6\3\2\2\2\64\u01f7\3\2\2\2\66\u01f9\3\2\2\28\u01ff"+
-		"\3\2\2\2:\u0214\3\2\2\2<\u0216\3\2\2\2>\u0220\3\2\2\2@\u0228\3\2\2\2B"+
-		"\u022e\3\2\2\2D\u0236\3\2\2\2F\u023f\3\2\2\2H\u0245\3\2\2\2J\u0254\3\2"+
-		"\2\2L\u0256\3\2\2\2N\u0258\3\2\2\2P\u0266\3\2\2\2R\u0276\3\2\2\2T\u028b"+
-		"\3\2\2\2V\u02ca\3\2\2\2X\u02ce\3\2\2\2Z\u02d5\3\2\2\2\\\u02dc\3\2\2\2"+
-		"^\u02ef\3\2\2\2`\u0325\3\2\2\2b\u0333\3\2\2\2d\u033e\3\2\2\2f\u0342\3"+
-		"\2\2\2h\u038f\3\2\2\2j\u0395\3\2\2\2l\u039f\3\2\2\2n\u03a9\3\2\2\2p\u03e5"+
-		"\3\2\2\2r\u0414\3\2\2\2t\u0417\3\2\2\2v\u0428\3\2\2\2x\u042a\3\2\2\2z"+
-		"\u0433\3\2\2\2|\u043b\3\2\2\2~\u0442\3\2\2\2\u0080\u044a\3\2\2\2\u0082"+
-		"\u0463\3\2\2\2\u0084\u0482\3\2\2\2\u0086\u048a\3\2\2\2\u0088\u008a\5\4"+
-		"\3\2\u0089\u0088\3\2\2\2\u0089\u008a\3\2\2\2\u008a\u008e\3\2\2\2\u008b"+
-		"\u008d\5\20\t\2\u008c\u008b\3\2\2\2\u008d\u0090\3\2\2\2\u008e\u008c\3"+
-		"\2\2\2\u008e\u008f\3\2\2\2\u008f\u0091\3\2\2\2\u0090\u008e\3\2\2\2\u0091"+
-		"\u0095\5\22\n\2\u0092\u0094\5\20\t\2\u0093\u0092\3\2\2\2\u0094\u0097\3"+
-		"\2\2\2\u0095\u0093\3\2\2\2\u0095\u0096\3\2\2\2\u0096\3\3\2\2\2\u0097\u0095"+
-		"\3\2\2\2\u0098\u009c\7\17\2\2\u0099\u009b\5\f\7\2\u009a\u0099\3\2\2\2"+
-		"\u009b\u009e\3\2\2\2\u009c\u009a\3\2\2\2\u009c\u009d\3\2\2\2\u009d\u009f"+
-		"\3\2\2\2\u009e\u009c\3\2\2\2\u009f\u00a0\7,\2\2\u00a0\5\3\2\2\2\u00a1"+
-		"\u00a3\5\16\b\2\u00a2\u00a1\3\2\2\2\u00a2\u00a3\3\2\2\2\u00a3\u00b0\3"+
-		"\2\2\2\u00a4\u00aa\5\b\5\2\u00a5\u00aa\5\n\6\2\u00a6\u00aa\7\4\2\2\u00a7"+
+		"\5\2JJZ[dr\3\2NO\4\2JJ^^\3\2\34\35\3\2\36\37\3\2{|\2\u04fc\2\u0089\3\2"+
+		"\2\2\4\u0098\3\2\2\2\6\u00a2\3\2\2\2\b\u00ca\3\2\2\2\n\u00cc\3\2\2\2\f"+
+		"\u00ce\3\2\2\2\16\u00d2\3\2\2\2\20\u00d4\3\2\2\2\22\u00d6\3\2\2\2\24\u0105"+
+		"\3\2\2\2\26\u010c\3\2\2\2\30\u0113\3\2\2\2\32\u013d\3\2\2\2\34\u016e\3"+
+		"\2\2\2\36\u0170\3\2\2\2 \u017e\3\2\2\2\"\u0186\3\2\2\2$\u01a3\3\2\2\2"+
+		"&\u01a5\3\2\2\2(\u01b0\3\2\2\2*\u01bf\3\2\2\2,\u01c1\3\2\2\2.\u01d8\3"+
+		"\2\2\2\60\u01da\3\2\2\2\62\u01e6\3\2\2\2\64\u01f7\3\2\2\2\66\u01f9\3\2"+
+		"\2\28\u01ff\3\2\2\2:\u0214\3\2\2\2<\u0216\3\2\2\2>\u0220\3\2\2\2@\u0228"+
+		"\3\2\2\2B\u022e\3\2\2\2D\u0236\3\2\2\2F\u023f\3\2\2\2H\u0245\3\2\2\2J"+
+		"\u0254\3\2\2\2L\u0256\3\2\2\2N\u0258\3\2\2\2P\u0266\3\2\2\2R\u0276\3\2"+
+		"\2\2T\u028b\3\2\2\2V\u02ca\3\2\2\2X\u02ce\3\2\2\2Z\u02d5\3\2\2\2\\\u02dc"+
+		"\3\2\2\2^\u02ef\3\2\2\2`\u0325\3\2\2\2b\u0333\3\2\2\2d\u033e\3\2\2\2f"+
+		"\u0342\3\2\2\2h\u038f\3\2\2\2j\u0395\3\2\2\2l\u039f\3\2\2\2n\u03a9\3\2"+
+		"\2\2p\u03e5\3\2\2\2r\u0414\3\2\2\2t\u0417\3\2\2\2v\u0428\3\2\2\2x\u042a"+
+		"\3\2\2\2z\u0433\3\2\2\2|\u043b\3\2\2\2~\u0442\3\2\2\2\u0080\u044a\3\2"+
+		"\2\2\u0082\u0463\3\2\2\2\u0084\u0482\3\2\2\2\u0086\u048a\3\2\2\2\u0088"+
+		"\u008a\5\4\3\2\u0089\u0088\3\2\2\2\u0089\u008a\3\2\2\2\u008a\u008e\3\2"+
+		"\2\2\u008b\u008d\5\20\t\2\u008c\u008b\3\2\2\2\u008d\u0090\3\2\2\2\u008e"+
+		"\u008c\3\2\2\2\u008e\u008f\3\2\2\2\u008f\u0091\3\2\2\2\u0090\u008e\3\2"+
+		"\2\2\u0091\u0095\5\22\n\2\u0092\u0094\5\20\t\2\u0093\u0092\3\2\2\2\u0094"+
+		"\u0097\3\2\2\2\u0095\u0093\3\2\2\2\u0095\u0096\3\2\2\2\u0096\3\3\2\2\2"+
+		"\u0097\u0095\3\2\2\2\u0098\u009c\7\17\2\2\u0099\u009b\5\f\7\2\u009a\u0099"+
+		"\3\2\2\2\u009b\u009e\3\2\2\2\u009c\u009a\3\2\2\2\u009c\u009d\3\2\2\2\u009d"+
+		"\u009f\3\2\2\2\u009e\u009c\3\2\2\2\u009f\u00a0\7,\2\2\u00a0\5\3\2\2\2"+
+		"\u00a1\u00a3\5\16\b\2\u00a2\u00a1\3\2\2\2\u00a2\u00a3\3\2\2\2\u00a3\u00b0"+
+		"\3\2\2\2\u00a4\u00aa\5\b\5\2\u00a5\u00aa\5\n\6\2\u00a6\u00aa\7\4\2\2\u00a7"+
 		"\u00aa\7\62\2\2\u00a8\u00aa\7\3\2\2\u00a9\u00a4\3\2\2\2\u00a9\u00a5\3"+
 		"\2\2\2\u00a9\u00a6\3\2\2\2\u00a9\u00a7\3\2\2\2\u00a9\u00a8\3\2\2\2\u00aa"+
 		"\u00ac\3\2\2\2\u00ab\u00ad\5\16\b\2\u00ac\u00ab\3\2\2\2\u00ac\u00ad\3"+

@@ -148,7 +148,7 @@ public class OptionsArgs {
         String header = "Where [-m <file>] model is a required option\nIf [-q <file>] query is missing, the execution of verifyta will be done only with the model\n\n";
         String footer = "\n";
         formatter.setOptionComparator(null);
-        formatter.printHelp("java -jar MutationUppaal [OPTION]...", header, this.options, footer, false);
+        formatter.printHelp("java -jar MutationUppaal.jar [OPTION]...", header, this.options, footer, false);
     }
 
     public String getModelFile() {

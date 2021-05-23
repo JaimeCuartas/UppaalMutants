@@ -6,6 +6,7 @@ import Parser.Antlr.UppaalParserBaseVisitor;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
 
@@ -962,8 +963,31 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         return ctx.unary.getText().concat(" ").concat(visit(ctx.guardExpr()));
     }
 
+    public String increase(String expr){
+        Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+        String exprPlusOne;
+        if(pattern.matcher(expr).matches()){
+            int newNumber = Integer.parseInt(expr) + 1;
+            exprPlusOne =  String.valueOf(newNumber);
+            return exprPlusOne;
+        }
+        exprPlusOne = ("(").concat(expr).concat(" + 1 )");
+        return exprPlusOne;
+    }
+    public String decrease(String expr){
+        Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+        String exprPlusOne;
+        if(pattern.matcher(expr).matches()){
+            int newNumber = Integer.parseInt(expr) - 1;
+            exprPlusOne =  " ".concat(String.valueOf(newNumber)).concat(" ");
+            return exprPlusOne;
+        }
+        exprPlusOne = ("(").concat(expr).concat(" - 1 )");
+        return exprPlusOne;
+    }
     @Override
     public String visitComparisonGuard(UppaalParser.ComparisonGuardContext ctx) {
+
         String guardLeft = visit(ctx.guardExpr(0));
         this.isClockLeft = this.isClockRight;
         this.isClockRight = false;
@@ -978,14 +1002,14 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
                     if(operator.equals("&gt;") ||operator.equals("&gt;=")){
                         this.indexCxl++;
                         if(this.indexCxl==this.idCxlOperator){
-                            guardLeft = guardLeft.concat(" ").concat(operator).concat(" (").concat(guardRight).concat("+1").concat(")");
+                            guardLeft = guardLeft.concat(" ").concat(operator).concat(" ").concat(increase(guardRight));
                             return guardLeft;
                         }
                     }
                     if(operator.equals("&lt;") || operator.equals("&lt;=")){
                         this.indexCxs++;
                         if(this.indexCxs==this.idCxsOperator){
-                            guardLeft = guardLeft.concat(" ").concat(operator).concat(" (").concat(guardRight).concat("-1").concat(")");
+                            guardLeft = guardLeft.concat(" ").concat(operator).concat(" ").concat(decrease(guardRight));
                             return guardLeft;
                         }
                     }
@@ -995,14 +1019,14 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
                     if(operator.equals("&lt;") || operator.equals("&lt;=")){
                         this.indexCxl++;
                         if(this.indexCxl==this.idCxlOperator){
-                            guardLeft = "(".concat(guardLeft).concat("+1").concat(")").concat(" ").concat(operator).concat(" ").concat(guardRight);
+                            guardLeft = increase(guardLeft).concat(" ").concat(operator).concat(" ").concat(guardRight);
                             return guardLeft;
                         }
                     }
                     if(operator.equals("&gt;") || operator.equals("&gt;=")){
                         this.indexCxs++;
                         if(this.indexCxs==this.idCxsOperator){
-                            guardLeft = "(".concat(guardLeft).concat("-1").concat(")").concat(" ").concat(operator).concat(" ").concat(guardRight);
+                            guardLeft = decrease(guardLeft).concat(" ").concat(operator).concat(" ").concat(guardRight);
                             return guardLeft;
                         }
                     }
@@ -1014,14 +1038,14 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
                     if(operator.equals("&lt;") || operator.equals("&lt;=")){
                         this.indexCxl++;
                         if(this.indexCxl==this.idCxlOperator){
-                            guardLeft = guardLeft.concat(" ").concat(operator).concat(" (").concat(guardRight).concat("+1)");
+                            guardLeft = guardLeft.concat(" ").concat(operator).concat(increase(guardRight));
                             return guardLeft;
                         }
                     }
                     if(operator.equals("&gt;") || operator.equals("&gt;=")){
                         this.indexCxs++;
                         if(this.indexCxs==this.idCxsOperator){
-                            guardLeft = guardLeft.concat(" ").concat(operator).concat(" (").concat(guardRight).concat("-1)");
+                            guardLeft = guardLeft.concat(" ").concat(operator).concat(decrease(guardRight));
                             return guardLeft;
                         }
                     }
@@ -1031,14 +1055,14 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
                     if(operator.equals("&gt;") || operator.equals("&gt;=")){
                         this.indexCxl++;
                         if(this.indexCxl==this.idCxlOperator){
-                            guardLeft = "(".concat(guardLeft).concat("+1)").concat(" ").concat(operator).concat(" ").concat(guardRight);
+                            guardLeft = increase(guardLeft).concat(" ").concat(operator).concat(" ").concat(guardRight);
                             return guardLeft;
                         }
                     }
                     if(operator.equals("&lt;") || operator.equals("&lt;=")){
                         this.indexCxs++;
                         if(this.indexCxs==this.idCxsOperator){
-                            guardLeft = "(".concat(guardLeft).concat("-1)").concat(" ").concat(operator).concat(" ").concat(guardRight);
+                            guardLeft = decrease(guardLeft).concat(" ").concat(operator).concat(" ").concat(guardRight);
                             return guardLeft;
                         }
                     }
