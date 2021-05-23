@@ -215,7 +215,7 @@ expr        :   IDENTIFIER  # IdentifierExpr
                                    ) expr     # ComparisonExpr
             |   expr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
                                     |  '|' | '^' | '&lt;&lt;' | '&gt;&gt;' | '&amp;&amp;' | '||'
-                                    |  '&lt;?' | '&gt;?' | 'or' | 'and' | 'imply')
+                                    |  '&lt;?' | '&gt;?' | 'or' | 'and' | ',' | 'imply')
                                     expr      #BinaryExpr
             |   expr '?' expr ':' expr
                                     # IfExpr
@@ -570,7 +570,7 @@ guardExpr
                 # ComparisonGuard
             |   guardExpr binary=( '+' | '-' | '*' | '/' | '%' | '&amp;'
                                     |  '|' | '^' | '&lt;&lt;' | '&gt;&gt;' | '&amp;&amp;' | '||'
-                                    |  '&lt;?' | '&gt;?' | 'or' | 'and' | 'imply')
+                                    |  '&lt;?' | '&gt;?' | 'or' | 'and' | ','  | 'imply')
                                     guardExpr   #BinaryGuard
             |   guardExpr '?' guardExpr ':' guardExpr
                                     # IfGuard

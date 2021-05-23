@@ -16,7 +16,7 @@
         <PerGrammarGenerationSettings>
           <option name="fileName" value="$PROJECT_DIR$/src/Parser/Antlr/UppaalParser.g4" />
           <option name="autoGen" value="true" />
-          <option name="outputDir" value="C:\Users\57310\Documents\Github\XMLGrammar\src" />
+          <option name="outputDir" value="C:\Users\57310\OneDrive - correounivalle.edu.co\Documentos\Github\UppaalMutants\src" />
           <option name="libDir" value="" />
           <option name="encoding" value="" />
           <option name="pkg" value="" />
