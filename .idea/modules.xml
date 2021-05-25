@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MutationUppaal.iml" filepath="$PROJECT_DIR$/MutationUppaal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UppaalMutants.iml" filepath="$PROJECT_DIR$/UppaalMutants.iml" />
     </modules>
   </component>
 </project>
