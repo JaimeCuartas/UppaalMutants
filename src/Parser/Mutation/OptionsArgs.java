@@ -20,6 +20,8 @@ public class OptionsArgs {
     private boolean cxl;
     private boolean cxs;
     private boolean ccn;
+
+    private String env;
     private Options options;
 
     public OptionsArgs(){
@@ -38,6 +40,8 @@ public class OptionsArgs {
         this.cxl = false;
         this.cxs = false;
         this.ccn = false;
+
+        this.env = "";
     }
 
     public void parseArgs(String[] args) throws ParseException, NoModelError, NoVerifyTaError {
@@ -83,6 +87,11 @@ public class OptionsArgs {
         Option cxsOpt = new Option ( "cxs" , false, "Enable cxs operator. Constant eXchange S operator decreases the constant of a clock constraint.");
         Option ccnOpt = new Option ( "ccn" , false, "Enable ccn operator. Clock Constraint Negation operator negates a clock constraint.");
 
+        Option envOpt = Option.builder("env")
+                .hasArg()
+                .desc("Specify the name of the automaton to make the mutants")
+                .argName("action").build();
+
         options.addOption(helpOpt);
         options.addOption(modelOpt);
         options.addOption(queryOpt);
@@ -98,6 +107,7 @@ public class OptionsArgs {
         options.addOption(cxlOpt);
         options.addOption(cxsOpt);
         options.addOption(ccnOpt);
+        options.addOption(envOpt);
 
         CommandLineParser argsParser = new DefaultParser();
         CommandLine line = argsParser.parse(options, args);
@@ -129,6 +139,11 @@ public class OptionsArgs {
         this.cxl = line.hasOption("cxl");
         this.cxs = line.hasOption("cxs");
         this.ccn = line.hasOption("ccn");
+
+        if(line.hasOption("env")){
+            this.env = line.getOptionValue("env");
+            System.out.println("el ambiente es " + this.env);
+        }
 
         if(!line.hasOption("m")){
             throw new NoModelError("No model file option to mutate");
@@ -270,5 +285,9 @@ public class OptionsArgs {
 
     public void setCcn(boolean ccn) {
         this.ccn = ccn;
+    }
+
+    public String getEnv() {
+        return env;
     }
 }

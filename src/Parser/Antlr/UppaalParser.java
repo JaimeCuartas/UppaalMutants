@@ -1,4 +1,4 @@
-// Generated from C:/Users/57310/OneDrive - correounivalle.edu.co/Documentos/Github/UppaalMutants/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.9.1
+// Generated from C:/Users/Jaime/OneDrive - correounivalle.edu.co/Documentos/Github/mutantes/UppaalMutants/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.9.1
 package Parser.Antlr;
 
     import java.util.HashMap;
@@ -285,6 +285,14 @@ public class UppaalParser extends Parser {
 	    }
 	    public HashMap<String, Graph> getGraphs(){
 	        return this.graphs;
+	    }
+
+
+	    private String envTarget;
+	    public UppaalParser(TokenStream input, String envTarget){
+	        this(input);
+	        this.envTarget = envTarget;
+	        System.out.println("llega aquí con "+this.envTarget);
 	    }
 
 	public UppaalParser(TokenStream input) {

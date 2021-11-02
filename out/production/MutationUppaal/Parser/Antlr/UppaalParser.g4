@@ -150,6 +150,14 @@ parser grammar UppaalParser;
     public HashMap<String, Graph> getGraphs(){
         return this.graphs;
     }
+
+
+    private String envTarget;
+    public UppaalParser(TokenStream input, String envTarget){
+        this(input);
+        this.envTarget = envTarget;
+        System.out.println("llega aquí con "+this.envTarget);
+    }
 }
 options { tokenVocab=UppaalLexer; }
 

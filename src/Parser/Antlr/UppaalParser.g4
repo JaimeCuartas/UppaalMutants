@@ -150,6 +150,13 @@ parser grammar UppaalParser;
     public HashMap<String, Graph> getGraphs(){
         return this.graphs;
     }
+
+
+    private String envTarget;
+    public UppaalParser(TokenStream input, String envTarget){
+        this(input);
+        this.envTarget = envTarget;
+    }
 }
 options { tokenVocab=UppaalLexer; }
 
@@ -465,6 +472,7 @@ transition  :   '<' 'transition' color? '>'
                         // clock >= num  --Mute to-> clock >= num-1
                         this.numCxs += this.clockGreaterNum;
                     }
+                    if(this.env
                     this.numCcn += this.clockGreaterNum + this.clockLessNum;
                     this.isControllable = false;
                     this.clockGreaterNum = 0;

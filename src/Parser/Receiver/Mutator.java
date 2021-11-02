@@ -28,7 +28,7 @@ public class Mutator {
     private UppaalParser parser;
     private ParseTree tree;
 
-    public Mutator(String modelFile, File fileMutants) throws IOException {
+    public Mutator(String modelFile, File fileMutants, String envTarget) throws IOException {
 
         this.fileMutants = fileMutants;
 
@@ -46,7 +46,7 @@ public class Mutator {
         UppaalLexer lexer = new UppaalLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-        this.parser = new UppaalParser(tokens);
+        this.parser = new UppaalParser(tokens, envTarget);
         this.tree = this.parser.model();
     }
 
