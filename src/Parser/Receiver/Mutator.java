@@ -4,6 +4,7 @@ import Parser.Antlr.UppaalLexer;
 import Parser.Antlr.UppaalParser;
 import Parser.Graph.Graph;
 import Parser.Mutation.UppaalVisitor;
+import Parser.OperatorCommands.SmiNoRedundant;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -15,6 +16,8 @@ import java.util.*;
 
 public class Mutator {
     private File fileMutants;
+
+    private String envTarget;
 
     private ArrayList<Thread> threadsTmi;
     private ArrayList<Thread> threadsTad;
@@ -28,7 +31,7 @@ public class Mutator {
     private UppaalParser parser;
     private ParseTree tree;
 
-    public Mutator(String modelFile, File fileMutants) throws IOException {
+    public Mutator(String modelFile, File fileMutants, String envTarget) throws IOException {
 
         this.fileMutants = fileMutants;
 
@@ -46,7 +49,8 @@ public class Mutator {
         UppaalLexer lexer = new UppaalLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-        this.parser = new UppaalParser(tokens);
+        this.envTarget = envTarget;
+        this.parser = new UppaalParser(tokens, envTarget);
         this.tree = this.parser.model();
     }
 
@@ -292,7 +296,7 @@ public class Mutator {
     public void prepareTmiOperator(){
         for (int i : parser.getTmi()) {
             threadsTmi.add(new Thread(() -> {
-                UppaalVisitor eval = new UppaalVisitor(i, "", "", "", "", "", parser.getClockEnv(), -1, -1, -1);
+                UppaalVisitor eval = new UppaalVisitor(i, "", "", "", "", "", parser.getClockEnv(), -1, -1, -1, this.envTarget);
                 FileWriter myWriter = null;
                 try {
                     myWriter = new FileWriter(new File(this.fileMutants, "tmi" + i + ".xml"));
@@ -306,11 +310,44 @@ public class Mutator {
     }
 
     public void prepareTadOperator(){
-        //Each template
-        for (String template : parser.getTransitionsTad().keySet()) {
+        if(this.envTarget.equals("")){
+            //Each template
+            for (String template : parser.getTransitionsTad().keySet()) {
+                //Each source
+                for (String source : this.parser.getTransitionsTadNoSync().get(template).keySet()) {
+                    HashSet<String> targets = this.parser.getTransitionsTadNoSync().get(template).get(source);
+                    //If source does not have an available target, then continue
+                    if (targets.isEmpty()) {
+                        continue;
+                    }
+
+                    Iterator<String> iterTargets = targets.iterator();
+
+                    for (int i = 0; i < targets.size(); i++) {
+                        //Choose target
+                        String target = iterTargets.next();
+
+                        this.threadsTad.add(new Thread(() -> {
+                            UppaalVisitor eval = new UppaalVisitor(-1, template, source, target, "", "", parser.getClockEnv(), -1, -1, -1, this.envTarget);
+                            FileWriter myWriter = null;
+                            try {
+                                myWriter = new FileWriter(new File(this.fileMutants, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                                myWriter.write(eval.visit(this.tree));
+                                myWriter.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                    }
+                }
+            }
+        }
+
+
+        if(this.parser.getTransitionsTad().containsKey(this.envTarget)){
             //Each source
-            for (String source : this.parser.getTransitionsTadNoSync().get(template).keySet()) {
-                HashSet<String> targets = this.parser.getTransitionsTadNoSync().get(template).get(source);
+            for (String source : this.parser.getTransitionsTadNoSync().get(this.envTarget).keySet()) {
+                HashSet<String> targets = this.parser.getTransitionsTadNoSync().get(this.envTarget).get(source);
                 //If source does not have an available target, then continue
                 if (targets.isEmpty()) {
                     continue;
@@ -323,7 +360,7 @@ public class Mutator {
                     String target = iterTargets.next();
 
                     this.threadsTad.add(new Thread(() -> {
-                        UppaalVisitor eval = new UppaalVisitor(-1, template, source, target, "", "", parser.getClockEnv(), -1, -1, -1);
+                        UppaalVisitor eval = new UppaalVisitor(-1, this.envTarget, source, target, "", "", parser.getClockEnv(), -1, -1, -1, this.envTarget);
                         FileWriter myWriter = null;
                         try {
                             myWriter = new FileWriter(new File(this.fileMutants, "tad".concat(source.concat(target).replace("\"", "")).concat(".xml")));
@@ -336,19 +373,53 @@ public class Mutator {
                 }
             }
         }
+
     }
 
     public void prepareTadSyncOperator(String chanSync){
-        //Each template
-        for (String template : parser.getTransitionsTad().keySet()) {
-            //Each source
-            for (String source : this.parser.getTransitionsTad().get(template).keySet()) {
-                HashSet<String> targets = this.parser.getTransitionsTad().get(template).get(source);
+        if(this.envTarget.equals("")){
+            //Each template
+            for (String template : parser.getTransitionsTad().keySet()) {
+                //Each source
+                for (String source : this.parser.getTransitionsTad().get(template).keySet()) {
+                    HashSet<String> targets = this.parser.getTransitionsTad().get(template).get(source);
+                    //If source does not have an available target, then continue
+                    if (targets.isEmpty()) {
+                        continue;
+                    }
+
+
+                    Iterator<String> iterTargets = targets.iterator();
+
+                    for (int i = 0; i < targets.size(); i++) {
+                        //Choose target
+                        String target = iterTargets.next();
+
+                        String output = chanSync.concat("!");
+                        this.threadsTadSync.add(new Thread(() -> {
+                            UppaalVisitor eval = new UppaalVisitor(-1, template, source, target, output, "", parser.getClockEnv(), -1, -1, -1, this.envTarget);
+                            FileWriter myWriter = null;
+                            try {
+                                myWriter = new FileWriter(new File(this.fileMutants, "tadSync".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                                myWriter.write(eval.visit(this.tree));
+                                myWriter.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }, "tadSync".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                    }
+                }
+            }
+            return;
+        }
+        if(this.parser.getTransitionsTad().containsKey(this.envTarget)){
+
+            for (String source : this.parser.getTransitionsTad().get(this.envTarget).keySet()) {
+                HashSet<String> targets = this.parser.getTransitionsTad().get(this.envTarget).get(source);
                 //If source does not have an available target, then continue
                 if (targets.isEmpty()) {
                     continue;
                 }
-
 
                 Iterator<String> iterTargets = targets.iterator();
 
@@ -358,7 +429,7 @@ public class Mutator {
 
                     String output = chanSync.concat("!");
                     this.threadsTadSync.add(new Thread(() -> {
-                        UppaalVisitor eval = new UppaalVisitor(-1, template, source, target, output, "", parser.getClockEnv(), -1, -1, -1);
+                        UppaalVisitor eval = new UppaalVisitor(-1, this.envTarget, source, target, output, "", parser.getClockEnv(), -1, -1, -1, this.envTarget);
                         FileWriter myWriter = null;
                         try {
                             myWriter = new FileWriter(new File(this.fileMutants, "tadSync".concat(source.concat(target).replace("\"", "")).concat(".xml")));
@@ -370,21 +441,68 @@ public class Mutator {
                     }, "tadSync".concat(source.concat(target).replace("\"", "")).concat(".xml")));
                 }
             }
+
         }
+
     }
 
     public void prepareTadRandomSyncOperator(){
-        for (String template : parser.getTransitionsTad().keySet()) {
+        if(this.envTarget.equals("")){
+            for (String template : parser.getTransitionsTad().keySet()) {
+                String outputEnv = "";
+                if (!this.parser.getChannelEnv().get("Global").isEmpty()) {
+                    outputEnv = "Global";
+                } else if (!this.parser.getChannelEnv().get(template).isEmpty()) {
+                    outputEnv = template;
+                } else {
+                    continue;
+                }
+                for (String source : this.parser.getTransitionsTad().get(template).keySet()) {
+                    HashSet<String> targets = this.parser.getTransitionsTad().get(template).get(source);
+
+                    if (targets.isEmpty()) {
+                        continue;
+                    }
+
+                    Iterator<String> iterTargets = targets.iterator();
+
+                    for (int i = 0; i < targets.size(); i++) {
+                        //Choose target
+                        String target = iterTargets.next();
+                        int chanPicked = 0;
+                        String chan = this.parser.getChannelEnv().get(outputEnv).get(chanPicked).getName();
+                        int dimensions = this.parser.getChannelEnv().get(outputEnv).get(chanPicked).getDimension();
+                        for (int j=0; j<dimensions; j++){
+                            chan = chan.concat("[0]");
+                        }
+                        String output = chan.concat("!");
+                        this.threadsTadRandomSync.add(new Thread(() -> {
+                            UppaalVisitor eval = new UppaalVisitor(-1, template, source, target, output, "", parser.getClockEnv(), -1, -1, -1, this.envTarget);
+                            FileWriter myWriter = null;
+                            try {
+                                myWriter = new FileWriter(new File(this.fileMutants, "tadRandomSync".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                                myWriter.write(eval.visit(this.tree));
+                                myWriter.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }, "tadRandomSync".concat(source.concat(target).replace("\"", "")).concat(".xml")));
+                    }
+                }
+            }
+            return;
+        }
+        if(this.parser.getTransitionsTad().containsKey(this.envTarget)){
             String outputEnv = "";
             if (!this.parser.getChannelEnv().get("Global").isEmpty()) {
                 outputEnv = "Global";
-            } else if (!this.parser.getChannelEnv().get(template).isEmpty()) {
-                outputEnv = template;
+            } else if (!this.parser.getChannelEnv().get(this.envTarget).isEmpty()) {
+                outputEnv = this.envTarget;
             } else {
-                continue;
+                return;
             }
-            for (String source : this.parser.getTransitionsTad().get(template).keySet()) {
-                HashSet<String> targets = this.parser.getTransitionsTad().get(template).get(source);
+            for (String source : this.parser.getTransitionsTad().get(this.envTarget).keySet()) {
+                HashSet<String> targets = this.parser.getTransitionsTad().get(this.envTarget).get(source);
 
                 if (targets.isEmpty()) {
                     continue;
@@ -403,7 +521,7 @@ public class Mutator {
                     }
                     String output = chan.concat("!");
                     this.threadsTadRandomSync.add(new Thread(() -> {
-                        UppaalVisitor eval = new UppaalVisitor(-1, template, source, target, output, "", parser.getClockEnv(), -1, -1, -1);
+                        UppaalVisitor eval = new UppaalVisitor(-1, this.envTarget, source, target, output, "", parser.getClockEnv(), -1, -1, -1, this.envTarget);
                         FileWriter myWriter = null;
                         try {
                             myWriter = new FileWriter(new File(this.fileMutants, "tadRandomSync".concat(source.concat(target).replace("\"", "")).concat(".xml")));
@@ -416,33 +534,65 @@ public class Mutator {
                 }
             }
         }
+
     }
 
     public void prepareSmiOperator(){
 
-        for (String template : this.parser.getLocationsSmi().keySet()) {
-            for (String idLocation : this.parser.getLocationsSmi().get(template)) {
+        if(this.envTarget.equals("")){
+            for (String template : this.parser.getLocationsSmi().keySet()) {
+                for (String idLocation : this.parser.getLocationsSmi().get(template)) {
+                    threadsSmi.add(new Thread(() -> {
+                        UppaalVisitor eval = new UppaalVisitor(-1, "", "", "", "", idLocation, parser.getClockEnv(), -1, -1, -1, this.envTarget);
+                        FileWriter myWriter = null;
+                        try {
+                            myWriter = new FileWriter(new File(this.fileMutants, "smi".concat(template).concat((idLocation).replace("\"", "")).concat(".xml")));
+                            myWriter.write(eval.visit(this.tree));
+                            myWriter.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }, "smi".concat(template).concat((idLocation).replace("\"", "")).concat(".xml")));
+                }
+            }
+            return;
+        }
+        if(this.parser.getLocationsSmi().containsKey(this.envTarget)){
+            for (String idLocation : this.parser.getLocationsSmi().get(this.envTarget)) {
                 threadsSmi.add(new Thread(() -> {
-                    UppaalVisitor eval = new UppaalVisitor(-1, "", "", "", "", idLocation, parser.getClockEnv(), -1, -1, -1);
+                    UppaalVisitor eval = new UppaalVisitor(-1, "", "", "", "", idLocation, parser.getClockEnv(), -1, -1, -1, this.envTarget);
                     FileWriter myWriter = null;
                     try {
-                        myWriter = new FileWriter(new File(this.fileMutants, "smi".concat(template).concat((idLocation).replace("\"", "")).concat(".xml")));
+                        myWriter = new FileWriter(new File(this.fileMutants, "smi".concat(this.envTarget).concat((idLocation).replace("\"", "")).concat(".xml")));
                         myWriter.write(eval.visit(this.tree));
                         myWriter.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }, "smi".concat(template).concat((idLocation).replace("\"", "")).concat(".xml")));
+                }, "smi".concat(this.envTarget).concat((idLocation).replace("\"", "")).concat(".xml")));
             }
         }
+
+
     }
 
     public void prepareSmiNoRedundantOperator(){
 
-        HashMap<String, HashSet<String>> smiNoRedundant = new HashMap<>(this.parser.getLocationsSmi());
-        for(Map.Entry<String, HashSet<String>> entry: this.parser.getLocationsSmi().entrySet()){
-            HashSet<String> newSmiLocations = new HashSet<>(entry.getValue());
-            smiNoRedundant.put(entry.getKey(), newSmiLocations);
+        //HashMap<String, HashSet<String>> smiNoRedundant = new HashMap<>(this.parser.getLocationsSmi());
+        HashMap<String, HashSet<String>> smiNoRedundant = new HashMap<>();
+
+        if(this.envTarget.equals("")) {
+            for(Map.Entry<String, HashSet<String>> entry: this.parser.getLocationsSmi().entrySet()){
+                HashSet<String> newSmiLocations = new HashSet<>(entry.getValue());
+                smiNoRedundant.put(entry.getKey(), newSmiLocations);
+            }
+        }
+        if(this.parser.getLocationsSmi().containsKey(this.envTarget)){
+
+            HashSet<String>  newSmiLocations =  new HashSet<>( this.parser.getLocationsSmi().get(this.envTarget));
+            smiNoRedundant.put(this.envTarget, newSmiLocations);
+            System.out.println(smiNoRedundant);
+            System.out.println(newSmiLocations);
         }
 
         for(String template : smiNoRedundant.keySet()){
@@ -456,7 +606,7 @@ public class Mutator {
             for (String idLocation : smiNoRedundant.get(template)) {
 
                 threadsSmiNoRedundant.add(new Thread(() -> {
-                    UppaalVisitor eval = new UppaalVisitor(-1, "", "", "", "", idLocation, parser.getClockEnv(), -1, -1, -1);
+                    UppaalVisitor eval = new UppaalVisitor(-1, "", "", "", "", idLocation, parser.getClockEnv(), -1, -1, -1, this.envTarget);
                     FileWriter myWriter = null;
                     try {
                         myWriter = new FileWriter(new File(this.fileMutants, "smiNoRedundant".concat(template).concat((idLocation).replace("\"", "")).concat(".xml")));
@@ -474,7 +624,7 @@ public class Mutator {
         for(int i=1; i<=this.parser.getNumCxl(); i++){
             int idCxl = i;
             this.threadsCxl.add(new Thread(()->{
-                UppaalVisitor eval = new UppaalVisitor(-1, "", "", "", "", "", parser.getClockEnv(), idCxl, -1, -1);
+                UppaalVisitor eval = new UppaalVisitor(-1, "", "", "", "", "", parser.getClockEnv(), idCxl, -1, -1, this.envTarget);
                 FileWriter myWriter = null;
                 try {
                     myWriter = new FileWriter(new File(this.fileMutants, "cxl"+ idCxl +".xml"));
@@ -491,7 +641,7 @@ public class Mutator {
         for(int i=1; i<=this.parser.getNumCxs(); i++){
             int idCxs = i;
             this.threadsCxs.add(new Thread(()->{
-                UppaalVisitor eval = new UppaalVisitor(-1, "", "", "", "", "", parser.getClockEnv(), -1, idCxs, -1);
+                UppaalVisitor eval = new UppaalVisitor(-1, "", "", "", "", "", parser.getClockEnv(), -1, idCxs, -1, this.envTarget);
                 FileWriter myWriter = null;
                 try {
                     myWriter = new FileWriter(new File(this.fileMutants, "cxs"+ idCxs +".xml"));
@@ -508,7 +658,7 @@ public class Mutator {
         for(int i=1; i<=parser.getNumCcn(); i++){
             int idCcn = i;
             this.threadsCcn.add(new Thread(()->{
-                UppaalVisitor eval = new UppaalVisitor(-1, "", "", "", "", "", parser.getClockEnv(), -1, -1, idCcn);
+                UppaalVisitor eval = new UppaalVisitor(-1, "", "", "", "", "", parser.getClockEnv(), -1, -1, idCcn, this.envTarget);
                 FileWriter myWriter = null;
                 try {
                     myWriter = new FileWriter(new File(this.fileMutants, "ccn"+ idCcn +".xml"));

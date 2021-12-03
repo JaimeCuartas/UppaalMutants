@@ -85,7 +85,7 @@ public class EntryPoint {
 
         Mutator mutator = null;
         try {
-            mutator = new Mutator(opt.getModelFile(), fileMutants);
+            mutator = new Mutator(opt.getModelFile(), fileMutants, opt.getEnv());
         }catch (IOException e){
             e.printStackTrace();
             System.exit(1);

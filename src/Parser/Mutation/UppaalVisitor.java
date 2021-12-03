@@ -32,9 +32,11 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     private boolean isControllable = false;
     private boolean isClockLeft = false;
     private boolean isClockRight = false;
+    private String envTarget;
 
     public UppaalVisitor (int tmiOperator, String templateTad, String sourceTad, String targetTad, String outputTad, String locationSmi,
-                          HashMap<String, HashSet<ClockType>> clockEnv, int idCxlOperator, int idCxsOperator, int idCcnOperator){
+                          HashMap<String, HashSet<ClockType>> clockEnv, int idCxlOperator, int idCxsOperator, int idCcnOperator,
+                          String envTarget){
 
 
         this.tmiOperator = tmiOperator;
@@ -54,6 +56,7 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
         this.indexCxl = 0;
         this.indexCxs = 0;
         this.indexCcn = 0;
+        this.envTarget = envTarget;
     }
 
     @Override
@@ -795,7 +798,6 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
     @Override
     public String visitTransition(UppaalParser.TransitionContext ctx) {
         this.indexCurrentTransition++;
-
         if(this.indexCurrentTransition==this.tmiOperator){
             return "";
         }
@@ -1000,34 +1002,42 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
                 if(this.isClockLeft){
                     this.isClockLeft = false;
                     if(operator.equals("&gt;") ||operator.equals("&gt;=")){
-                        this.indexCxl++;
-                        if(this.indexCxl==this.idCxlOperator){
-                            guardLeft = guardLeft.concat(" ").concat(operator).concat(" ").concat(increase(guardRight));
-                            return guardLeft;
+                        if(this.currentEnv.equals(this.envTarget)){
+                            this.indexCxl++;
+                            if(this.indexCxl==this.idCxlOperator){
+                                guardLeft = guardLeft.concat(" ").concat(operator).concat(" ").concat(increase(guardRight));
+                                return guardLeft;
+                            }
                         }
                     }
                     if(operator.equals("&lt;") || operator.equals("&lt;=")){
-                        this.indexCxs++;
-                        if(this.indexCxs==this.idCxsOperator){
-                            guardLeft = guardLeft.concat(" ").concat(operator).concat(" ").concat(decrease(guardRight));
-                            return guardLeft;
+                        if(this.currentEnv.equals(this.envTarget)){
+                            this.indexCxs++;
+                            if(this.indexCxs==this.idCxsOperator){
+                                guardLeft = guardLeft.concat(" ").concat(operator).concat(" ").concat(decrease(guardRight));
+                                return guardLeft;
+                            }
                         }
                     }
                 }
                 else{
                     this.isClockRight = false;
                     if(operator.equals("&lt;") || operator.equals("&lt;=")){
-                        this.indexCxl++;
-                        if(this.indexCxl==this.idCxlOperator){
-                            guardLeft = increase(guardLeft).concat(" ").concat(operator).concat(" ").concat(guardRight);
-                            return guardLeft;
+                        if(this.currentEnv.equals(this.envTarget)){
+                            this.indexCxl++;
+                            if(this.indexCxl==this.idCxlOperator){
+                                guardLeft = increase(guardLeft).concat(" ").concat(operator).concat(" ").concat(guardRight);
+                                return guardLeft;
+                            }
                         }
                     }
                     if(operator.equals("&gt;") || operator.equals("&gt;=")){
-                        this.indexCxs++;
-                        if(this.indexCxs==this.idCxsOperator){
-                            guardLeft = decrease(guardLeft).concat(" ").concat(operator).concat(" ").concat(guardRight);
-                            return guardLeft;
+                        if(this.currentEnv.equals(this.envTarget)){
+                            this.indexCxs++;
+                            if(this.indexCxs==this.idCxsOperator){
+                                guardLeft = decrease(guardLeft).concat(" ").concat(operator).concat(" ").concat(guardRight);
+                                return guardLeft;
+                            }
                         }
                     }
                 }
@@ -1036,71 +1046,73 @@ public class UppaalVisitor extends UppaalParserBaseVisitor<String> {
                 if(this.isClockLeft){
                     this.isClockLeft = false;
                     if(operator.equals("&lt;") || operator.equals("&lt;=")){
-                        this.indexCxl++;
-                        if(this.indexCxl==this.idCxlOperator){
-                            guardLeft = guardLeft.concat(" ").concat(operator).concat(increase(guardRight));
-                            return guardLeft;
+                        if(this.currentEnv.equals(this.envTarget)){
+                            this.indexCxl++;
+                            if(this.indexCxl==this.idCxlOperator){
+                                guardLeft = guardLeft.concat(" ").concat(operator).concat(increase(guardRight));
+                                return guardLeft;
+                            }
                         }
                     }
                     if(operator.equals("&gt;") || operator.equals("&gt;=")){
-                        this.indexCxs++;
-                        if(this.indexCxs==this.idCxsOperator){
-                            guardLeft = guardLeft.concat(" ").concat(operator).concat(decrease(guardRight));
-                            return guardLeft;
+                        if(this.currentEnv.equals(this.envTarget)){
+                            this.indexCxs++;
+                            if(this.indexCxs==this.idCxsOperator){
+                                guardLeft = guardLeft.concat(" ").concat(operator).concat(decrease(guardRight));
+                                return guardLeft;
+                            }
                         }
+
                     }
                 }
                 else{
                     this.isClockRight = false;
                     if(operator.equals("&gt;") || operator.equals("&gt;=")){
-                        this.indexCxl++;
-                        if(this.indexCxl==this.idCxlOperator){
-                            guardLeft = increase(guardLeft).concat(" ").concat(operator).concat(" ").concat(guardRight);
-                            return guardLeft;
+                        if(this.currentEnv.equals(this.envTarget)){
+                            this.indexCxl++;
+                            if(this.indexCxl==this.idCxlOperator){
+                                guardLeft = increase(guardLeft).concat(" ").concat(operator).concat(" ").concat(guardRight);
+                                return guardLeft;
+                            }
                         }
                     }
                     if(operator.equals("&lt;") || operator.equals("&lt;=")){
-                        this.indexCxs++;
-                        if(this.indexCxs==this.idCxsOperator){
-                            guardLeft = decrease(guardLeft).concat(" ").concat(operator).concat(" ").concat(guardRight);
-                            return guardLeft;
+                        if(this.currentEnv.equals(this.envTarget)){
+                            this.indexCxs++;
+                            if(this.indexCxs==this.idCxsOperator){
+                                guardLeft = decrease(guardLeft).concat(" ").concat(operator).concat(" ").concat(guardRight);
+                                return guardLeft;
+                            }
                         }
                     }
                 }
 
             }
             if(!operator.equals("==") && !operator.equals("!=")){
-                this.indexCcn++;
-                if(this.indexCcn==this.idCcnOperator) {
+                if(this.currentEnv.equals(this.envTarget)){
+                    this.indexCcn++;
+                    if(this.indexCcn==this.idCcnOperator) {
 
-                    switch (ctx.binary.getType()) {
-                        case UppaalParser.GREATER:
-                            guardLeft = guardLeft.concat(" &lt;= ");
-                            break;
-                        case UppaalParser.GREATEREQ:
-                            guardLeft = guardLeft.concat(" &lt; ");
-                            break;
-                        case UppaalParser.LESS:
-                            guardLeft = guardLeft.concat(" &gt;= ");
-                            break;
-                        case UppaalParser.LESSEQ:
-                            guardLeft = guardLeft.concat(" &gt; ");
-                            break;
-                        /*
-                        case UppaalParser.COMPARE:
-                            guardLeft = guardLeft.concat(" != ");
-                            break;
-                        case UppaalParser.DIFFERENT:
-                            guardLeft = guardLeft.concat(" == ");
-                            break;
+                        switch (ctx.binary.getType()) {
+                            case UppaalParser.GREATER:
+                                guardLeft = guardLeft.concat(" &lt;= ");
+                                break;
+                            case UppaalParser.GREATEREQ:
+                                guardLeft = guardLeft.concat(" &lt; ");
+                                break;
+                            case UppaalParser.LESS:
+                                guardLeft = guardLeft.concat(" &gt;= ");
+                                break;
+                            case UppaalParser.LESSEQ:
+                                guardLeft = guardLeft.concat(" &gt; ");
+                                break;
+                        }
+                        guardLeft = guardLeft.concat(visit(ctx.guardExpr(1)));
 
-                         */
+                        this.isClockLeft = false;
+                        this.isClockRight = false;
+                        return guardLeft;
                     }
-                    guardLeft = guardLeft.concat(visit(ctx.guardExpr(1)));
-
-                    this.isClockLeft = false;
-                    this.isClockRight = false;
-                    return guardLeft;
                 }
             }
         }

@@ -1,4 +1,4 @@
-// Generated from C:/Users/57310/OneDrive - correounivalle.edu.co/Documentos/Github/UppaalMutants/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.9.1
+// Generated from C:/Users/Jaime/OneDrive - correounivalle.edu.co/Documentos/Github/mutantes/UppaalMutants/src/Parser/Antlr\UppaalParser.g4 by ANTLR 4.9.1
 package Parser.Antlr;
 
     import java.util.HashMap;
@@ -285,6 +285,13 @@ public class UppaalParser extends Parser {
 	    }
 	    public HashMap<String, Graph> getGraphs(){
 	        return this.graphs;
+	    }
+
+
+	    private String envTarget;
+	    public UppaalParser(TokenStream input, String envTarget){
+	        this(input);
+	        this.envTarget = envTarget;
 	    }
 
 	public UppaalParser(TokenStream input) {
@@ -6273,21 +6280,27 @@ public class UppaalParser extends Parser {
 			setState(906);
 			match(CLOSE);
 
-			                    if(this.isControllable){
-			                        // It is an input transition '?'
-			                        // clock >= num  --Mute to-> clock >= num+1
-			                        this.numCxl += this.clockGreaterNum;
-			                        // clock <= num  --Mute to-> clock <= num-1
-			                        this.numCxs += this.clockLessNum;
+			                    if(this.currentEnv.equals(this.envTarget)){
+			                        if(this.isControllable){
+			                            // It is an input transition '?'
+			                            // clock >= num  --Mute to-> clock >= num+1
+			                            this.numCxl += this.clockGreaterNum;
+			                            // clock <= num  --Mute to-> clock <= num-1
+			                            this.numCxs += this.clockLessNum;
+			                        }
+			                        else{
+			                            // It is an output transition '!'
+			                            // clock <= num  --Mute to-> clock <= num+1
+			                            this.numCxl += this.clockLessNum;
+			                            // clock >= num  --Mute to-> clock >= num-1
+			                            this.numCxs += this.clockGreaterNum;
+			                        }
+
 			                    }
-			                    else{
-			                        // It is an output transition '!'
-			                        // clock <= num  --Mute to-> clock <= num+1
-			                        this.numCxl += this.clockLessNum;
-			                        // clock >= num  --Mute to-> clock >= num-1
-			                        this.numCxs += this.clockGreaterNum;
+
+			                    if(this.currentEnv.equals(this.envTarget)){
+			                        this.numCcn += this.clockGreaterNum + this.clockLessNum;
 			                    }
-			                    this.numCcn += this.clockGreaterNum + this.clockLessNum;
 			                    this.isControllable = false;
 			                    this.clockGreaterNum = 0;
 			                    this.clockLessNum = 0;
@@ -6423,16 +6436,20 @@ public class UppaalParser extends Parser {
 			                         //flag to know if a transition is controllable (<expr> '?')
 			                         this.isControllable = true;
 
-			                         //Add to tmi array to remove transition on tmi mutants
-			                         this.tmi.add(this.currentTransition);
+			                         if(this.currentEnv.equals(this.envTarget) || this.currentEnv.equals("")){
+			                            //Add to tmi array to remove transition on tmi mutants
+			                            this.tmi.add(this.currentTransition);
+			                         }
+
 
 			                         //If has a synchro input remove from possible transition to make an output on tad mutants
 			                         //due to a transition can not has two synchro labels
 			                         this.transitionsTad.get(currentEnv).get(currentSource).remove(currentTarget);
 
+
 			                         //if it has at least one incoming action, then a mutant will be created without the target location
 			                         if(!this.initLocationId.equals(this.currentTarget)){
-			                             this.locationsSmi.get(this.currentEnv).add(this.currentTarget);
+			                            this.locationsSmi.get(this.currentEnv).add(this.currentTarget);
 			                         }
 			                     
 			}
@@ -6499,7 +6516,6 @@ public class UppaalParser extends Parser {
 			setState(931);
 			match(CLOSE_LABEL);
 			}
-
 
 			                        //If has a synchro input remove from possible transition to make an output on tad mutants
 			                        //due to a transition can not has two synchro labels
@@ -7920,7 +7936,6 @@ public class UppaalParser extends Parser {
 
 			                    this.currentTarget = _localctx.STRING().getText();
 			                    this.transitionsTadNoSync.get(currentEnv).get(currentSource).remove(currentTarget);
-
 			                    this.graphs.get(currentEnv).addEdge(currentSource, currentTarget);
 			                
 			}
