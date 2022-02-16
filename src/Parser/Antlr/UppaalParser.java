@@ -7172,7 +7172,6 @@ public class UppaalParser extends Parser {
 
 				                this.isClockRight |= this.clockEnv.get(this.currentEnv).contains(new ClockType(_localctx.getText()));
 				                this.isClockRight |= this.clockEnv.get("Global").contains(new ClockType(_localctx.getText()));
-
 				            
 				}
 				break;
