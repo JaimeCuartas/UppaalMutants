@@ -525,7 +525,6 @@ guardExpr
             {
                 this.isClockRight |= this.clockEnv.get(this.currentEnv).contains(new ClockType($ctx.getText()));
                 this.isClockRight |= this.clockEnv.get("Global").contains(new ClockType($ctx.getText()));
-
             }
             # IdentifierGuard
             |   NAT   # NatGuard
